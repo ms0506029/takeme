@@ -1,5 +1,5 @@
 // 確保環境變數驗證在啟動時執行
-import '@/lib/env'
+import { env } from '@/lib/env'
 
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 
@@ -58,7 +58,7 @@ export default buildConfig({
   },
   collections: [Users, Vendors, Promotions, Pages, Categories, Media],
   db: mongooseAdapter({
-    url: process.env.DATABASE_URL || '',
+    url: env.DATABASE_URL || '',
   }),
   editor: lexicalEditor({
     features: () => {
@@ -99,7 +99,7 @@ export default buildConfig({
   endpoints: [],
   globals: [Header, Footer],
   plugins,
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

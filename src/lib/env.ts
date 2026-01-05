@@ -60,7 +60,10 @@ export type Env = z.infer<typeof envSchema>
 
 // 匯出經過驗證的環境變數（或在 CLI/Build 模式下使用預設值）
 export const env: Partial<Env> = (isCLIMode || isBuildPhase)
-  ? {} // CLI 模式或 Build 階段不驗證，返回空物件
+  ? {
+      DATABASE_URL: 'mongodb://localhost:27017/build-time-dummy',
+      PAYLOAD_SECRET: 'build-time-dummy-secret-at-least-32-chars-long',
+    } as Env // CLI 模式或 Build 階段提供虛擬值，繞過初始化檢查
   : (() => {
       const parseResult = envSchema.safeParse(process.env)
       
