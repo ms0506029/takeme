@@ -1,0 +1,264 @@
+@import 'tailwindcss';
+
+@plugin "@tailwindcss/typography";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is([data-theme='dark'] *));
+
+@theme {
+  /* 字體定義 */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular;
+  --font-display: var(--font-lexend), Lexend, sans-serif;
+  --font-body: var(--font-patrick-hand), 'Patrick Hand', cursive;
+
+  /* 顏色定義 - 映射至現有 CSS 變數 */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+
+  /* Scrapbook 專屬色彩 */
+  --color-scrapbook-primary: #C9925E;
+  --color-scrapbook-primary-fg: #FFFFFF;
+  --color-scrapbook-secondary: #4A6C6F;
+  --color-scrapbook-accent: #D65A5A;
+  --color-scrapbook-muted-light: #E8E4DD;
+  --color-scrapbook-muted-dark: #2A2A2A;
+  --color-scrapbook-bg-light: #FDFBF7;
+  --color-scrapbook-bg-dark: #1A1A1A;
+  --color-scrapbook-fg-light: #2D2D2D;
+  --color-scrapbook-fg-dark: #E5E5E5;
+
+  /* 邊角定義 */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-bubble: 1rem;
+  --radius-bubble-lg: 2rem;
+  --radius-bubble-xl: 3rem;
+
+  /* 陰影定義 */
+  --shadow-retro: 4px 4px 0px 0px rgba(45, 45, 45, 1);
+  --shadow-retro-sm: 2px 2px 0px 0px rgba(45, 45, 45, 1);
+  --shadow-collage-lg: 8px 8px 0px 0px rgba(45, 45, 45, 0.8), 12px 12px 0px 0px rgba(45, 45, 45, 0.4);
+  --shadow-collage-md: 6px 6px 0px 0px rgba(45, 45, 45, 0.8), 9px 9px 0px 0px rgba(45, 45, 45, 0.4);
+  --shadow-collage-sm: 4px 4px 0px 0px rgba(45, 45, 45, 0.8), 6px 6px 0px 0px rgba(45, 45, 45, 0.4);
+
+  /* 動畫關鍵影格 */
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes blink {
+    0% { opacity: 0.2; }
+    20% { opacity: 1; }
+    100% { opacity: 0.2; }
+  }
+
+  /* 動畫預設值 */
+  --animation-fade-in: fade-in 0.3s ease-in-out;
+  --animation-blink: blink 1.4s both infinite;
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  max-width: 86rem;
+}
+
+@layer base {
+  :root {
+    --background: hsl(0 0% 100%);
+    --foreground: hsl(222.2 84% 4.9%);
+    --card: hsl(240 5% 96%);
+    --card-foreground: hsl(222.2 84% 4.9%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(222.2 84% 4.9%);
+    --primary: hsl(222.2 47.4% 11.2%);
+    --primary-foreground: hsl(210 40% 98%);
+    --secondary: hsl(210 40% 96.1%);
+    --secondary-foreground: hsl(222.2 47.4% 11.2%);
+    --muted: hsl(210 40% 96.1%);
+    --muted-foreground: hsl(215.4 16.3% 46.9%);
+    --accent: hsl(210 40% 96.1%);
+    --accent-foreground: hsl(222.2 47.4% 11.2%);
+    --destructive: hsl(0 84.2% 60.2%);
+    --destructive-foreground: hsl(210 40% 98%);
+    --border: hsl(240 6% 90%);
+    --input: hsl(214.3 31.8% 91.4%);
+    --ring: hsl(222.2 84% 4.9%);
+    --radius: 0.5rem;
+    --success: hsl(196 52% 74%);
+    --warning: hsl(34 89% 85%);
+    --error: hsl(10 93% 70%);
+  }
+
+  [data-theme='dark'] {
+    --background: hsla(0, 0%, 4%);
+    --foreground: hsl(210 40% 98%);
+    --card: hsl(0, 0%, 8%);
+    --card-foreground: hsl(210 40% 98%);
+    --primary: hsl(210 40% 98%);
+    --primary-foreground: hsl(0, 0%, 6%);
+    --border: hsla(0, 0%, 100%, 0.1);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+  }
+
+  html {
+    @apply antialiased;
+  }
+}
+
+/* =============================================
+   SCRAPBOOK 裝飾效果 (純 CSS)
+   ============================================= */
+
+/* 膠帶與長尾夾 */
+.tape-top-left::before, .tape-top-right::before, 
+.tape-bottom-left::before, .tape-bottom-right::before {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 15px;
+  background-color: rgba(220, 220, 220, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+.tape-top-left::before { top: -8px; left: -8px; transform: rotate(-5deg); }
+.tape-top-right::before { top: -8px; right: -8px; transform: rotate(5deg); }
+
+.clip-top-left, .clip-top-right {
+  position: absolute;
+  top: -10px;
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  z-index: 10;
+  background-image: url('/images/decorations/clip-black.png');
+}
+.clip-top-left { left: -10px; transform: rotate(-15deg); }
+.clip-top-right { right: -10px; transform: rotate(15deg); }
+
+/* 捲軸樣式 */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--color-scrapbook-muted-light); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrapbook-primary);
+  border-radius: 5px;
+  border: 2px solid var(--color-scrapbook-muted-light);
+}
+
+@layer utilities {
+  .text-shadow-sm { text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1); }
+  .text-shadow-md { text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15); }
+  .decoration-wavy-hover:hover {
+    text-decoration: underline wavy var(--color-scrapbook-primary);
+  }
+}
+
+/* 按鈕組件樣式 (使用純 CSS 屬性避免 @apply 循環引用) */
+.btn-sketch {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-width: 2px;
+  border-color: black;
+  border-radius: var(--radius-bubble);
+  transition-property: all;
+  transition-duration: 150ms;
+}
+
+.btn-sketch-primary {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-width: 2px;
+  border-color: black;
+  border-radius: var(--radius-bubble);
+  transition-property: all;
+  transition-duration: 150ms;
+  background-color: var(--color-scrapbook-primary);
+  color: white;
+  box-shadow: var(--shadow-retro);
+}
+.btn-sketch-primary:hover {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-retro-sm);
+}
+
+.btn-sketch-secondary {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-width: 2px;
+  border-color: black;
+  border-radius: var(--radius-bubble);
+  transition-property: all;
+  transition-duration: 150ms;
+  background-color: white;
+  color: var(--color-scrapbook-fg-light);
+  box-shadow: var(--shadow-retro);
+}
+.btn-sketch-secondary:hover {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-retro-sm);
+}
+
+/* 強制固定的 Logo 尺寸解決方案 */
+svg[aria-label*="Payload logo"], 
+svg[aria-label*="Daytona"] {
+  max-width: 40px !important;
+  max-height: 40px !important;
+}
+
+/* 備用響應式網格規則（Tailwind JIT 備援） */
+@media (min-width: 1024px) {
+  .lg\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+  .lg\:grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  }
+}
+
+/* 備用 aspect-ratio 規則 */
+.aspect-\[3\/4\] {
+  aspect-ratio: 3 / 4 !important;
+}
+
+/* 備用毛玻璃 Header 規則 */
+.backdrop-blur-md {
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}

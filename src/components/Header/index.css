@@ -1,0 +1,60 @@
+/* Scrapbook Header Styles */
+
+.navLink {
+  overflow: hidden;
+  border-radius: unset;
+  font-family: var(--font-display);
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-scrapbook-primary);
+    transform: translateY(4px);
+    transition: transform 0.3s ease;
+  }
+
+  &:not(.active):hover {
+    color: var(--color-scrapbook-primary);
+    
+    &::after {
+      transform: translateY(-2px);
+    }
+  }
+
+  &.active {
+    color: var(--color-scrapbook-primary);
+    font-weight: 700;
+    
+    &::after {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+/* Scrapbook 搜尋框樣式 */
+.scrapbook-search {
+  font-family: var(--font-body);
+  background-color: var(--color-scrapbook-muted-light);
+  border: 2px solid var(--color-scrapbook-fg-light);
+  border-radius: var(--radius-bubble);
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-retro-sm);
+}
+
+.scrapbook-search:focus {
+  outline: none;
+  box-shadow: var(--shadow-retro);
+  border-color: var(--color-scrapbook-primary);
+}
+
+[data-theme='dark'] .scrapbook-search {
+  background-color: var(--color-scrapbook-muted-dark);
+  border-color: var(--color-scrapbook-fg-dark);
+}

@@ -1,0 +1,25 @@
+.before-dashboard {
+  padding: 0;
+  max-width: 100%;
+  
+  &__welcome {
+    background: linear-gradient(135deg, rgba(201, 145, 93, 0.1) 0%, rgba(201, 145, 93, 0.05) 100%);
+  }
+  
+  &__banner {
+    border-radius: 0.75rem;
+  }
+  
+  &__instructions {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+}
+
+/* 按鈕懸停效果 */
+.before-dashboard a[href="/"] {
+  &:hover {
+    background-color: rgba(201, 145, 93, 0.1) !important;
+    color: #C9915D !important;
+  }
+}
