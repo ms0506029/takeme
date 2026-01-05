@@ -45,18 +45,22 @@ const envSchema = z.object({
 })
 
 // 檢查是否在 CLI 模式（如 generate:types、generate:importmap）
+// 或在 Build 階段（Zeabur 等 PaaS 平台會在 runtime 才注入環境變數）
 const isCLIMode = process.argv.some(arg => 
   arg.includes('generate:types') || 
   arg.includes('generate:importmap') ||
   arg.includes('payload')
 )
 
+// 檢查是否在 Build 階段（環境變數尚未注入）
+const isBuildPhase = !process.env.DATABASE_URL && process.env.NODE_ENV !== 'development'
+
 // 類型定義，方便其他模組使用
 export type Env = z.infer<typeof envSchema>
 
-// 匯出經過驗證的環境變數（或在 CLI 模式下使用預設值）
-export const env: Partial<Env> = isCLIMode 
-  ? {} // CLI 模式下不驗證，返回空物件
+// 匯出經過驗證的環境變數（或在 CLI/Build 模式下使用預設值）
+export const env: Partial<Env> = (isCLIMode || isBuildPhase)
+  ? {} // CLI 模式或 Build 階段不驗證，返回空物件
   : (() => {
       const parseResult = envSchema.safeParse(process.env)
       
