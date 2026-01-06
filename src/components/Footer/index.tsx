@@ -1,17 +1,17 @@
-import type { Footer } from '@/payload-types'
 
 import { FooterMenu } from '@/components/Footer/menu'
+import { LogoIcon } from '@/components/icons/logo'
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
-import React, { Suspense } from 'react'
-import { LogoIcon } from '@/components/icons/logo'
+import { Suspense } from 'react'
 
 const { COMPANY_NAME, SITE_NAME } = process.env
 
 export async function Footer() {
-  const footer: Footer = await getCachedGlobal('footer', 1)()
-  const menu = footer.navItems || []
+  const footerData = await getCachedGlobal('footer', 1)()
+  // Build 階段可能無法連接資料庫，使用空陣列作為 fallback
+  const menu = footerData?.navItems || []
   const currentYear = new Date().getFullYear()
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '')
   const skeleton = 'w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700'

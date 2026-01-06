@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import React from 'react'
 import { FindOrderForm } from '@/components/forms/FindOrderForm'
-import { getPayload } from 'payload'
-import { headers as getHeaders } from 'next/headers.js'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import configPromise from '@payload-config'
+import { headers as getHeaders } from 'next/headers.js'
+import { getPayload } from 'payload'
+
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
 
 export default async function FindOrderPage() {
   const headers = await getHeaders()

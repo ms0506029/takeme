@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
 
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 
 import { CheckoutPage } from '@/components/checkout/CheckoutPage'
+
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
 
 export default function Checkout() {
   return (

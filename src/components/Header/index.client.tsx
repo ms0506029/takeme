@@ -13,11 +13,12 @@ import { cn } from '@/utilities/cn'
 import { usePathname } from 'next/navigation'
 
 type Props = {
-  header: Header
+  header: Header | null
 }
 
 export function HeaderClient({ header }: Props) {
-  const menu = header.navItems || []
+  // Build 階段可能無法連接資料庫，header 可能為 null
+  const menu = header?.navItems || []
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
 

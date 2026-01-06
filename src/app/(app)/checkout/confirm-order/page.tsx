@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import React, { Fragment } from 'react'
 import { ConfirmOrder } from '@/components/checkout/ConfirmOrder'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 

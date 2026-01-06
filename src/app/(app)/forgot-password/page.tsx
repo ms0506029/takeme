@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import React from 'react'
 
 import { ForgotPasswordForm } from '@/components/forms/ForgotPasswordForm'
+
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
 
 export default async function ForgotPasswordPage() {
   return (

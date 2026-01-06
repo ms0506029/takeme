@@ -2,7 +2,9 @@ import { Grid } from '@/components/Grid'
 import { ProductGridItem } from '@/components/ProductGridItem'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import React from 'react'
+
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
 
 export const metadata = {
   description: 'Search for products in the store.',

@@ -4,15 +4,18 @@ import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { GridTileImage } from '@/components/Grid/tile'
 import { Gallery } from '@/components/product/Gallery'
 import { ProductDescription } from '@/components/product/ProductDescription'
+import { Button } from '@/components/ui/button'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { ChevronLeftIcon } from 'lucide-react'
+import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getPayload } from 'payload'
 import React, { Suspense } from 'react'
-import { Button } from '@/components/ui/button'
-import { ChevronLeftIcon } from 'lucide-react'
-import { Metadata } from 'next'
+
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
 
 type Args = {
   params: Promise<{

@@ -1,15 +1,26 @@
 import type { ReactNode } from 'react'
 
-import { headers as getHeaders } from 'next/headers.js'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import { RenderParams } from '@/components/RenderParams'
 import { AccountNav } from '@/components/AccountNav'
+import { RenderParams } from '@/components/RenderParams'
+import configPromise from '@payload-config'
+import { headers as getHeaders } from 'next/headers.js'
+import { getPayload } from 'payload'
+
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  const headers = await getHeaders()
-  const payload = await getPayload({ config: configPromise })
-  const { user } = await payload.auth({ headers })
+  let user = null
+  
+  try {
+    const headers = await getHeaders()
+    const payload = await getPayload({ config: configPromise })
+    const authResult = await payload.auth({ headers })
+    user = authResult.user
+  } catch (error) {
+    // Build 階段可能無法連接資料庫，忽略錯誤
+    console.warn('[AccountLayout] Failed to authenticate - Database may not be available during build')
+  }
 
   return (
     <div>

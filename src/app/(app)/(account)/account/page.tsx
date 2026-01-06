@@ -1,15 +1,18 @@
 import type { Metadata } from 'next'
 
-import { Button } from '@/components/ui/button'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import Link from 'next/link'
-import { headers as getHeaders } from 'next/headers.js'
-import configPromise from '@payload-config'
 import { AccountForm } from '@/components/forms/AccountForm'
-import { Order } from '@/payload-types'
 import { OrderItem } from '@/components/OrderItem'
-import { getPayload } from 'payload'
+import { Button } from '@/components/ui/button'
+import { Order } from '@/payload-types'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import configPromise from '@payload-config'
+import { headers as getHeaders } from 'next/headers.js'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { getPayload } from 'payload'
+
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
 
 export default async function AccountPage() {
   const headers = await getHeaders()
