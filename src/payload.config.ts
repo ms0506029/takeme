@@ -58,7 +58,9 @@ export default buildConfig({
   },
   collections: [Users, Vendors, Promotions, Pages, Categories, Media],
   db: mongooseAdapter({
-    url: env.DATABASE_URL || '',
+    // 直接使用 process.env 以確保在 Runtime 時讀取（繞過 Next.js build-time 評估）
+    // Zeabur 提供 MONGO_URI 或 MONGO_CONNECTION_STRING，本地開發使用 DATABASE_URL
+    url: process.env.DATABASE_URL || process.env.MONGO_URI || process.env.MONGO_CONNECTION_STRING || '',
   }),
   editor: lexicalEditor({
     features: () => {
