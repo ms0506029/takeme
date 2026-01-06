@@ -28,6 +28,9 @@ const patrickHand = Patrick_Hand({
   display: 'swap',
 })
 
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
+
 export default async function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html

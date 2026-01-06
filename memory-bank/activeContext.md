@@ -9,6 +9,11 @@
 **專案名稱：** Daytona Park - Scrapbook Retro Platform  
 **當前階段：** 📊 報表與分析功能開發 (Phase 7)  
 **技術棧：** Next.js 15 + Payload CMS 3.69.0 + MongoDB + Chart.js
+### 階段八：部署與最後驗證
+- [x] 修復 Build 階段 MongoDB 連線錯誤
+- [/] Zeabur 部署 (Next.js + MongoDB)
+- [ ] 環境變數與網域設定
+- [ ] 最終全面整合測試
 
 ---
 
@@ -52,8 +57,8 @@
 
 ## 🚀 下一步
 
-1. **實作分析報表**：建立專用的 Admin View 連結。
-2. **部署準備**：規劃 Zeabur 部署流程 (Phase 8)。
+1. **監控 Zeabur 部署**：確認自動部署是否成功。
+2. **實作分析報表**：建立專用的 Admin View 連結。
 3. **數據整合**：申請 GA4 / Meta Pixel API 權限。
 
 ---

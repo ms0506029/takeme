@@ -8,7 +8,6 @@ import configPromise from '@payload-config'
 import { draftMode } from 'next/headers'
 import { getPayload } from 'payload'
 
-import type { Page } from '@/payload-types'
 import { notFound } from 'next/navigation'
 
 export async function generateStaticParams() {
@@ -17,7 +16,7 @@ export async function generateStaticParams() {
   try {
     const payload = await getPayload({ config: configPromise })
     const pages = await payload.find({
-      collection: 'pages',
+      collection: 'pages' as any,
       draft: false,
       limit: 1000,
       overrideAccess: false,
@@ -27,11 +26,11 @@ export async function generateStaticParams() {
       },
     })
 
-    const params = pages.docs
-      ?.filter((doc) => {
+    const params = (pages.docs as any)
+      ?.filter((doc: any) => {
         return doc.slug !== 'home'
       })
-      .map(({ slug }) => {
+      .map(({ slug }: any) => {
         return { slug }
       })
 
@@ -49,6 +48,9 @@ type Args = {
   }>
 }
 
+// 強制動態渲染，避免 Build 時嘗試連接資料庫
+export const dynamic = 'force-dynamic'
+
 export default async function Page({ params }: Args) {
   const { slug = 'home' } = await params
   const url = '/' + slug
@@ -59,14 +61,14 @@ export default async function Page({ params }: Args) {
 
   // Remove this code once your website is seeded
   if (!page && slug === 'home') {
-    page = homeStaticData() as Page
+    page = homeStaticData() as any
   }
 
   if (!page) {
     return notFound()
   }
 
-  const { hero, layout } = page
+  const { hero, layout } = page as any
 
   return (
     <article className="pt-16 pb-24">
@@ -83,7 +85,7 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
     slug,
   })
 
-  return generateMeta({ doc: page })
+  return generateMeta({ doc: page as any })
 }
 
 const queryPageBySlug = async ({ slug }: { slug: string }) => {
@@ -92,7 +94,7 @@ const queryPageBySlug = async ({ slug }: { slug: string }) => {
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
-    collection: 'pages',
+    collection: 'pages' as any,
     draft,
     limit: 1,
     overrideAccess: draft,
