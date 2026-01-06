@@ -65,7 +65,16 @@ export const env: Partial<Env> = (isCLIMode || isBuildPhase)
       PAYLOAD_SECRET: 'build-time-dummy-secret-at-least-32-chars-long',
     } as Env // CLI 模式或 Build 階段提供虛擬值，繞過初始化檢查
   : (() => {
-      const parseResult = envSchema.safeParse(process.env)
+      // Zeabur 等平台可能提供 MONGO_URI 或 MONGO_CONNECTION_STRING 而不是 DATABASE_URL
+      // 我們在這裡進行自動對應，減少用戶手動配置的麻煩
+      const databaseUrl = process.env.DATABASE_URL || process.env.MONGO_URI || process.env.MONGO_CONNECTION_STRING
+      
+      const envToValidate = {
+        ...process.env,
+        DATABASE_URL: databaseUrl,
+      }
+
+      const parseResult = envSchema.safeParse(envToValidate)
       
       if (!parseResult.success) {
         // 格式化錯誤訊息
