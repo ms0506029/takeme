@@ -53,7 +53,11 @@ const isCLIMode = process.argv.some(arg =>
 )
 
 // 檢查是否在 Build 階段（環境變數尚未注入）
-const isBuildPhase = !process.env.DATABASE_URL && process.env.NODE_ENV !== 'development'
+const isBuildPhase = 
+  !process.env.DATABASE_URL && 
+  !process.env.MONGO_URI && 
+  !process.env.MONGO_CONNECTION_STRING && 
+  process.env.NODE_ENV !== 'development'
 
 // 類型定義，方便其他模組使用
 export type Env = z.infer<typeof envSchema>
