@@ -96,11 +96,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           sizes="32x32" 
         />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        {/* 第三方追蹤碼 (置於 head 以利 Search Console 驗證) */}
+        <TrackingScriptsComponent scripts={trackingScripts} />
       </head>
       <body>
-        {/* 第三方追蹤碼 */}
-        <TrackingScriptsComponent scripts={trackingScripts} />
-        
         <Providers>
           <AdminBar />
           <LivePreviewListener />
