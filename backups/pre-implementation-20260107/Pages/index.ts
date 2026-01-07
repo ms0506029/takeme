@@ -18,10 +18,6 @@ import { ScrapbookIconsNav } from '@/blocks/ScrapbookIconsNav/config'
 import { ScrapbookNews } from '@/blocks/ScrapbookNews/config'
 import { ScrapbookPromoBadge } from '@/blocks/ScrapbookPromoBadge/config'
 import { ScrapbookRanking } from '@/blocks/ScrapbookRanking/config'
-// Phase 2: 新增區塊
-import { CollageBlock as Collage } from '@/blocks/CollageBlock/config'
-import { MarqueeBlock as Marquee } from '@/blocks/MarqueeBlock/config'
-import { ProductGridBlock as ProductGrid } from '@/blocks/ProductGridBlock/config'
 import { hero } from '@/fields/hero'
 import {
     MetaDescriptionField,
@@ -114,10 +110,6 @@ export const Pages: CollectionConfig = {
                 ScrapbookRanking,
                 ScrapbookNews,
                 ScrapbookCheckList,
-                // Phase 2: 新增區塊
-                Marquee,
-                ProductGrid,
-                Collage,
               ],
               required: true,
             },

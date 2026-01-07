@@ -5,6 +5,7 @@ import React from 'react'
 
 import { DashboardStats } from './DashboardStats'
 import { SeedButton } from './SeedButton'
+import { TrafficChart } from './TrafficChart'
 import './index.scss'
 
 const baseClass = 'before-dashboard'
@@ -49,6 +50,11 @@ export const BeforeDashboard: React.FC = () => {
 
       {/* 統計卡片 */}
       <DashboardStats />
+      
+      {/* 流量趨勢圖 */}
+      <div style={{ marginTop: '1.5rem' }}>
+        <TrafficChart />
+      </div>
 
       {/* 快速操作區 */}
       <div style={{ 

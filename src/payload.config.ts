@@ -28,6 +28,8 @@ import { Users } from '@/collections/Users'
 import { Vendors } from '@/collections/Vendors'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
+import { SiteSettings } from '@/globals/SiteSettings'
+import { TrackingScripts } from '@/globals/TrackingScripts'
 import { plugins } from './plugins'
 
 const filename = fileURLToPath(import.meta.url)
@@ -99,7 +101,7 @@ export default buildConfig({
   }),
   //email: nodemailerAdapter(),
   endpoints: [],
-  globals: [Header, Footer],
+  globals: [Header, Footer, SiteSettings, TrackingScripts],
   plugins,
   secret: env.PAYLOAD_SECRET || '',
   typescript: {

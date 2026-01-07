@@ -13,10 +13,6 @@ import { ScrapbookIconsNavBlock } from '@/blocks/ScrapbookIconsNav/Component'
 import { ScrapbookNewsBlock } from '@/blocks/ScrapbookNews/Component'
 import { ScrapbookPromoBadgeBlock } from '@/blocks/ScrapbookPromoBadge/Component'
 import { ScrapbookRankingBlock } from '@/blocks/ScrapbookRanking/Component'
-// Phase 2: 新增區塊
-import { CollageBlock } from '@/blocks/CollageBlock/Component'
-import { MarqueeBlock } from '@/blocks/MarqueeBlock/Component'
-import { ProductGridBlock } from '@/blocks/ProductGridBlock/Component'
 import { toKebabCase } from '@/utilities/toKebabCase'
 import React, { Fragment } from 'react'
 
@@ -38,10 +34,6 @@ const blockComponents = {
   scrapbookRanking: ScrapbookRankingBlock,
   scrapbookNews: ScrapbookNewsBlock,
   scrapbookCheckList: ScrapbookCheckListBlock,
-  // Phase 2: 新增區塊
-  marquee: MarqueeBlock,
-  productGrid: ProductGridBlock,
-  collage: CollageBlock,
 }
 
 export const RenderBlocks: React.FC<{
@@ -58,7 +50,7 @@ export const RenderBlocks: React.FC<{
           const { blockName, blockType } = block
 
           if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType as keyof typeof blockComponents]
+            const Block = blockComponents[blockType]
 
             if (Block) {
               return (

@@ -135,10 +135,14 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    siteSettings: SiteSetting;
+    trackingScripts: TrackingScript;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    trackingScripts: TrackingScriptsSelect<false> | TrackingScriptsSelect<true>;
   };
   locale: 'zh-TW' | 'en';
   user: User & {
@@ -554,13 +558,27 @@ export interface Page {
         title: string;
         subtitle?: string | null;
         /**
-         * 顯示的商品數量（建議 5 或 10）
+         * 自動模式會依據銷售數據計算排名
+         */
+        mode?: ('auto' | 'manual') | null;
+        period?: ('7days' | '30days' | '90days' | 'alltime') | null;
+        /**
+         * 建議 5 或 10
          */
         itemCount?: number | null;
         /**
-         * 留空則自動抓取熱門商品
+         * 留空則顯示全站排名
+         */
+        filterCategory?: (string | null) | Category;
+        /**
+         * 依序選擇要顯示的商品
          */
         products?: (string | Product)[] | null;
+        pinnedProduct?: (string | null) | Product;
+        pinnedLabel?: string | null;
+        showRankNumber?: boolean | null;
+        showPrice?: boolean | null;
+        cardStyle?: ('scrapbook' | 'minimal' | 'magazine') | null;
         viewAllLink?: string | null;
         id?: string | null;
         blockName?: string | null;
@@ -597,6 +615,73 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'scrapbookCheckList';
+      }
+    | {
+        /**
+         * 可使用 emoji 增加視覺效果
+         */
+        text: string;
+        speed?: ('slow' | 'normal' | 'fast') | null;
+        direction?: ('left' | 'right') | null;
+        texture?: ('kraft' | 'tape' | 'solid') | null;
+        backgroundColor?: string | null;
+        textColor?: string | null;
+        fontSize?: ('sm' | 'md' | 'lg' | 'xl') | null;
+        /**
+         * 增加重複次數可讓跑馬燈更連續
+         */
+        repeatCount?: number | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'marquee';
+      }
+    | {
+        title?: string | null;
+        subtitle?: string | null;
+        filterMode?: ('category' | 'manual' | 'latest' | 'bestselling') | null;
+        limit?: number | null;
+        categories?: (string | Category)[] | null;
+        products?: (string | Product)[] | null;
+        layout?: ('grid' | 'masonry' | 'carousel') | null;
+        columns?: ('2' | '3' | '4' | '5') | null;
+        showPrice?: boolean | null;
+        showQuickView?: boolean | null;
+        cardStyle?: ('scrapbook' | 'minimal' | 'bordered') | null;
+        viewAllLink?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'productGrid';
+      }
+    | {
+        title?: string | null;
+        items?:
+          | {
+              image: string | Media;
+              /**
+               * 建議 -5 ~ 5 度
+               */
+              rotation?: number | null;
+              size?: ('small' | 'medium' | 'large') | null;
+              link?: string | null;
+              caption?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        stickers?:
+          | {
+              text: string;
+              style?: ('handwritten' | 'tape' | 'postit' | 'circle') | null;
+              color?: ('pink' | 'mint' | 'yellow' | 'lavender' | 'kraft') | null;
+              rotation?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        layout?: ('scattered' | 'grid' | 'stacked') | null;
+        backgroundColor?: string | null;
+        showTapeCorners?: boolean | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'collage';
       }
   )[];
   meta?: {
@@ -1536,8 +1621,16 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              mode?: T;
+              period?: T;
               itemCount?: T;
+              filterCategory?: T;
               products?: T;
+              pinnedProduct?: T;
+              pinnedLabel?: T;
+              showRankNumber?: T;
+              showPrice?: T;
+              cardStyle?: T;
               viewAllLink?: T;
               id?: T;
               blockName?: T;
@@ -1567,6 +1660,67 @@ export interface PagesSelect<T extends boolean = true> {
               subtitle?: T;
               products?: T;
               viewAllLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        marquee?:
+          | T
+          | {
+              text?: T;
+              speed?: T;
+              direction?: T;
+              texture?: T;
+              backgroundColor?: T;
+              textColor?: T;
+              fontSize?: T;
+              repeatCount?: T;
+              id?: T;
+              blockName?: T;
+            };
+        productGrid?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              filterMode?: T;
+              limit?: T;
+              categories?: T;
+              products?: T;
+              layout?: T;
+              columns?: T;
+              showPrice?: T;
+              showQuickView?: T;
+              cardStyle?: T;
+              viewAllLink?: T;
+              id?: T;
+              blockName?: T;
+            };
+        collage?:
+          | T
+          | {
+              title?: T;
+              items?:
+                | T
+                | {
+                    image?: T;
+                    rotation?: T;
+                    size?: T;
+                    link?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              stickers?:
+                | T
+                | {
+                    text?: T;
+                    style?: T;
+                    color?: T;
+                    rotation?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              backgroundColor?: T;
+              showTapeCorners?: T;
               id?: T;
               blockName?: T;
             };
@@ -2195,6 +2349,91 @@ export interface Header {
   id: string;
   navItems?:
     | {
+        label: string;
+        style?: ('default' | 'highlight' | 'button') | null;
+        link?: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?: {
+            relationTo: 'pages';
+            value: string | Page;
+          } | null;
+          url?: string | null;
+        };
+        hasSubMenu?: boolean | null;
+        subMenu?:
+          | {
+              type?: ('link' | 'promo') | null;
+              linkLabel?: string | null;
+              link?: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null;
+                url?: string | null;
+              };
+              promoImage?: (string | null) | Media;
+              promoLink?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  showSearch?: boolean | null;
+  showCart?: boolean | null;
+  showAccount?: boolean | null;
+  mobileMenuStyle?: ('slide' | 'fullscreen') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: string;
+  /**
+   * 最多 4 個欄位，每個欄位可包含多個連結
+   */
+  columns?:
+    | {
+        title: string;
+        links?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialLinks?:
+    | {
+        platform?: ('facebook' | 'instagram' | 'twitter' | 'line' | 'youtube' | 'tiktok') | null;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  showPaymentIcons?: boolean | null;
+  paymentMethods?: ('visa' | 'mastercard' | 'jcb' | 'applepay' | 'googlepay' | 'linepay' | 'atm' | 'cod')[] | null;
+  /**
+   * 使用 {year} 會自動替換為當前年份
+   */
+  copyrightText?: string | null;
+  legalLinks?:
+    | {
         link: {
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
@@ -2208,15 +2447,9 @@ export interface Header {
         id?: string | null;
       }[]
     | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer".
- */
-export interface Footer {
-  id: string;
+  /**
+   * 相容舊版資料使用，建議改用上方的「連結區塊」
+   */
   navItems?:
     | {
         link: {
@@ -2237,9 +2470,186 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings".
+ */
+export interface SiteSetting {
+  id: string;
+  /**
+   * 建議使用 SVG 或透明背景 PNG
+   */
+  mainLogo?: (string | null) | Media;
+  /**
+   * 建議尺寸 32x32 或 64x64
+   */
+  favicon?: (string | null) | Media;
+  siteName: string;
+  brandColors?: {
+    /**
+     * 品牌主色 (如 EasyStore 風格)
+     */
+    primary?: string | null;
+    accent?: string | null;
+    /**
+     * 復古牛皮紙風格
+     */
+    background?: string | null;
+    text?: string | null;
+    textMuted?: string | null;
+    border?: string | null;
+  };
+  seo?: {
+    defaultTitle?: string | null;
+    defaultDescription?: string | null;
+    /**
+     * 社群分享預覽圖 (建議 1200x630)
+     */
+    ogImage?: (string | null) | Media;
+  };
+  announcementBar?: {
+    enabled?: boolean | null;
+    text?: string | null;
+    link?: string | null;
+    backgroundColor?: string | null;
+    textColor?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * 管理第三方追蹤碼，修改後前台會自動套用
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "trackingScripts".
+ */
+export interface TrackingScript {
+  id: string;
+  gtmEnabled?: boolean | null;
+  /**
+   * 格式: GTM-XXXXXXX
+   */
+  gtmId?: string | null;
+  metaPixelEnabled?: boolean | null;
+  /**
+   * 15-16 位數字 ID
+   */
+  metaPixelId?: string | null;
+  /**
+   * 用於伺服器端事件傳送 (CAPI)
+   */
+  metaAccessToken?: string | null;
+  ga4Enabled?: boolean | null;
+  /**
+   * 格式: G-XXXXXXXXXX
+   */
+  ga4MeasurementId?: string | null;
+  hotjarEnabled?: boolean | null;
+  hotjarId?: string | null;
+  /**
+   * 注入至 <head> 標籤內
+   */
+  customHeadScript?: string | null;
+  /**
+   * 注入至 </body> 前
+   */
+  customBodyScript?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  navItems?:
+    | T
+    | {
+        label?: T;
+        style?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+            };
+        hasSubMenu?: T;
+        subMenu?:
+          | T
+          | {
+              type?: T;
+              linkLabel?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                  };
+              promoImage?: T;
+              promoLink?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  showSearch?: T;
+  showCart?: T;
+  showAccount?: T;
+  mobileMenuStyle?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  columns?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  showPaymentIcons?: T;
+  paymentMethods?: T;
+  copyrightText?: T;
+  legalLinks?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        id?: T;
+      };
   navItems?:
     | T
     | {
@@ -2260,23 +2670,58 @@ export interface HeaderSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer_select".
+ * via the `definition` "siteSettings_select".
  */
-export interface FooterSelect<T extends boolean = true> {
-  navItems?:
+export interface SiteSettingsSelect<T extends boolean = true> {
+  mainLogo?: T;
+  favicon?: T;
+  siteName?: T;
+  brandColors?:
     | T
     | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
-        id?: T;
+        primary?: T;
+        accent?: T;
+        background?: T;
+        text?: T;
+        textMuted?: T;
+        border?: T;
       };
+  seo?:
+    | T
+    | {
+        defaultTitle?: T;
+        defaultDescription?: T;
+        ogImage?: T;
+      };
+  announcementBar?:
+    | T
+    | {
+        enabled?: T;
+        text?: T;
+        link?: T;
+        backgroundColor?: T;
+        textColor?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "trackingScripts_select".
+ */
+export interface TrackingScriptsSelect<T extends boolean = true> {
+  gtmEnabled?: T;
+  gtmId?: T;
+  metaPixelEnabled?: T;
+  metaPixelId?: T;
+  metaAccessToken?: T;
+  ga4Enabled?: T;
+  ga4MeasurementId?: T;
+  hotjarEnabled?: T;
+  hotjarId?: T;
+  customHeadScript?: T;
+  customBodyScript?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
