@@ -78,6 +78,7 @@ export interface Config {
     pages: Page;
     categories: Category;
     media: Media;
+    adBanners: AdBanner;
     forms: Form;
     'form-submissions': FormSubmission;
     addresses: Address;
@@ -113,6 +114,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    adBanners: AdBannersSelect<false> | AdBannersSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
@@ -1344,6 +1346,67 @@ export interface Promotion {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "adBanners".
+ */
+export interface AdBanner {
+  id: string;
+  /**
+   * 內部識別用，不會顯示在前台
+   */
+  name: string;
+  status?: ('draft' | 'scheduled' | 'active' | 'ended') | null;
+  /**
+   * 選擇廣告顯示的位置
+   */
+  placement:
+    | 'home-hero'
+    | 'home-middle'
+    | 'home-footer'
+    | 'shop-top'
+    | 'shop-sidebar'
+    | 'product-below'
+    | 'cart-sidebar'
+    | 'global-floating';
+  image: string | Media;
+  /**
+   * 如未上傳，將自動縮放桌面版圖片
+   */
+  mobileImage?: (string | null) | Media;
+  /**
+   * 用於 SEO 與無障礙
+   */
+  altText: string;
+  link?: string | null;
+  linkTarget?: ('_self' | '_blank') | null;
+  /**
+   * 留空表示立即開始
+   */
+  startDate?: string | null;
+  /**
+   * 留空表示永久顯示
+   */
+  endDate?: string | null;
+  /**
+   * 數字越大優先順序越高，相同位置的廣告會按此排序
+   */
+  priority?: number | null;
+  trackClicks?: boolean | null;
+  /**
+   * 系統自動統計
+   */
+  clickCount?: number | null;
+  /**
+   * 系統自動統計
+   */
+  impressionCount?: number | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
@@ -1406,6 +1469,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'adBanners';
+        value: string | AdBanner;
       } | null)
     | ({
         relationTo: 'forms';
@@ -1935,6 +2002,31 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "adBanners_select".
+ */
+export interface AdBannersSelect<T extends boolean = true> {
+  name?: T;
+  status?: T;
+  placement?: T;
+  image?: T;
+  mobileImage?: T;
+  altText?: T;
+  link?: T;
+  linkTarget?: T;
+  startDate?: T;
+  endDate?: T;
+  priority?: T;
+  trackClicks?: T;
+  clickCount?: T;
+  impressionCount?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
