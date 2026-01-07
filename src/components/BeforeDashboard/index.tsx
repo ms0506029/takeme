@@ -3,10 +3,11 @@
 import { useAuth } from '@payloadcms/ui'
 import React from 'react'
 
+import { VendorDashboard } from '../VendorDashboard'
 import { DashboardStats } from './DashboardStats'
+import './index.scss'
 import { SeedButton } from './SeedButton'
 import { TrafficChart } from './TrafficChart'
-import './index.scss'
 
 const baseClass = 'before-dashboard'
 
@@ -17,44 +18,57 @@ const baseClass = 'before-dashboard'
  * - 歡迎訊息
  * - 統計卡片（訂單未出貨、未付款、商品需補貨）
  * - 快速操作按鈕
+ * - 商家 Dashboard (僅商家用戶可見)
  */
 export const BeforeDashboard: React.FC = () => {
   const { user } = useAuth()
   const userName = user?.name || user?.email?.split('@')[0] || '管理員'
+  const isVendor = user?.roles?.includes('vendor')
+  const isSuperAdmin = user?.roles?.includes('super-admin')
 
   return (
     <div className={baseClass}>
-      {/* 歡迎區塊 */}
-      <div className={`${baseClass}__welcome`} style={{
-        background: 'linear-gradient(135deg, rgba(201, 145, 93, 0.1) 0%, rgba(201, 145, 93, 0.05) 100%)',
-        borderRadius: '1rem',
-        padding: '1.5rem',
-        marginBottom: '1.5rem',
-      }}>
-        <h2 style={{ 
-          margin: 0, 
-          fontSize: '1.5rem', 
-          fontWeight: 700,
-          color: 'var(--theme-elevation-500)',
-        }}>
-          歡迎回來，{userName}！
-        </h2>
-        <p style={{ 
-          margin: '0.5rem 0 0', 
-          color: 'var(--theme-elevation-350)',
-          fontSize: '0.875rem',
-        }}>
-          查看目前的業務情形
-        </p>
-      </div>
+      {/* 商家專屬 Dashboard */}
+      {isVendor && !isSuperAdmin && (
+        <VendorDashboard />
+      )}
 
-      {/* 統計卡片 */}
-      <DashboardStats />
-      
-      {/* 流量趨勢圖 */}
-      <div style={{ marginTop: '1.5rem' }}>
-        <TrafficChart />
-      </div>
+      {/* Super Admin Dashboard */}
+      {isSuperAdmin && (
+        <>
+          {/* 歡迎區塊 */}
+          <div className={`${baseClass}__welcome`} style={{
+            background: 'linear-gradient(135deg, rgba(201, 145, 93, 0.1) 0%, rgba(201, 145, 93, 0.05) 100%)',
+            borderRadius: '1rem',
+            padding: '1.5rem',
+            marginBottom: '1.5rem',
+          }}>
+            <h2 style={{ 
+              margin: 0, 
+              fontSize: '1.5rem', 
+              fontWeight: 700,
+              color: 'var(--theme-elevation-500)',
+            }}>
+              歡迎回來，{userName}！
+            </h2>
+            <p style={{ 
+              margin: '0.5rem 0 0', 
+              color: 'var(--theme-elevation-350)',
+              fontSize: '0.875rem',
+            }}>
+              查看目前的業務情形
+            </p>
+          </div>
+
+          {/* 統計卡片 */}
+          <DashboardStats />
+          
+          {/* 流量趨勢圖 */}
+          <div style={{ marginTop: '1.5rem' }}>
+            <TrafficChart />
+          </div>
+        </>
+      )}
 
       {/* 快速操作區 */}
       <div style={{ 
