@@ -1,66 +1,78 @@
 /**
  * Payload Admin Custom Styles
- * Payload 3.0 Design System Overrides
+ * EasyStore Design System Overrides
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+/* Import Material Icons for dashboard usage */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
 
 :root {
   /* 1. 全域字體設定 (Global Fonts) */
   --font-body: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Lexend', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
   --font-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
 
   /* 2. 品牌色系定義 (Brand Colors) */
-  /* Copper Bronze #C9915D */
-  --color-brand-primary: #C9915D;
-  --color-brand-dark: #A06D3E;
-  --color-brand-light: #F2E6D8;
-  --color-brand-bg: #F9F5F1;
+  /* EasyStore/Takeme Theme */
+  --color-primary: #C9915D;
+  --color-primary-light: #F2E6D8; /* rgba(201, 145, 93, 0.1) approx */
+  --color-bg-light: #F8F7F6;
+  --color-surface: #FFFFFF;
+  --color-text-main: #333333;
+  --color-text-sub: #64748B;
+  
+  --radius-lg: 1rem;
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 
   /* 3. Payload 3.0 CSS 變數覆寫 (Theme Overrides) */
-  /* 這些變數會直接影響 Payload 的預設組件顏色 */
 
   /* 主色與強調色 */
-  --theme-success-500: var(--color-brand-primary); /* 將成功/主要操作色改為品牌色 */
-  --theme-error-500: #d32f2f;
+  --theme-success-500: var(--color-primary);
+  --theme-error-500: #EF4444;
   
-  /* 背景層次 */
-  --theme-bg-html: var(--color-brand-bg); /* 最底層背景改為暖色調 */
-  --theme-elevation-0: #ffffff; /* 卡片/側邊欄背景 */
-  --theme-elevation-50: #fafafa;
-  --theme-elevation-100: #f5f5f5;
-
-  /* 邊框與分隔線 */
-  --theme-border-color: #E6E0DA;
+  /* 背景層次 - 使用 EasyStore 的灰白色背景 */
+  --theme-bg-html: var(--color-bg-light); 
+  --theme-elevation-0: var(--color-surface);
+  
+  /* 邊框與分隔線 - 減弱邊框感，改用陰影與間距 */
+  --theme-border-color: #F1F5F9;
   
   /* 文字顏色 */
-  --theme-text-primary: #2D2D2D;
+  --theme-text-primary: var(--color-text-main);
+  
+  /* 輸入框 */
+  --theme-input-bg: #FFFFFF;
+  --theme-input-border: #E2E8F0;
 }
 
-/* 4. 針對特定區域的細部微調 */
+/* 4. 全域樣式微調 */
 
 html[data-theme="light"] {
   
-  /* 側邊欄 (Sidebar) */
+  /* 側邊欄 (Sidebar) - 讓它融合或稍微區隔 */
   aside {
-    background-color: var(--theme-elevation-0) !important;
+    background-color: var(--color-surface) !important;
     border-right: 1px solid var(--theme-border-color) !important;
 
     /* 側邊欄連結 */
     a[href*="/admin"] {
-        color: var(--theme-text-primary);
+        color: var(--color-text-sub);
+        border-radius: 0.5rem;
+        margin: 0 0.5rem;
+        transition: all 0.2s;
         
         &:hover {
-            color: var(--color-brand-primary);
-            background-color: var(--color-brand-light);
+            color: var(--color-text-main);
+            background-color: #F8FAFC;
         }
 
         /* Active State */
         &.active, &[aria-current="page"] {
-             color: var(--color-brand-primary) !important;
-             border-left: 3px solid var(--color-brand-primary);
-             background-color: rgba(201, 145, 93, 0.1);
+             color: var(--color-primary) !important;
+             background-color: var(--color-primary-light);
+             border-left: none !important; /* EasyStore 風格不使用左側邊線 */
+             font-weight: 500;
         }
     }
   }
@@ -68,43 +80,64 @@ html[data-theme="light"] {
   /* 主要按鈕 (Primary Button) */
   button[class*="btn--style-primary"], 
   .btn--style-primary {
-    background-color: var(--color-brand-primary) !important;
-    border-color: var(--color-brand-primary) !important;
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
     color: #ffffff !important;
-    transition: all 0.2s ease;
+    border-radius: 0.5rem !important; /* 稍微圓潤 */
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(201, 145, 93, 0.2);
 
     &:hover {
-      background-color: var(--color-brand-dark) !important;
-      border-color: var(--color-brand-dark) !important;
+      background-color: #A6764A !important;
+      border-color: #A6764A !important;
+      transform: translateY(-1px);
     }
   }
 
-  /* 卡片列表樣式 (List View) */
-  .table {
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  /* 卡片列表樣式 (List View) - 大圓角 */
+  .table, .card, .collection-list__table {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-soft) !important;
     border: 1px solid var(--theme-border-color);
-    overflow: hidden;
   }
 
-  /* 表頭優化 */
-  thead tr {
-    background-color: rgba(201, 145, 93, 0.05);
+  /* 輸入框全面圓角化 */
+  input, textarea, select, .react-select__control {
+    border-radius: 0.5rem !important;
+    border-color: var(--theme-input-border) !important;
     
-    th {
-        font-weight: 600 !important;
-        color: var(--color-brand-dark) !important;
+    &:focus {
+        border-color: var(--color-primary) !important;
+        box-shadow: 0 0 0 2px var(--color-primary-light) !important;
     }
   }
 }
 
-/* 強制字體 */
+/* 強制字體 - Lexend 用於標題 (數字/英文), Noto Sans TC 用於內文 */
 body {
   font-family: var(--font-body) !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .card-title, .dashboard-stat-value {
   font-family: var(--font-heading) !important;
 }
+
+/* Utility classes for Custom Components */
+.material-icons-outlined {
+    font-family: 'Material Icons Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
 

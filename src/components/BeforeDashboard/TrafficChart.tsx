@@ -16,12 +16,11 @@ interface TrafficChartProps {
 
 /**
  * TrafficChart Component
- * 
- * 使用 Chart.js 顯示 GA4 流量趨勢圖
+ * EasyStore Style - Minimalist Line Chart
  */
 export const TrafficChart: React.FC<TrafficChartProps> = ({
-  title = '7 日流量趨勢',
-  height = 250,
+  title = '',
+  height = 200,
 }) => {
   const chartRef = useRef<HTMLCanvasElement>(null)
   const chartInstance = useRef<Chart | null>(null)
@@ -65,30 +64,27 @@ export const TrafficChart: React.FC<TrafficChartProps> = ({
       return date.toLocaleDateString('zh-TW', { month: 'short', day: 'numeric' })
     })
 
+    // EasyStore Style Gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(201, 145, 93, 0.2)');
+    gradient.addColorStop(1, 'rgba(201, 145, 93, 0)');
+
     chartInstance.current = new Chart(ctx, {
       type: 'line',
       data: {
         labels,
         datasets: [
           {
-            label: '工作階段',
-            data: data.map((d) => d.sessions),
-            borderColor: '#C9915D',
-            backgroundColor: 'rgba(201, 145, 93, 0.1)',
-            fill: true,
-            tension: 0.4,
-            pointRadius: 4,
-            pointBackgroundColor: '#C9915D',
-          },
-          {
-            label: '使用者',
+            label: '訪客數',
             data: data.map((d) => d.users),
-            borderColor: '#6B5844',
-            backgroundColor: 'rgba(107, 88, 68, 0.1)',
+            borderColor: '#C9915D',
+            backgroundColor: gradient,
+            borderWidth: 2,
             fill: true,
-            tension: 0.4,
-            pointRadius: 4,
-            pointBackgroundColor: '#6B5844',
+            tension: 0.4, // Smooth curve
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            pointBackgroundColor: '#C9915D',
           },
         ],
       },
@@ -97,32 +93,38 @@ export const TrafficChart: React.FC<TrafficChartProps> = ({
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'top',
-            labels: {
-              usePointStyle: true,
-              padding: 20,
-            },
+            display: false, // Hide legend for cleaner look
           },
           tooltip: {
             mode: 'index',
             intersect: false,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            titleColor: '#333',
+            bodyColor: '#666',
+            borderColor: '#E2E8F0',
+            borderWidth: 1,
             padding: 12,
-            titleFont: { size: 14 },
-            bodyFont: { size: 13 },
+            titleFont: { size: 13, family: "'Noto Sans TC', sans-serif" },
+            bodyFont: { size: 13, family: "'Noto Sans TC', sans-serif" },
+            displayColors: false,
+            callbacks: {
+                label: (context) => `訪客: ${context.parsed.y}`
+            }
           },
         },
         scales: {
           x: {
             grid: {
-              display: false,
+              display: false, // Hide X grid
             },
+            ticks: {
+                color: '#94A3B8',
+                font: { size: 11 }
+            }
           },
           y: {
+            display: false, // Hide Y axis completely like suggestion
             beginAtZero: true,
-            grid: {
-              color: 'rgba(0, 0, 0, 0.05)',
-            },
           },
         },
         interaction: {
@@ -140,71 +142,26 @@ export const TrafficChart: React.FC<TrafficChartProps> = ({
     }
   }, [data, loading])
 
-  const containerStyle: React.CSSProperties = {
-    backgroundColor: 'var(--theme-elevation-50)',
-    borderRadius: '1rem',
-    padding: '1.5rem',
-    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-    border: '1px solid var(--theme-elevation-100)',
-  }
-
-  const titleStyle: React.CSSProperties = {
-    fontSize: '1rem',
-    fontWeight: '600',
-    color: 'var(--theme-elevation-450)',
-    marginBottom: '1rem',
-  }
-
-  if (loading) {
-    return (
-      <div style={containerStyle}>
-        <div style={titleStyle}>{title}</div>
-        <div
-          style={{
-            height: `${height}px`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--theme-elevation-350)',
-          }}
-        >
+  // Container style is now handled by parent specific card wrapper, 
+  // but if used standalone we ensure full height
+  return (
+    <div style={{ padding: 0, height: '100%', width: '100%' }}>
+      {title && <div style={{ marginBottom: '1rem', fontWeight: 600, color: 'var(--color-text-sub)' }}>{title}</div>}
+      
+      {loading ? (
+        <div style={{ height: `${height}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94A3B8' }}>
           載入中...
         </div>
-      </div>
-    )
-  }
-
-  if (data.length === 0) {
-    return (
-      <div style={containerStyle}>
-        <div style={titleStyle}>{title}</div>
-        <div
-          style={{
-            height: `${height}px`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--theme-elevation-350)',
-            flexDirection: 'column',
-            gap: '0.5rem',
-          }}
-        >
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-          </svg>
-          <span>尚無流量數據</span>
-          <span style={{ fontSize: '0.75rem' }}>請確認 GA4 已正確配置</span>
+      ) : data.length === 0 ? (
+        <div style={{ height: `${height}px`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94A3B8' }}>
+          尚無數據
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <div style={containerStyle}>
-      <div style={titleStyle}>{title}</div>
-      <div style={{ height: `${height}px` }}>
-        <canvas ref={chartRef} />
-      </div>
+      ) : (
+        <div style={{ height: `${height}px` }}>
+          <canvas ref={chartRef} />
+        </div>
+      )}
     </div>
   )
 }
+

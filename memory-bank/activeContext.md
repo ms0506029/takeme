@@ -16,14 +16,22 @@
 
 ## ⚠️ 當前任務
 
-### Admin UI 美化與工作流修正
+### Admin UI EasyStore 風格化 (Phase 6+)
 
-**問題描述**：Admin UI 雖已中文化，但自定義美化樣式（Scrapbook 風格/品牌色）未生效。先前嘗試修改 `custom.scss` 因使用舊版 Payload 2.x 選擇器而無效，且未遵循標準工作流。
+**問題描述**：Admin UI 風格過於剛硬，需移植 EasyStore 的圓潤柔和設計。
 
 **修正計畫**：
-1.  **恢復工作流**：建立 Implementation Plan，經審核後再執行。
-2.  **技術修正**：改用 Payload 3.0 CSS Variables 覆寫預設樣式。
-3.  **視覺目標**：套用品牌色 `#C9915D` (或 `#C9925E` 依 PRD)，修正字體為 `Noto Sans TC`。
+1.  **Global Refinement**：`custom.scss` 更新為柔和背景 (`#F8F7F6`)、大圓角 (`1rem`) 與擴散陰影。
+2.  **Dashboard Refactor**：重構 `BeforeDashboard`，實作「銷售管道」、「總覽」、「最新資訊」區塊。
+
+**當前狀態**：✅ 已實作樣式與組件更新，等待用戶視覺驗收。
+
+**視覺目標設計 Tokens**：
+- **Primary**: `#C9915D`
+- **Background**: `#F8F7F6`
+- **Surface**: `#FFFFFF`
+- **Radius**: `1rem` (16px)
+- **Shadow**: Soft, diffused.
 
 ---
 
