@@ -1,95 +1,110 @@
 /**
  * Payload Admin Custom Styles
- * Update: 2026-01-08 - Basic Beautification & Branding
+ * Payload 3.0 Design System Overrides
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
 
 :root {
-  /* 字體設定 */
+  /* 1. 全域字體設定 (Global Fonts) */
   --font-body: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
   --font-heading: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
   --font-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
 
-  /* 配色方案 - 暖色系/高級感 */
-  --theme-bg-html: #f5f5f0; /* 米白色背景，比純白溫暖 */
-  --theme-elevation-0: #ffffff;
+  /* 2. 品牌色系定義 (Brand Colors) */
+  /* Copper Bronze #C9915D */
+  --color-brand-primary: #C9915D;
+  --color-brand-dark: #A06D3E;
+  --color-brand-light: #F2E6D8;
+  --color-brand-bg: #F9F5F1;
+
+  /* 3. Payload 3.0 CSS 變數覆寫 (Theme Overrides) */
+  /* 這些變數會直接影響 Payload 的預設組件顏色 */
+
+  /* 主色與強調色 */
+  --theme-success-500: var(--color-brand-primary); /* 將成功/主要操作色改為品牌色 */
+  --theme-error-500: #d32f2f;
   
-  /* 用戶要求的 "加底框" 效果 - 透過增加對比度與陰影 */
-  --theme-border-color: #e5e7eb;
-  --theme-shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  /* 背景層次 */
+  --theme-bg-html: var(--color-brand-bg); /* 最底層背景改為暖色調 */
+  --theme-elevation-0: #ffffff; /* 卡片/側邊欄背景 */
+  --theme-elevation-50: #fafafa;
+  --theme-elevation-100: #f5f5f5;
+
+  /* 邊框與分隔線 */
+  --theme-border-color: #E6E0DA;
+  
+  /* 文字顏色 */
+  --theme-text-primary: #2D2D2D;
 }
 
-html[data-theme='light'] {
-  /* 側邊欄優化 */
-  .nav {
-    background-color: #ffffff;
-    border-right: 1px solid #e5e5e5;
-    
+/* 4. 針對特定區域的細部微調 */
+
+html[data-theme="light"] {
+  
+  /* 側邊欄 (Sidebar) */
+  aside {
+    background-color: var(--theme-elevation-0) !important;
+    border-right: 1px solid var(--theme-border-color) !important;
+
     /* 側邊欄連結 */
-    a {
-      &.active {
-        background-color: rgba(201, 145, 93, 0.1); /* 品牌色淡化 */
-        color: #c9915d; /* 品牌色 */
-        border-right: 3px solid #c9915d;
-      }
-      
-      &:hover:not(.active) {
-        background-color: #f9f9f9;
-        color: #333;
-      }
+    a[href*="/admin"] {
+        color: var(--theme-text-primary);
+        
+        &:hover {
+            color: var(--color-brand-primary);
+            background-color: var(--color-brand-light);
+        }
+
+        /* Active State */
+        &.active, &[aria-current="page"] {
+             color: var(--color-brand-primary) !important;
+             border-left: 3px solid var(--color-brand-primary);
+             background-color: rgba(201, 145, 93, 0.1);
+        }
     }
   }
 
-  /* 內容區域優化 */
-  .template-default__content {
-    background-color: #fcfcfc;
-  }
+  /* 主要按鈕 (Primary Button) */
+  button[class*="btn--style-primary"], 
+  .btn--style-primary {
+    background-color: var(--color-brand-primary) !important;
+    border-color: var(--color-brand-primary) !important;
+    color: #ffffff !important;
+    transition: all 0.2s ease;
 
-  /* 列表/表格卡片化 */
-  .collection-list__table, 
-  .list-controls {
-    background: #fff;
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-    margin-bottom: 20px;
-    padding: 10px;
-  }
-
-  /* 按鈕優化 */
-  .btn.btn--style-primary {
-    background-color: #c9915d; /* 品牌色 */
-    border-color: #c9915d;
-    font-weight: 500;
-    
     &:hover {
-      background-color: #b07d4d;
-      border-color: #b07d4d;
+      background-color: var(--color-brand-dark) !important;
+      border-color: var(--color-brand-dark) !important;
     }
   }
 
-  /* 輸入框優化 */
-  .input-wrapper {
-    input, textarea, .react-select__control {
-      border: 1px solid #e2e2e2;
-      border-radius: 6px;
-      transition: all 0.2s;
-      
-      &:focus, &:focus-within {
-        border-color: #c9915d;
-        box-shadow: 0 0 0 2px rgba(201, 145, 93, 0.1);
-      }
+  /* 卡片列表樣式 (List View) */
+  .table {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--theme-border-color);
+    overflow: hidden;
+  }
+
+  /* 表頭優化 */
+  thead tr {
+    background-color: rgba(201, 145, 93, 0.05);
+    
+    th {
+        font-weight: 600 !important;
+        color: var(--color-brand-dark) !important;
     }
   }
 }
 
-/* 全域字體強制套用 */
-body, button, input, textarea, select {
-  font-family: var(--font-body);
+/* 強制字體 */
+body {
+  font-family: var(--font-body) !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: 700;
+  font-family: var(--font-heading) !important;
 }
+

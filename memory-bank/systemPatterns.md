@@ -82,6 +82,14 @@ access: {
 - **變數命名：** 語意化 (--primary, --accent)
 - **元件綁定：** shadcn/ui 使用 CSS Variables
 
+### 2.5 Admin UI Customization (Payload 3.0)
+- **方法：** 透過 `custom.scss` 覆寫 CSS Variables
+- **核心變數：**
+  - `--theme-success-500`: 主要品牌色 (Primary Brand Color)
+  - `--theme-bg-html`: 背景色
+  - `--theme-elevation-*`: 卡片與側邊欄背景
+- **注意：** 禁止使用舊版 Payload 2.x 選擇器 (如 `.nav`)，應使用 `:root` 與 `html[data-theme='light']` 進行變數覆寫。
+
 ---
 
 ## 3. 資料夾結構規範
