@@ -11,6 +11,10 @@ import type { CollectionConfig } from 'payload'
 
 export const Promotions: CollectionConfig = {
   slug: 'promotions',
+  labels: {
+    singular: '促銷活動',
+    plural: '促銷活動',
+  },
   admin: {
     group: '促銷優惠',
     useAsTitle: 'name',

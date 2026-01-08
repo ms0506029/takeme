@@ -18,6 +18,10 @@ import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin'
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  labels: {
+    singular: '用戶',
+    plural: '用戶',
+  },
   access: {
     // 允許 super-admin 和 vendor 進入後台
     admin: ({ req: { user } }) => checkRole(['admin', 'super-admin', 'vendor'], user),

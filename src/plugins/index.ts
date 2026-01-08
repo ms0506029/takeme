@@ -98,6 +98,10 @@ export const plugins: Plugin[] = [
     orders: {
       ordersCollectionOverride: ({ defaultCollection }) => ({
         ...defaultCollection,
+        labels: {
+          singular: '訂單',
+          plural: '訂單',
+        },
         admin: {
           ...defaultCollection?.admin,
           group: '訂單管理',
@@ -107,6 +111,10 @@ export const plugins: Plugin[] = [
     carts: {
       cartsCollectionOverride: ({ defaultCollection }) => ({
         ...defaultCollection,
+        labels: {
+          singular: '購物車',
+          plural: '購物車',
+        },
         admin: {
           ...defaultCollection?.admin,
           group: '訂單管理',
@@ -142,6 +150,10 @@ export const plugins: Plugin[] = [
     transactions: {
       transactionsCollectionOverride: ({ defaultCollection }) => ({
         ...defaultCollection,
+        labels: {
+          singular: '交易',
+          plural: '交易紀錄',
+        },
         admin: {
           ...defaultCollection?.admin,
           group: '訂單管理',
@@ -151,6 +163,10 @@ export const plugins: Plugin[] = [
     addresses: {
       addressesCollectionOverride: ({ defaultCollection }) => ({
         ...defaultCollection,
+        labels: {
+          singular: '地址',
+          plural: '地址管理',
+        },
         admin: {
           ...defaultCollection?.admin,
           group: '客戶管理',
@@ -160,6 +176,10 @@ export const plugins: Plugin[] = [
     variants: {
       variantsCollectionOverride: ({ defaultCollection }) => ({
         ...defaultCollection,
+        labels: {
+          singular: '規格變體',
+          plural: '規格變體',
+        },
         admin: {
           ...defaultCollection?.admin,
           group: '商品管理',
@@ -167,6 +187,10 @@ export const plugins: Plugin[] = [
       }),
       variantOptionsCollectionOverride: ({ defaultCollection }) => ({
         ...defaultCollection,
+        labels: {
+          singular: '規格選項',
+          plural: '規格選項',
+        },
         admin: {
           ...defaultCollection?.admin,
           group: '商品管理',
@@ -174,6 +198,10 @@ export const plugins: Plugin[] = [
       }),
       variantTypesCollectionOverride: ({ defaultCollection }) => ({
         ...defaultCollection,
+        labels: {
+          singular: '規格類型',
+          plural: '規格類型',
+        },
         admin: {
           ...defaultCollection?.admin,
           group: '商品管理',

@@ -13,6 +13,10 @@ import { isSuperAdminAccess } from '@/access/isSuperAdmin'
 
 export const Vendors: CollectionConfig = {
   slug: 'vendors',
+  labels: {
+    singular: '商家',
+    plural: '商家',
+  },
   admin: {
     group: '廠商管理',
     useAsTitle: 'name',

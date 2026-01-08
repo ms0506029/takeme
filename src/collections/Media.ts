@@ -15,6 +15,10 @@ export const Media: CollectionConfig = {
   admin: {
     group: '內容管理',
   },
+  labels: {
+    singular: '媒體庫',
+    plural: '媒體庫',
+  },
   slug: 'media',
   access: {
     read: () => true,

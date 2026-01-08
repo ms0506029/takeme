@@ -29,6 +29,10 @@ import { DefaultDocumentIDType, slugField, Where } from 'payload'
 
 export const ProductsCollection: CollectionOverride = ({ defaultCollection }) => ({
   ...defaultCollection,
+  labels: {
+    singular: '商品',
+    plural: '商品',
+  },
   admin: {
     ...defaultCollection?.admin,
     group: '商品管理',

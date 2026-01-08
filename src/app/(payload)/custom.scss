@@ -1,290 +1,95 @@
 /**
- * Payload CMS Admin 主題客製化
- * 
- * 主題色：#C9915D (品牌棕橘色)
- * 字體：Noto Sans TC
- * 風格：EasyStore Dashboard
+ * Payload Admin Custom Styles
+ * Update: 2026-01-08 - Basic Beautification & Branding
  */
 
-/* ================================
-   1. Google Fonts 引入
-   ================================ */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
 
-/* ================================
-   2. 根變數覆蓋 - Light Mode
-   ================================ */
 :root {
-  /* 主題色 */
-  --theme-success-50: #f0fdf4;
-  --theme-success-100: #dcfce7;
-  --theme-success-500: #22c55e;
-  --theme-success-600: #16a34a;
+  /* 字體設定 */
+  --font-body: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
+
+  /* 配色方案 - 暖色系/高級感 */
+  --theme-bg-html: #f5f5f0; /* 米白色背景，比純白溫暖 */
+  --theme-elevation-0: #ffffff;
   
-  --theme-warning-50: #fffbeb;
-  --theme-warning-100: #fef3c7;
-  --theme-warning-500: #f59e0b;
-  --theme-warning-600: #d97706;
-  
-  --theme-error-50: #fef2f2;
-  --theme-error-100: #fee2e2;
-  --theme-error-500: #ef4444;
-  --theme-error-600: #dc2626;
-  
-  /* 品牌主色 #C9915D */
-  --theme-elevation-0: #F3F5F9;
-  --theme-elevation-50: #FFFFFF;
-  --theme-elevation-100: #F8F9FA;
-  --theme-elevation-150: #F1F3F5;
-  --theme-elevation-200: #E9ECEF;
-  --theme-elevation-250: #DEE2E6;
-  --theme-elevation-300: #CED4DA;
-  --theme-elevation-350: #ADB5BD;
-  --theme-elevation-400: #868E96;
-  --theme-elevation-450: #495057;
-  --theme-elevation-500: #343A40;
-  --theme-elevation-550: #212529;
-  --theme-elevation-600: #1A1C23;
-  --theme-elevation-650: #141619;
-  --theme-elevation-700: #0D0E10;
-  --theme-elevation-750: #070809;
-  --theme-elevation-800: #030303;
-  --theme-elevation-850: #010101;
-  --theme-elevation-900: #000000;
-  --theme-elevation-950: #000000;
-  --theme-elevation-1000: #000000;
-  
-  /* 字體 */
-  --font-body: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+  /* 用戶要求的 "加底框" 效果 - 透過增加對比度與陰影 */
+  --theme-border-color: #e5e7eb;
+  --theme-shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
-/* ================================
-   3. 全域字體設定
-   ================================ */
-body,
-html,
-* {
-  font-family: var(--font-body) !important;
+html[data-theme='light'] {
+  /* 側邊欄優化 */
+  .nav {
+    background-color: #ffffff;
+    border-right: 1px solid #e5e5e5;
+    
+    /* 側邊欄連結 */
+    a {
+      &.active {
+        background-color: rgba(201, 145, 93, 0.1); /* 品牌色淡化 */
+        color: #c9915d; /* 品牌色 */
+        border-right: 3px solid #c9915d;
+      }
+      
+      &:hover:not(.active) {
+        background-color: #f9f9f9;
+        color: #333;
+      }
+    }
+  }
+
+  /* 內容區域優化 */
+  .template-default__content {
+    background-color: #fcfcfc;
+  }
+
+  /* 列表/表格卡片化 */
+  .collection-list__table, 
+  .list-controls {
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    margin-bottom: 20px;
+    padding: 10px;
+  }
+
+  /* 按鈕優化 */
+  .btn.btn--style-primary {
+    background-color: #c9915d; /* 品牌色 */
+    border-color: #c9915d;
+    font-weight: 500;
+    
+    &:hover {
+      background-color: #b07d4d;
+      border-color: #b07d4d;
+    }
+  }
+
+  /* 輸入框優化 */
+  .input-wrapper {
+    input, textarea, .react-select__control {
+      border: 1px solid #e2e2e2;
+      border-radius: 6px;
+      transition: all 0.2s;
+      
+      &:focus, &:focus-within {
+        border-color: #c9915d;
+        box-shadow: 0 0 0 2px rgba(201, 145, 93, 0.1);
+      }
+    }
+  }
 }
 
-code, pre, .code {
-  font-family: var(--font-mono) !important;
+/* 全域字體強制套用 */
+body, button, input, textarea, select {
+  font-family: var(--font-body);
 }
 
-/* ================================
-   4. 按鈕樣式 - 主題色
-   ================================ */
-
-/* Primary 按鈕 */
-.btn--style-primary,
-button[class*="btn--style-primary"],
-.payload-icon-btns button.active,
-.collection-list__toggle-all .react-select__control--is-focused {
-  background-color: #C9915D !important;
-  border-color: #C9915D !important;
-}
-
-.btn--style-primary:hover,
-button[class*="btn--style-primary"]:hover {
-  background-color: #A6764A !important;
-  border-color: #A6764A !important;
-}
-
-/* Secondary/Outline 按鈕 hover */
-.btn--style-secondary:hover,
-.btn--style-outline:hover {
-  border-color: #C9915D !important;
-  color: #C9915D !important;
-}
-
-/* ================================
-   5. 連結與互動元素
-   ================================ */
-a:hover,
-.nav__link:hover,
-.step-nav__link:hover {
-  color: #C9915D !important;
-}
-
-/* 側邊欄 active 狀態 */
-.nav-group__toggle--active,
-.nav__link--active,
-.nav__link.active {
-  background-color: rgba(201, 145, 93, 0.1) !important;
-  color: #C9915D !important;
-  border-left: 3px solid #C9915D !important;
-}
-
-.nav__link--active::before {
-  background-color: #C9915D !important;
-}
-
-/* ================================
-   6. 表單元素 Focus 狀態
-   ================================ */
-input:focus,
-textarea:focus,
-select:focus,
-.react-select__control--is-focused {
-  border-color: #C9915D !important;
-  box-shadow: 0 0 0 2px rgba(201, 145, 93, 0.2) !important;
-}
-
-/* Checkbox & Radio 選中狀態 */
-input[type="checkbox"]:checked,
-input[type="radio"]:checked {
-  background-color: #C9915D !important;
-  border-color: #C9915D !important;
-}
-
-/* ================================
-   7. 側邊欄美化
-   ================================ */
-.nav {
-  background-color: #F3F5F9 !important;
-}
-
-.nav-group__label {
-  font-weight: 600 !important;
-  color: #495057 !important;
-  text-transform: none !important;
-  font-size: 0.875rem !important;
-}
-
-.nav__link {
-  border-radius: 0.5rem !important;
-  margin: 0.125rem 0.5rem !important;
-  transition: all 0.2s ease !important;
-}
-
-.nav__link:hover {
-  background-color: rgba(201, 145, 93, 0.08) !important;
-}
-
-/* ================================
-   8. 卡片與容器圓角
-   ================================ */
-.card,
-.collection-list,
-.document-fields,
-.upload__image {
-  border-radius: 0.75rem !important;
-}
-
-/* ================================
-   9. Logo 區域
-   ================================ */
-.nav__brand {
-  padding: 1rem !important;
-  margin-bottom: 0.5rem !important;
-}
-
-.nav__brand svg,
-.nav__brand img {
-  max-height: 2rem !important;
-}
-
-/* ================================
-   10. 表格美化
-   ================================ */
-.table th {
-  background-color: #F8F9FA !important;
-  font-weight: 600 !important;
-}
-
-.table tr:hover td {
-  background-color: rgba(201, 145, 93, 0.05) !important;
-}
-
-/* ================================
-   11. 標籤樣式
-   ================================ */
-.pill {
-  border-radius: 9999px !important;
-}
-
-.pill--style-green,
-.pill--style-success {
-  background-color: #dcfce7 !important;
-  color: #16a34a !important;
-}
-
-.pill--style-yellow,
-.pill--style-warning {
-  background-color: #fef3c7 !important;
-  color: #d97706 !important;
-}
-
-.pill--style-red,
-.pill--style-error {
-  background-color: #fee2e2 !important;
-  color: #dc2626 !important;
-}
-
-/* ================================
-   12. Dark Mode 支援
-   ================================ */
-[data-theme="dark"] {
-  --theme-elevation-0: #1A1C23 !important;
-  --theme-elevation-50: #252836 !important;
-  --theme-elevation-100: #2D3142 !important;
-}
-
-[data-theme="dark"] .nav {
-  background-color: #1F2129 !important;
-}
-
-[data-theme="dark"] .nav-group__label {
-  color: #94A3B8 !important;
-}
-
-[data-theme="dark"] .nav__link--active,
-[data-theme="dark"] .nav__link.active {
-  background-color: rgba(201, 145, 93, 0.15) !important;
-}
-
-/* ================================
-   13. 滾動條美化
-   ================================ */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 20px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.7);
-}
-
-/* ================================
-   14. 統一陰影樣式
-   ================================ */
-.card,
-.popup,
-.drawer {
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
-}
-
-/* ================================
-   15. 隱藏輔助元素
-   ================================ */
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
 }

@@ -35,6 +35,10 @@ import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
+  labels: {
+    singular: '頁面',
+    plural: '頁面',
+  },
   access: {
     create: adminOnly,
     delete: adminOnly,
