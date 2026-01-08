@@ -1,11 +1,10 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import './index.scss'; // Ensure utility classes
 
 /**
  * DashboardStats Component
- * EasyStore Style - Phase 6 Refinement
+ * Simplified Dashboard Stats - Phase 6.1 User Feedback
  */
 
 interface DashboardStatsData {
@@ -35,6 +34,38 @@ interface DashboardStatsData {
   }
 }
 
+// Inline SVG Icons to avoid font loading issues
+const ShippingIcon = ({ color }: { color: string }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="1" y="3" width="15" height="13"></rect>
+    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+  </svg>
+)
+
+const PaymentIcon = ({ color }: { color: string }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+    <line x1="1" y1="10" x2="23" y2="10"></line>
+  </svg>
+)
+
+const InventoryIcon = ({ color }: { color: string }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+  </svg>
+)
+
+const TrendingUpIcon = ({ color }: { color: string }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+    <polyline points="17 6 23 6 23 12"></polyline>
+  </svg>
+)
+
 export const DashboardStats: React.FC = () => {
   const [stats, setStats] = useState<DashboardStatsData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -52,7 +83,6 @@ export const DashboardStats: React.FC = () => {
       } catch (err) {
         console.error('Dashboard stats error:', err)
         setError('無法載入統計數據')
-        // 使用預設數據
         setStats({
           orders: { pendingShipments: 0, unpaidOrders: 0, totalCompleted: 0 },
           products: { lowStock: 0, outOfStock: 0 },
@@ -72,7 +102,6 @@ export const DashboardStats: React.FC = () => {
     return () => clearInterval(interval)
   }, [])
 
-  // Design Tokens mapped to Inline Styles for precision in Payload Admin
   const cardStyle: React.CSSProperties = {
     backgroundColor: 'var(--color-surface)',
     borderRadius: 'var(--radius-lg)',
@@ -82,8 +111,6 @@ export const DashboardStats: React.FC = () => {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    position: 'relative',
-    overflow: 'hidden',
   }
 
   const valueStyle: React.CSSProperties = {
@@ -109,19 +136,19 @@ export const DashboardStats: React.FC = () => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   })
 
-  // Skeleton Loader
   if (loading) {
     return (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3, 4].map((i) => (
           <div key={i} style={{ ...cardStyle, opacity: 0.7 }}>
             <div>
-              <div style={{ width: '4rem', height: '2rem', backgroundColor: '#F1F5F9', borderRadius: '0.5rem', marginBottom: '0.5rem' }} />
-              <div style={{ width: '6rem', height: '1rem', backgroundColor: '#F1F5F9', borderRadius: '0.5rem' }} />
+              <div style={{ width: '4rem', height: '2rem', backgroundColor: 'rgba(201, 145, 93, 0.1)', borderRadius: '0.5rem', marginBottom: '0.5rem' }} />
+              <div style={{ width: '6rem', height: '1rem', backgroundColor: 'rgba(201, 145, 93, 0.05)', borderRadius: '0.5rem' }} />
             </div>
-            <div style={{ width: '3rem', height: '3rem', borderRadius: '50%', backgroundColor: '#F1F5F9' }} />
+            <div style={{ width: '3rem', height: '3rem', borderRadius: '50%', backgroundColor: 'rgba(201, 145, 93, 0.1)' }} />
           </div>
         ))}
       </div>
@@ -131,61 +158,62 @@ export const DashboardStats: React.FC = () => {
   return (
     <div>
       {error && (
-        <div style={{ padding: '0.5rem 1rem', backgroundColor: '#FEF2F2', color: '#EF4444', borderRadius: '0.5rem', marginBottom: '1rem', fontSize: '0.875rem' }}>
+        <div style={{ padding: '0.5rem 1rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', borderRadius: '0.5rem', marginBottom: '1rem', fontSize: '0.875rem' }}>
           ⚠️ {error}
         </div>
       )}
       
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
         
-        {/* 1. 訂單未出貨 (High Priority) */}
+        {/* 訂單未出貨 */}
         <div style={cardStyle}>
           <div>
             <div style={valueStyle}>{stats?.orders.pendingShipments || 0}</div>
             <div style={labelStyle}>訂單未出貨</div>
           </div>
           <div style={iconBoxStyle('rgba(201, 145, 93, 0.1)')}>
-             <span className="material-icons-outlined" style={{ color: 'var(--color-primary)' }}>local_shipping</span>
+            <ShippingIcon color="#C9915D" />
           </div>
         </div>
 
-        {/* 2. 訂單未付款 */}
+        {/* 訂單未付款 */}
         <div style={cardStyle}>
           <div>
             <div style={valueStyle}>{stats?.orders.unpaidOrders || 0}</div>
             <div style={labelStyle}>訂單未付款</div>
           </div>
-          <div style={iconBoxStyle('rgba(16, 185, 129, 0.1)')}>
-             <span className="material-icons-outlined" style={{ color: '#10B981' }}>payments</span>
+          <div style={iconBoxStyle('rgba(201, 145, 93, 0.08)')}>
+            <PaymentIcon color="#A6764A" />
           </div>
         </div>
 
-        {/* 3. 商品需補貨 */}
+        {/* 商品需補貨 */}
         <div style={cardStyle}>
           <div>
             <div style={valueStyle}>{stats?.products.lowStock || 0}</div>
             <div style={labelStyle}>商品需補貨</div>
           </div>
           <div style={iconBoxStyle('rgba(239, 68, 68, 0.1)')}>
-             <span className="material-icons-outlined" style={{ color: '#EF4444' }}>inventory_2</span>
+            <InventoryIcon color="#EF4444" />
           </div>
         </div>
 
-        {/* 4. 總銷售額 (Last 30 Days) */}
+        {/* 30日總營收 */}
         <div style={cardStyle}>
-            <div>
-                <div style={valueStyle}>
-                    {new Intl.NumberFormat('zh-TW', { style: 'currency', currency: 'TWD', minimumFractionDigits: 0 }).format((stats?.revenue.last30Days || 0) / 100)}
-                </div>
-                <div style={labelStyle}>30日總營收</div>
+          <div>
+            <div style={valueStyle}>
+              {new Intl.NumberFormat('zh-TW', { style: 'currency', currency: 'TWD', minimumFractionDigits: 0 }).format((stats?.revenue.last30Days || 0) / 100)}
             </div>
-            <div style={iconBoxStyle('rgba(59, 130, 246, 0.1)')}>
-                <span className="material-icons-outlined" style={{ color: '#3B82F6' }}>trending_up</span>
-            </div>
+            <div style={labelStyle}>30日總營收</div>
+          </div>
+          <div style={iconBoxStyle('rgba(201, 145, 93, 0.1)')}>
+            <TrendingUpIcon color="#C9915D" />
+          </div>
         </div>
 
       </div>
     </div>
   )
 }
+
 

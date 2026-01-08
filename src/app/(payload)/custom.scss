@@ -1,11 +1,10 @@
 /**
  * Payload Admin Custom Styles
- * EasyStore Design System Overrides
+ * TakeMe Japan Design System - Phase 6.1
+ * Primary Color: #C9915D (Copper Bronze)
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
-/* Import Material Icons for dashboard usage */
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
 
 :root {
   /* 1. 全域字體設定 (Global Fonts) */
@@ -13,108 +12,195 @@
   --font-heading: 'Lexend', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
   --font-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
 
-  /* 2. 品牌色系定義 (Brand Colors) */
-  /* EasyStore/Takeme Theme */
+  /* 2. 品牌色系定義 - 以 #C9915D 為核心延伸 */
   --color-primary: #C9915D;
-  --color-primary-light: #F2E6D8; /* rgba(201, 145, 93, 0.1) approx */
+  --color-primary-hover: #A6764A;
+  --color-primary-light: rgba(201, 145, 93, 0.1);
+  --color-primary-lighter: rgba(201, 145, 93, 0.05);
+
+  /* 輔助色 (相容色系) */
+  --color-accent-warm: #D4A574; /* 較淺的暖色 */
+  --color-accent-dark: #8B6B4A; /* 較深的暖色 */
+  --color-success: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+
+  /* 背景與表面 */
   --color-bg-light: #F8F7F6;
+  --color-bg-warm: #FBF9F7;
   --color-surface: #FFFFFF;
+  --color-surface-hover: #FAFAFA;
+
+  /* 文字 */
   --color-text-main: #333333;
   --color-text-sub: #64748B;
+  --color-text-muted: #94A3B8;
   
+  /* 設計 Tokens */
+  --radius-sm: 0.5rem;
   --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
   --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --shadow-primary: 0 4px 14px -2px rgba(201, 145, 93, 0.25);
 
-  /* 3. Payload 3.0 CSS 變數覆寫 (Theme Overrides) */
-
-  /* 主色與強調色 */
+  /* 3. Payload 3.0 CSS 變數覆寫 */
   --theme-success-500: var(--color-primary);
-  --theme-error-500: #EF4444;
-  
-  /* 背景層次 - 使用 EasyStore 的灰白色背景 */
+  --theme-error-500: var(--color-error);
   --theme-bg-html: var(--color-bg-light); 
   --theme-elevation-0: var(--color-surface);
-  
-  /* 邊框與分隔線 - 減弱邊框感，改用陰影與間距 */
-  --theme-border-color: #F1F5F9;
-  
-  /* 文字顏色 */
+  --theme-border-color: #E8E4DF;
   --theme-text-primary: var(--color-text-main);
-  
-  /* 輸入框 */
   --theme-input-bg: #FFFFFF;
   --theme-input-border: #E2E8F0;
 }
 
-/* 4. 全域樣式微調 */
+/* 4. 全域樣式 - Light Theme */
 
 html[data-theme="light"] {
   
-  /* 側邊欄 (Sidebar) - 讓它融合或稍微區隔 */
-  aside {
+  /* === 側邊欄 (Sidebar) === */
+  aside, nav[class*="nav"] {
     background-color: var(--color-surface) !important;
     border-right: 1px solid var(--theme-border-color) !important;
+  }
 
-    /* 側邊欄連結 */
-    a[href*="/admin"] {
-        color: var(--color-text-sub);
-        border-radius: 0.5rem;
-        margin: 0 0.5rem;
-        transition: all 0.2s;
-        
-        &:hover {
-            color: var(--color-text-main);
-            background-color: #F8FAFC;
-        }
+  /* 側邊欄 Logo 區域增加品牌色調 */
+  header[class*="nav-header"], div[class*="nav__header"] {
+    border-bottom: 1px solid var(--theme-border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 0.5rem;
+  }
 
-        /* Active State */
-        &.active, &[aria-current="page"] {
-             color: var(--color-primary) !important;
-             background-color: var(--color-primary-light);
-             border-left: none !important; /* EasyStore 風格不使用左側邊線 */
-             font-weight: 500;
-        }
+  /* 側邊欄連結樣式 */
+  aside a[href*="/admin"],
+  nav a[href*="/admin"] {
+    color: var(--color-text-sub);
+    border-radius: var(--radius-sm);
+    margin: 2px 0.5rem;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+    position: relative;
+    
+    &:hover {
+      color: var(--color-text-main);
+      background-color: var(--color-primary-lighter);
+    }
+
+    /* Active State - 品牌色高亮 */
+    &.active, &[aria-current="page"] {
+      color: var(--color-primary) !important;
+      background-color: var(--color-primary-light) !important;
+      font-weight: 600;
+      
+      /* 左側品牌色指示條 */
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 60%;
+        background-color: var(--color-primary);
+        border-radius: 0 2px 2px 0;
+      }
     }
   }
 
-  /* 主要按鈕 (Primary Button) */
+  /* 側邊欄群組標題 */
+  span[class*="group-label"], div[class*="nav-group__label"] {
+    color: var(--color-text-muted) !important;
+    font-size: 0.7rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem 0.25rem;
+    font-weight: 600;
+  }
+
+  /* === 主要按鈕 === */
   button[class*="btn--style-primary"], 
-  .btn--style-primary {
+  .btn--style-primary,
+  button[class*="primary"] {
     background-color: var(--color-primary) !important;
     border-color: var(--color-primary) !important;
     color: #ffffff !important;
-    border-radius: 0.5rem !important; /* 稍微圓潤 */
+    border-radius: var(--radius-sm) !important;
     font-weight: 500;
-    box-shadow: 0 2px 4px rgba(201, 145, 93, 0.2);
+    box-shadow: var(--shadow-primary);
+    transition: all 0.2s ease;
 
     &:hover {
-      background-color: #A6764A !important;
-      border-color: #A6764A !important;
+      background-color: var(--color-primary-hover) !important;
+      border-color: var(--color-primary-hover) !important;
       transform: translateY(-1px);
+      box-shadow: 0 6px 20px -2px rgba(201, 145, 93, 0.3);
     }
   }
 
-  /* 卡片列表樣式 (List View) - 大圓角 */
-  .table, .card, .collection-list__table {
+  /* 次要按鈕 */
+  button[class*="btn--style-secondary"],
+  .btn--style-secondary {
+    border-color: var(--theme-border-color) !important;
+    color: var(--color-text-main) !important;
+    border-radius: var(--radius-sm) !important;
+    
+    &:hover {
+      background-color: var(--color-primary-lighter) !important;
+      border-color: var(--color-primary) !important;
+      color: var(--color-primary) !important;
+    }
+  }
+
+  /* === 卡片與列表 === */
+  .table, .card, .collection-list__table, div[class*="document-drawer"] {
     background: var(--color-surface);
     border-radius: var(--radius-lg) !important;
-    box-shadow: var(--shadow-soft) !important;
+    box-shadow: var(--shadow-card) !important;
     border: 1px solid var(--theme-border-color);
   }
 
-  /* 輸入框全面圓角化 */
+  /* 表格行 Hover */
+  tr:hover td {
+    background-color: var(--color-primary-lighter) !important;
+  }
+
+  /* === 輸入框 === */
   input, textarea, select, .react-select__control {
-    border-radius: 0.5rem !important;
+    border-radius: var(--radius-sm) !important;
     border-color: var(--theme-input-border) !important;
+    transition: all 0.2s ease;
     
     &:focus {
-        border-color: var(--color-primary) !important;
-        box-shadow: 0 0 0 2px var(--color-primary-light) !important;
+      border-color: var(--color-primary) !important;
+      box-shadow: 0 0 0 3px var(--color-primary-light) !important;
     }
+  }
+
+  /* === 頁面標題 === */
+  h1[class*="doc-header"], div[class*="doc-header__title"] h1 {
+    color: var(--color-text-main) !important;
+    font-weight: 700;
+  }
+
+  /* === Tabs 標籤頁 === */
+  button[class*="tabs__tab"] {
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+    
+    &[aria-selected="true"], &.active {
+      border-bottom-color: var(--color-primary) !important;
+      color: var(--color-primary) !important;
+    }
+  }
+
+  /* === 浮動操作按鈕區 === */
+  div[class*="form-submit"], div[class*="doc-controls"] {
+    background: linear-gradient(to top, var(--color-surface) 80%, transparent) !important;
+    border-top: 1px solid var(--theme-border-color);
   }
 }
 
-/* 強制字體 - Lexend 用於標題 (數字/英文), Noto Sans TC 用於內文 */
+/* 5. 全域字體 */
 body {
   font-family: var(--font-body) !important;
 }
@@ -123,21 +209,15 @@ h1, h2, h3, h4, h5, h6, .card-title, .dashboard-stat-value {
   font-family: var(--font-heading) !important;
 }
 
-/* Utility classes for Custom Components */
-.material-icons-outlined {
-    font-family: 'Material Icons Outlined';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased;
+/* 6. 動畫與過渡效果 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
+.before-dashboard {
+  animation: fadeIn 0.3s ease-out;
+}
+
 
 

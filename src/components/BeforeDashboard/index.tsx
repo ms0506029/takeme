@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@payloadcms/ui'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { VendorDashboard } from '../VendorDashboard'
 import { DashboardStats } from './DashboardStats'
@@ -12,7 +12,7 @@ const baseClass = 'before-dashboard'
 
 /**
  * BeforeDashboard Component
- * EasyStore Style - Phase 6 Refinement
+ * Simplified Dashboard - Phase 6.1 User Feedback
  */
 export const BeforeDashboard: React.FC = () => {
   const { user } = useAuth()
@@ -20,9 +20,29 @@ export const BeforeDashboard: React.FC = () => {
   const isVendor = user?.roles?.includes('vendor')
   const isSuperAdmin = user?.roles?.includes('super-admin')
 
+  // State for real visitor data
+  const [totalVisitors, setTotalVisitors] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchVisitors = async () => {
+      try {
+        const response = await fetch('/api/dashboard-stats')
+        if (response.ok) {
+          const data = await response.json()
+          // Sum up 7-day users from analytics
+          setTotalVisitors(data.analytics?.last7Days?.users || 0)
+        }
+      } catch (error) {
+        console.error('Failed to fetch visitor data:', error)
+        setTotalVisitors(0)
+      }
+    }
+    fetchVisitors()
+  }, [])
+
   // Shared Styles
   const sectionTitleStyle: React.CSSProperties = {
-    fontSize: '1.25rem', // 1.125rem in original, bumping up slightly
+    fontSize: '1.25rem',
     fontWeight: 700,
     color: 'var(--color-text-main)',
     marginBottom: '1rem',
@@ -37,30 +57,23 @@ export const BeforeDashboard: React.FC = () => {
     padding: '1.5rem',
   }
 
-  // --- Sales Channels Mock Data ---
-  const channels = [
-    { name: '品牌官網', icon: 'store', iconColor: 'var(--color-primary)' },
-    { name: 'Facebook', icon: 'public', iconColor: '#1877F2' }, // Replace with SVG in future
-    { name: 'Instagram', icon: 'camera_alt', iconColor: '#E1306C' }, // Replace with SVG
-    { name: 'Google購物', icon: 'shopping_bag', iconColor: '#4285F4' }, // Replace with SVG
-    { name: 'LINE', icon: 'chat', iconColor: '#06C755' },
-  ]
+  // Inline SVG Icons (replacing Material Icons to avoid font loading issues)
+  const UsersIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+      <circle cx="9" cy="7" r="4"></circle>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    </svg>
+  )
 
-  // --- News Mock Data ---
-  const newsItems = [
-    {
-      title: '91APP Payments X Mastercard 2026 線上講座',
-      date: '2026.01.08 (四) 15:00 - 17:00',
-      desc: 'AI 支付 x 電商成長引擎，一次升級轉換率！',
-      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    },
-    {
-      title: 'TakeMe System Update 2025.12',
-      date: '12月功能更新報告',
-      desc: '新增自動化庫存鎖定與 LINE 通知功能。',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    },
-  ]
+  const ChartIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"></line>
+      <line x1="12" y1="20" x2="12" y2="4"></line>
+      <line x1="6" y1="20" x2="6" y2="14"></line>
+    </svg>
+  )
 
   return (
     <div className={baseClass} style={{ fontFamily: 'var(--font-body)' }}>
@@ -71,7 +84,7 @@ export const BeforeDashboard: React.FC = () => {
       {isSuperAdmin && (
         <div style={{ padding: '0 1rem' }}>
           
-          {/* 0. 歡迎區塊 (Greeting) */}
+          {/* 歡迎區塊 (Greeting) */}
           <div style={{ marginBottom: '2rem' }}>
              <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--color-text-main)', marginBottom: '0.25rem' }}>
                歡迎回來，<span style={{color: 'var(--color-primary)'}}>{userName}</span>
@@ -79,56 +92,7 @@ export const BeforeDashboard: React.FC = () => {
              <p style={{ color: 'var(--color-text-sub)' }}>查看目前的業務情形</p>
           </div>
 
-          {/* 1. 銷售管道 (Sales Channels) */}
-          <div style={{ marginBottom: '2rem' }}>
-            <h3 style={sectionTitleStyle}>銷售管道</h3>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-              {channels.map((channel) => (
-                <a
-                  key={channel.name}
-                  href="#"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    padding: '0.75rem 1rem',
-                    backgroundColor: 'var(--color-surface)',
-                    borderRadius: '0.75rem',
-                    boxShadow: 'var(--shadow-soft)',
-                    border: '1px solid var(--theme-border-color)',
-                    textDecoration: 'none',
-                    transition: 'transform 0.2s',
-                  }}
-                  className="hover-card" // defined below or in css
-                >
-                  <span className="material-icons-outlined" style={{ color: channel.iconColor }}>{channel.icon}</span>
-                  <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--color-text-main)' }}>
-                    {channel.name}
-                  </span>
-                </a>
-              ))}
-              <a
-                href="#"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.75rem 1rem',
-                  borderRadius: '0.75rem',
-                  border: '2px dashed var(--theme-border-color)',
-                  color: 'var(--color-text-sub)',
-                  textDecoration: 'none',
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                }}
-              >
-                <span className="material-icons-outlined" style={{ fontSize: '1.25rem' }}>add</span>
-                新增管道
-              </a>
-            </div>
-          </div>
-
-          {/* 2. 總覽 (Overview) */}
+          {/* 總覽 (Overview) */}
           <div style={{ marginBottom: '2rem' }}>
             <h3 style={sectionTitleStyle}>總覽</h3>
             
@@ -142,60 +106,59 @@ export const BeforeDashboard: React.FC = () => {
                 gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
                 gap: '1.5rem' 
             }}>
+                {/* 訪客趨勢圖 */}
                 <div style={cardStyle}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
                         <div>
-                            <h4 style={{ fontSize: '0.875rem', color: 'var(--color-text-sub)', marginBottom: '0.25rem' }}>總訪客數</h4>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-text-main)' }}>
-                                138,804 <span style={{ fontSize: '0.875rem', fontWeight: 400, color: 'var(--color-text-sub)' }}>訪客數</span>
+                            <h4 style={{ fontSize: '0.875rem', color: 'var(--color-text-sub)', marginBottom: '0.25rem' }}>7 日訪客數</h4>
+                            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-text-main)', fontFamily: 'var(--font-heading)' }}>
+                                {totalVisitors !== null ? totalVisitors.toLocaleString() : '載入中...'}
                             </div>
+                        </div>
+                        <div style={{ 
+                            width: '2.5rem', 
+                            height: '2.5rem', 
+                            borderRadius: '50%', 
+                            backgroundColor: 'rgba(201, 145, 93, 0.1)', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            color: 'var(--color-primary)'
+                        }}>
+                            <UsersIcon />
                         </div>
                     </div>
                     <TrafficChart height={200} title="" />
                 </div>
-                {/* 預留空間給另一個圖表 */}
-                <div style={{ ...cardStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', backgroundColor: '#F8FAFC' }}>
+
+                {/* 銷售分析卡片 (Coming Soon Placeholder) */}
+                <div style={{ 
+                    ...cardStyle, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    minHeight: '300px', 
+                    background: 'linear-gradient(135deg, rgba(201, 145, 93, 0.05) 0%, rgba(201, 145, 93, 0.02) 100%)',
+                    border: '1px dashed var(--color-primary-light)'
+                }}>
                     <div style={{ textAlign: 'center', color: 'var(--color-text-sub)' }}>
-                        <span className="material-icons-outlined" style={{ fontSize: '3rem', opacity: 0.5, marginBottom: '1rem' }}>insights</span>
-                        <p>銷售分析報表 (Coming Soon)</p>
+                        <div style={{ 
+                            width: '4rem', 
+                            height: '4rem', 
+                            borderRadius: '50%', 
+                            backgroundColor: 'rgba(201, 145, 93, 0.1)', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            margin: '0 auto 1rem',
+                            color: 'var(--color-primary)'
+                        }}>
+                            <ChartIcon />
+                        </div>
+                        <p style={{ fontWeight: 500 }}>銷售分析報表</p>
+                        <p style={{ fontSize: '0.75rem', marginTop: '0.5rem' }}>即將推出</p>
                     </div>
                 </div>
-            </div>
-          </div>
-
-          {/* 3. 最新資訊 (News) */}
-          <div style={{ marginBottom: '3rem' }}>
-            <h3 style={sectionTitleStyle}>最新資訊</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-              {newsItems.map((news, index) => (
-                <div key={index} style={{ ...cardStyle, padding: 0, overflow: 'hidden', cursor: 'pointer' }} className="news-card">
-                   <div style={{ position: 'relative', aspectRatio: '16/9' }}>
-                      <img src={news.image} alt={news.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      <div style={{ 
-                          position: 'absolute', 
-                          top: '1rem', 
-                          left: '1rem', 
-                          backgroundColor: 'var(--color-primary)', 
-                          color: 'white', 
-                          padding: '0.25rem 0.75rem', 
-                          borderRadius: '2rem', 
-                          fontSize: '0.75rem', 
-                          fontWeight: 700 
-                      }}>New</div>
-                   </div>
-                   <div style={{ padding: '1.5rem' }}>
-                     <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-text-main)', marginBottom: '0.5rem', lineHeight: 1.4 }}>
-                       {news.title}
-                     </h4>
-                     <p style={{ fontSize: '0.875rem', color: 'var(--color-text-sub)', lineHeight: 1.6 }}>
-                       {news.desc}
-                     </p>
-                     <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--color-text-sub)' }}>
-                       {news.date}
-                     </div>
-                   </div>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -204,4 +167,5 @@ export const BeforeDashboard: React.FC = () => {
     </div>
   )
 }
+
 
