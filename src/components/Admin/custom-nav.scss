@@ -1,94 +1,40 @@
 
 // Custom Navigation Styles
-.custom-nav-container {
-    padding: 1rem 0;
+// Theme: #C9915D (Copper Bronze)
+
+#custom-admin-nav {
+    padding: 1rem 0 !important;
     
-    // Group
-    .nav-group {
-        margin-bottom: 1.5rem;
-
-        &__label {
-            padding: 0 1rem 0.5rem;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--color-text-sub); // Assumes vars defined in custom.scss
-            font-weight: 600;
-        }
-
-        &__content {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
+    // Group Label (例如：訂單管理) - 使用極大字體確保能看到變化
+    .nav-group__label {
+        display: block !important;
+        padding: 1rem 1rem 0.5rem !important;
+        font-size: 1.25rem !important; // 20px - VERY LARGE
+        color: #000000 !important; // BLACK
+        font-weight: 900 !important; // EXTRA BOLD
+        text-transform: none !important;
+        background-color: #FFF9C4 !important; // YELLOW BACKGROUND for visibility
+        margin-bottom: 0.5rem !important;
     }
 
-    // Link
+    // Link Label (例如：所有訂單)
     .nav-link {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.625rem 1rem;
-        margin: 0 0.5rem;
-        color: var(--color-text-sub);
-        text-decoration: none;
-        border-radius: var(--radius-sm); // Assumes vars defined in custom.scss
-        transition: all 0.2s ease;
-        position: relative;
-        font-size: 0.875rem;
-
-        &__icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: inherit;
-            opacity: 0.7;
-            
-            svg {
-                width: 1.125rem;
-                height: 1.125rem;
-            }
-        }
+        display: flex !important;
+        align-items: center !important;
+        padding: 0.5rem 1rem !important;
+        margin: 0.25rem 0.5rem !important;
+        color: #64748B !important;
+        font-size: 0.8125rem !important; // 13px - SMALLER
+        border-radius: 0.5rem !important;
+        text-decoration: none !important;
 
         &__label {
-            font-weight: 500;
+            font-weight: 500 !important;
         }
 
-        // Hover
-        &:hover {
-            color: var(--color-text-main);
-            background-color: var(--color-bg-light); // fallback or specific var
-
-             .nav-link__icon {
-                 opacity: 1;
-                 color: var(--color-primary);
-             }
-        }
-
-        // Active State
-        &.active {
-            color: var(--color-primary);
-            background-color: var(--color-primary-light);
-            font-weight: 600;
-
-            .nav-link__icon {
-                opacity: 1;
-                color: var(--color-primary);
-            }
-
-            // Optional left indicator
-            &::before {
-                content: '';
-                position: absolute;
-                left: -0.5rem; 
-                top: 50%;
-                transform: translateY(-50%);
-                width: 3px;
-                height: 16px;
-                background-color: var(--color-primary);
-                border-radius: 0 2px 2px 0;
-                display: none; // Hiding for now inside component, sidebar padding makes it tricky
-            }
+        &:hover, &.active {
+            background-color: rgba(201, 145, 93, 0.1) !important;
+            color: #C9915D !important;
         }
     }
 }
