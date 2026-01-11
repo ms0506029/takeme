@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daytona Park Admin - Pro Max</title>
+    <!-- Tailwind CSS (v3.4 for CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script> 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#C9915D',
+                            hover: '#A6764A',
+                            light: '#F4EBE4', // rgba(201, 145, 93, 0.1)
+                            lighter: '#FAF5F2' // rgba(201, 145, 93, 0.05)
+                        },
+                        secondary: '#4A6C6F',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        surface: {
+                            DEFAULT: '#FFFFFF',
+                            hover: '#FAFAFA',
+                            bg: '#F8F7F6'
+                        },
+                        text: {
+                            main: '#333333',
+                            sub: '#64748B',
+                            muted: '#94A3B8'
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Lexend', 'sans-serif'],
+                        body: ['Noto Sans TC', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        card: '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
+                        soft: '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        primary: '0 4px 14px -2px rgba(201, 145, 93, 0.25)',
+                    },
+                    borderRadius: {
+                        'xl': '1rem',
+                        '2xl': '1.5rem'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F8F7F6; }
+        h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Lexend', sans-serif; }
+        
+        /* Sidebar Active Indicator */
+        .nav-item.active {
+            background-color: #F4EBE4;
+            color: #C9915D;
+            font-weight: 600;
+        }
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60%;
+            background-color: #C9915D;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Subtle Noise for that "Premium Paper" feel in Admin too, but very faint */
+        .admin-texture {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Bento Grid Animation */
+        .bento-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .bento-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+    </style>
+</head>
+<body class="text-text-main flex h-screen overflow-hidden">
+    <div class="admin-texture"></div>
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-gray-100 flex-shrink-0 z-10 flex flex-col justify-between">
+        <div>
+            <!-- Logo Area -->
+            <div class="h-16 flex items-center px-6 border-b border-gray-50 mb-4">
+                <span class="text-2xl font-bold font-heading text-primary tracking-tight">Daytona<span class="text-gray-400">.Admin</span></span>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="px-3 space-y-1">
+                <div class="px-3 py-2 text-xs font-bold text-text-muted uppercase tracking-wider">Dashboard</div>
+                <a href="#" class="nav-item active flex items-center px-3 py-2.5 rounded-lg text-sm transition-colors relative group">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                    Overview
+                </a>
+                <a href="#" class="nav-item flex items-center px-3 py-2.5 text-text-sub rounded-lg text-sm hover:bg-surface-hover hover:text-text-main transition-colors relative">
+                    <i data-lucide="bar-chart-2" class="w-5 h-5 mr-3"></i>
+                    Analytics
+                </a>
+
+                <div class="px-3 py-2 mt-6 text-xs font-bold text-text-muted uppercase tracking-wider">E-Commerce</div>
+                <a href="#" class="nav-item flex items-center px-3 py-2.5 text-text-sub rounded-lg text-sm hover:bg-surface-hover hover:text-text-main transition-colors relative">
+                    <i data-lucide="shopping-bag" class="w-5 h-5 mr-3"></i>
+                    Orders
+                    <span class="ml-auto bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">12</span>
+                </a>
+                <a href="#" class="nav-item flex items-center px-3 py-2.5 text-text-sub rounded-lg text-sm hover:bg-surface-hover hover:text-text-main transition-colors relative">
+                    <i data-lucide="package" class="w-5 h-5 mr-3"></i>
+                    Products
+                </a>
+                <a href="#" class="nav-item flex items-center px-3 py-2.5 text-text-sub rounded-lg text-sm hover:bg-surface-hover hover:text-text-main transition-colors relative">
+                    <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                    Customers
+                </a>
+                <a href="#" class="nav-item flex items-center px-3 py-2.5 text-text-sub rounded-lg text-sm hover:bg-surface-hover hover:text-text-main transition-colors relative">
+                    <i data-lucide="ticket" class="w-5 h-5 mr-3"></i>
+                    Coupons
+                </a>
+            </nav>
+        </div>
+
+        <!-- User Profile -->
+        <div class="p-4 border-t border-gray-50">
+            <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-hover transition-colors">
+                <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">CY</div>
+                <div>
+                    <div class="text-sm font-bold text-text-main">Admin User</div>
+                    <div class="text-xs text-text-sub">Super Admin</div>
+                </div>
+                <i data-lucide="chevron-right" class="w-4 h-4 ml-auto text-text-muted"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
+        <!-- Header -->
+        <header class="h-16 bg-white/80 backdrop-blur-sm border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-20">
+            <h1 class="text-xl font-bold text-text-main">Dashboard Overview</h1>
+            
+            <div class="flex items-center gap-4">
+                <!-- Search -->
+                <div class="relative hidden md:block">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted"></i>
+                    <input type="text" placeholder="Search orders, products..." class="pl-10 pr-4 py-2 bg-gray-50 border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none">
+                </div>
+                
+                <button class="p-2 text-text-muted hover:text-primary transition-colors hover:bg-primary-lighter rounded-full">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                </button>
+                <button class="p-2 text-text-muted hover:text-primary transition-colors hover:bg-primary-lighter rounded-full">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-8 space-y-8">
+            
+            <!-- Bento Grid Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Total Revenue -->
+                <div class="bento-card bg-white p-6 rounded-xl border border-gray-100 shadow-card flex flex-col justify-between h-40 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110">
+                        <i data-lucide="dollar-sign" class="w-24 h-24 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="text-text-sub text-sm font-medium mb-1">Total Revenue</div>
+                        <div class="text-3xl font-bold font-heading text-text-main">$48,290.50</div>
+                    </div>
+                    <div class="flex items-center text-sm font-medium text-success bg-success/10 w-max px-2 py-1 rounded-md">
+                        <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
+                        +12.5%
+                    </div>
+                </div>
+
+                <!-- Orders -->
+                <div class="bento-card bg-white p-6 rounded-xl border border-gray-100 shadow-card flex flex-col justify-between h-40">
+                    <div>
+                        <div class="text-text-sub text-sm font-medium mb-1">Orders</div>
+                        <div class="text-3xl font-bold font-heading text-text-main">1,248</div>
+                    </div>
+                    <div class="flex items-center text-sm font-medium text-success bg-success/10 w-max px-2 py-1 rounded-md">
+                        <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
+                        +8.2%
+                    </div>
+                </div>
+
+                <!-- Active Shoppers (Realtime) -->
+                <div class="bento-card bg-white p-6 rounded-xl border border-gray-100 shadow-card flex flex-col justify-between h-40 border-l-4 border-l-primary">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="relative flex h-2 w-2">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                            </span>
+                            <div class="text-text-sub text-sm font-medium">Active Shoppers</div>
+                        </div>
+                        <div class="text-3xl font-bold font-heading text-text-main">84</div>
+                    </div>
+                    <div class="text-xs text-text-muted">Updated just now</div>
+                </div>
+
+                 <!-- Low Stock -->
+                 <div class="bento-card bg-white p-6 rounded-xl border border-gray-100 shadow-card flex flex-col justify-between h-40">
+                    <div>
+                        <div class="text-text-sub text-sm font-medium mb-1">Low Stock Items</div>
+                        <div class="text-3xl font-bold font-heading text-text-main">12</div>
+                    </div>
+                    <div class="flex items-center text-sm font-medium text-warning bg-warning/10 w-max px-2 py-1 rounded-md cursor-pointer hover:bg-warning/20">
+                        Review Now <i data-lucide="arrow-right" class="w-3 h-3 ml-1"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layout: Charts & Tables -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Main Chart (Revenue) -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-100 shadow-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-text-main">Revenue Trend</h3>
+                        <select class="bg-gray-50 border-none rounded-lg text-sm px-3 py-1 focus:ring-0 text-text-sub cursor-pointer hover:text-primary">
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                            <option>This Year</option>
+                        </select>
+                    </div>
+                    <div class="h-64 w-full">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Sales by Category (Sunburst-like / Doughnut) -->
+                <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-card">
+                    <h3 class="text-lg font-bold text-text-main mb-6">Sales by Category</h3>
+                    <div class="h-48 w-full flex items-center justify-center relative">
+                        <canvas id="categoryChart"></canvas>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="text-xs text-text-muted">Top</span>
+                            <span class="text-xl font-bold text-text-main">Men</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 space-y-3">
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-[#C9915D]"></div> Men</div>
+                            <span class="font-bold">45%</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-[#4A6C6F]"></div> Women</div>
+                            <span class="font-bold">35%</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-[#D65A5A]"></div> Accessories</div>
+                            <span class="font-bold">20%</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Recent Orders Table -->
+            <div class="bg-white rounded-xl border border-gray-100 shadow-card overflow-hidden">
+                <div class="p-6 border-b border-gray-50 flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-text-main">Recent Orders</h3>
+                    <button class="text-sm font-medium text-primary hover:text-primary-hover">View All</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50/50 text-text-sub uppercase text-xs font-bold tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4">Order ID</th>
+                                <th class="px-6 py-4">Customer</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Total</th>
+                                <th class="px-6 py-4">Date</th>
+                                <th class="px-6 py-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50">
+                            <!-- Row 1 -->
+                            <tr class="hover:bg-primary-lighter/30 transition-colors group">
+                                <td class="px-6 py-4 font-mono text-text-sub">#ORD-7721</td>
+                                <td class="px-6 py-4 font-bold text-text-main flex items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?name=Alice+Wonder&background=random" class="w-6 h-6 rounded-full" alt="">
+                                    Alice Wonder
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Paid
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-bold">$120.00</td>
+                                <td class="px-6 py-4 text-text-sub">Today, 2:30 PM</td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-gray-400 hover:text-primary transition-colors"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Row 2 -->
+                            <tr class="hover:bg-primary-lighter/30 transition-colors group">
+                                <td class="px-6 py-4 font-mono text-text-sub">#ORD-7720</td>
+                                <td class="px-6 py-4 font-bold text-text-main flex items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?name=Bob+Smith&background=random" class="w-6 h-6 rounded-full" alt="">
+                                    Bob Smith
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        Pending
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-bold">$85.50</td>
+                                <td class="px-6 py-4 text-text-sub">Yesterday</td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-gray-400 hover:text-primary transition-colors"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+                                </td>
+                            </tr>
+
+                             <!-- Row 3 -->
+                             <tr class="hover:bg-primary-lighter/30 transition-colors group">
+                                <td class="px-6 py-4 font-mono text-text-sub">#ORD-7719</td>
+                                <td class="px-6 py-4 font-bold text-text-main flex items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?name=Charlie+Day&background=random" class="w-6 h-6 rounded-full" alt="">
+                                    Charlie Day
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        Shipped
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 font-bold">$210.00</td>
+                                <td class="px-6 py-4 text-text-sub">Dec 28, 2025</td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-gray-400 hover:text-primary transition-colors"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Init Icons & Charts -->
+    <script>
+        lucide.createIcons();
+
+        // Revenue Chart (Line)
+        const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+        // Gradient
+        const gradient = ctxRevenue.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(201, 145, 93, 0.2)');
+        gradient.addColorStop(1, 'rgba(201, 145, 93, 0)');
+
+        new Chart(ctxRevenue, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [12000, 19000, 15000, 25000, 22000, 30000, 35000],
+                    borderColor: '#C9915D',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#C9915D',
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [2, 4], color: '#f0f0f0' },
+                        ticks: { callback: (val) => '$' + val / 1000 + 'k', color: '#94A3B8' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94A3B8' }
+                    }
+                }
+            }
+        });
+
+        // Category Chart (Doughnut)
+        const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxCategory, {
+            type: 'doughnut',
+            data: {
+                labels: ['Men', 'Women', 'Accessories'],
+                datasets: [{
+                    data: [45, 35, 20],
+                    backgroundColor: ['#C9915D', '#4A6C6F', '#D65A5A'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

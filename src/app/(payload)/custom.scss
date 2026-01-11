@@ -1,10 +1,10 @@
 /**
  * Payload Admin Custom Styles
- * TakeMe Japan Design System - Phase 6.1
+ * TakeMe Japan Design System - Phase 7.0 (Pro Max)
  * Primary Color: #C9915D (Copper Bronze)
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
 
 :root {
   /* 1. 全域字體設定 (Global Fonts) */
@@ -15,12 +15,12 @@
   /* 2. 品牌色系定義 - 以 #C9915D 為核心延伸 */
   --color-primary: #C9915D;
   --color-primary-hover: #A6764A;
-  --color-primary-light: rgba(201, 145, 93, 0.1);
-  --color-primary-lighter: rgba(201, 145, 93, 0.05);
+  --color-primary-light: #F4EBE4; /* 用於 Active 狀態背景 */
+  --color-primary-lighter: #FAF5F2; /* 用於 Hover 狀態背景 */
 
   /* 輔助色 (相容色系) */
-  --color-accent-warm: #D4A574; /* 較淺的暖色 */
-  --color-accent-dark: #8B6B4A; /* 較深的暖色 */
+  --color-accent-warm: #D4A574;
+  --color-accent-dark: #8B6B4A;
   --color-success: #10B981;
   --color-error: #EF4444;
   --color-warning: #F59E0B;
@@ -36,7 +36,7 @@
   --color-text-sub: #64748B;
   --color-text-muted: #94A3B8;
   
-  /* 設計 Tokens */
+  /* 設計 Tokens - Pro Max */
   --radius-sm: 0.5rem;
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
@@ -53,6 +53,33 @@
   --theme-text-primary: var(--color-text-main);
   --theme-input-bg: #FFFFFF;
   --theme-input-border: #E2E8F0;
+}
+
+/* 4. 微紋理背景 (Pro Max Feature) */
+.admin-texture {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* 5. Bento Card 卡片動畫 */
+.bento-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--theme-border-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
 }
 
 /* 4. 全域樣式 - Light Theme */
@@ -219,7 +246,9 @@ h1, h2, h3, h4, h5, h6, .card-title, .dashboard-stat-value {
   animation: fadeIn 0.3s ease-out;
 }
 
-.before-dashboard {
-  animation: fadeIn 0.3s ease-out;
+/* 7. Hide Default Dashboard Collections List */
+/* This ensures only our Custom Dashboard (BeforeDashboard) is prominent */
+.dashboard .collections,
+.dashboard #collections-0 {
+  display: none !important;
 }
-

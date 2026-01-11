@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daytona Park - Scrapbook Design Pro Max</title>
+    <!-- Tailwind CSS (v3.4 for CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script> 
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        scrapbook: {
+                            primary: '#C9915D',
+                            secondary: '#4A6C6F',
+                            accent: '#D65A5A',
+                            bg: '#FDFBF7',
+                            text: '#2D2A26',
+                            muted: '#E5E5E5'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Lexend', 'sans-serif'],
+                        body: ['Patrick Hand', 'cursive'],
+                    },
+                    boxShadow: {
+                        'retro-sm': '2px 2px 0px 0px rgba(45, 45, 45, 1)',
+                        'retro': '4px 4px 0px 0px rgba(45, 45, 45, 1)',
+                        'collage': '5px 5px 0px 0px rgba(0,0,0,0.1), 10px 10px 0px 0px rgba(0,0,0,0.05)',
+                        'lifted': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                    },
+                    backgroundImage: {
+                        'paper-texture': "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjRkRGQkY3Ii8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiMwMDAiIG9wYWNpdHk9IjAuMDI1Ii8+Cjwvc3ZnPg==')",
+                        'tape-pattern': "repeating-linear-gradient(45deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 10px, transparent 10px, transparent 20px)"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Utilities */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+
+        /* Tape Effect */
+        .tape {
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+        .tape::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            opacity: 0.5;
+        }
+
+        /* Hand-drawn Border */
+        .border-sketch {
+            border-radius: 2px 255px 3px 25px / 255px 6px 225px 233px;
+        }
+        
+        /* Shaking Animation for Interaction */
+        @keyframes tilt-shaking {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            50% { transform: rotate(0eg); }
+            75% { transform: rotate(-2deg); }
+            100% { transform: rotate(0deg); }
+        }
+    </style>
+</head>
+<body class="bg-scrapbook-bg text-scrapbook-text font-display bg-paper-texture overflow-x-hidden">
+    <!-- Global Noise Overlay for Texture -->
+    <div class="noise-overlay"></div>
+
+    <!-- Announcement Bar -->
+    <div class="w-full bg-scrapbook-primary text-white text-center py-2 px-4 relative z-50">
+        <p class="font-display text-xs md:text-sm tracking-wider uppercase flex items-center justify-center gap-2">
+            <span class="animate-pulse">✨</span> 
+            Free Shipping on Orders Over $100 
+            <span class="animate-pulse">✨</span>
+        </p>
+    </div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 transition-all duration-300 backdrop-blur-md bg-scrapbook-bg/80 border-b border-scrapbook-text/5">
+        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <!-- Search -->
+            <div class="hidden md:flex items-center relative group w-64">
+                <i data-lucide="search" class="absolute left-3 w-4 h-4 text-scrapbook-text/50"></i>
+                <input type="text" placeholder="Search..." 
+                    class="w-full pl-10 pr-4 py-2 bg-white/50 border-2 border-transparent rounded-full font-body text-lg focus:outline-none focus:border-scrapbook-primary focus:bg-white transition-all shadow-sm group-hover:shadow-retro-sm">
+            </div>
+
+            <!-- Logo -->
+            <a href="#" class="text-3xl font-bold tracking-tight text-scrapbook-primary hover:scale-105 transition-transform duration-300 relative">
+                Daytona Park
+                <svg class="absolute -bottom-2 -left-2 w-full h-3 text-scrapbook-secondary/30 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                    <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="3" fill="none" />
+                </svg>
+            </a>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-4">
+                <button class="p-2 hover:bg-scrapbook-primary/10 rounded-full transition-colors relative group">
+                    <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                    <span class="absolute -top-1 -right-1 w-5 h-5 bg-scrapbook-accent text-white text-xs flex items-center justify-center rounded-full font-bold shadow-sm group-hover:scale-110 transition-transform">3</span>
+                </button>
+                <button class="p-2 hover:bg-scrapbook-primary/10 rounded-full transition-colors">
+                    <i data-lucide="user" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="border-t border-scrapbook-text/5 py-3">
+            <ul class="flex justify-center gap-8 md:gap-12">
+                <li><a href="#" class="relative font-bold hover:text-scrapbook-primary transition-colors after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-scrapbook-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">MEN</a></li>
+                <li><a href="#" class="relative font-bold hover:text-scrapbook-primary transition-colors after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-scrapbook-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">WOMEN</a></li>
+                <li><a href="#" class="relative font-bold hover:text-scrapbook-primary transition-colors after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-scrapbook-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">SALE</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-20 overflow-hidden">
+        <!-- Background Decor -->
+        <div class="absolute top-10 left-10 w-32 h-32 bg-yellow-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div class="absolute top-10 right-10 w-32 h-32 bg-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+
+        <div class="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Text Content -->
+            <div class="relative z-10 space-y-6">
+                <div class="inline-block bg-white px-4 py-2 border-2 border-black shadow-retro-sm rotate-2">
+                    <span class="font-body text-xl font-bold text-scrapbook-secondary">New Collection 2026</span>
+                </div>
+                <h1 class="text-6xl md:text-7xl font-bold leading-tight text-scrapbook-text">
+                    Retro Vibes, <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-scrapbook-primary to-scrapbook-accent">Modern Comfort.</span>
+                </h1>
+                <p class="text-xl text-gray-600 font-body max-w-lg leading-relaxed">
+                    Discover our new arrival of vintage-inspired clothing that brings back the golden days with a modern twist.
+                </p>
+                <div class="flex gap-4 pt-4">
+                    <button class="px-8 py-3 bg-scrapbook-primary text-white font-bold text-lg border-2 border-black shadow-retro hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all rounded-lg active:scale-95">
+                        Shop Men
+                    </button>
+                    <button class="px-8 py-3 bg-white text-scrapbook-text font-bold text-lg border-2 border-black shadow-retro hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all rounded-lg active:scale-95">
+                        Shop Women
+                    </button>
+                </div>
+            </div>
+
+            <!-- Image Collage -->
+            <div class="relative h-[500px] w-full hidden lg:block">
+                <!-- Photo 1 -->
+                <div class="absolute top-0 right-10 w-72 h-96 bg-white p-3 shadow-collage transform rotate-3 hover:rotate-0 transition-transform duration-500 z-20 cursor-pointer">
+                    <div class="w-full h-full bg-gray-200 overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500">
+                        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80" class="object-cover w-full h-full" alt="Model">
+                    </div>
+                    <!-- Tape -->
+                    <div class="tape absolute -top-4 right-10 w-24 h-8 rotate-3 z-30"></div>
+                </div>
+
+                <!-- Photo 2 -->
+                <div class="absolute bottom-10 left-10 w-64 h-80 bg-white p-3 shadow-collage transform -rotate-6 hover:rotate-0 transition-transform duration-500 z-10 cursor-pointer">
+                    <div class="w-full h-full bg-gray-200 overflow-hidden relative grayscale hover:grayscale-0 transition-all duration-500">
+                        <img src="https://images.unsplash.com/photo-1529139574466-a302c27e811f?w=800&q=80" class="object-cover w-full h-full" alt="Model">
+                    </div>
+                    <!-- Tape -->
+                    <div class="tape absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-8 -rotate-2 z-30"></div>
+                </div>
+                
+                <!-- Sticker -->
+                <div class="absolute bottom-20 right-1/4 w-24 h-24 bg-scrapbook-accent rounded-full flex items-center justify-center text-white font-bold text-xl transform rotate-12 shadow-md animate-bounce">
+                    30% OFF
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⬇️ NEW: Screenshot Features Section ⬇️ -->
+    <section class="py-16 bg-scrapbook-bg relative">
+        <div class="container mx-auto px-6 space-y-20">
+            
+            <!-- 1. Promo Badges -->
+            <div class="flex flex-wrap justify-center gap-6">
+                <button class="px-8 py-3 bg-[#C9915D] text-white font-display font-bold text-lg rounded-full border-2 border-black shadow-retro-sm hover:translate-y-1 hover:shadow-none transition-all">
+                    ¥5,000 OFF
+                </button>
+                <button class="px-8 py-3 bg-[#4A6C6F] text-white font-display font-bold text-lg rounded-full border-2 border-black shadow-retro-sm hover:translate-y-1 hover:shadow-none transition-all">
+                    2 BUY 10% OFF
+                </button>
+                <button class="px-8 py-3 bg-[#D65A5A] text-white font-display font-bold text-lg rounded-full border-2 border-black shadow-retro-sm hover:translate-y-1 hover:shadow-none transition-all">
+                    NEW YEAR SALE
+                </button>
+                <button class="px-8 py-3 bg-pink-200 text-[#D65A5A] font-display font-bold text-lg rounded-full border-2 border-black shadow-retro-sm hover:translate-y-1 hover:shadow-none transition-all">
+                    SUPPORT
+                </button>
+            </div>
+
+            <!-- 2. Circular Icon Nav -->
+            <div class="flex flex-wrap justify-center gap-12 md:gap-20">
+                <!-- Shop -->
+                <a href="#" class="group flex flex-col items-center gap-3">
+                    <div class="w-24 h-24 bg-white rounded-full border-[3px] border-black shadow-retro flex items-center justify-center group-hover:translate-y-1 group-hover:shadow-retro-sm transition-all duration-300">
+                        <i data-lucide="shopping-cart" class="w-10 h-10 text-scrapbook-text"></i>
+                    </div>
+                    <span class="font-display font-bold text-lg tracking-wide text-scrapbook-text group-hover:text-scrapbook-primary transition-colors">Shop</span>
+                </a>
+                
+                <!-- Coordinate -->
+                <a href="#" class="group flex flex-col items-center gap-3">
+                    <div class="w-24 h-24 bg-white rounded-full border-[3px] border-black shadow-retro flex items-center justify-center group-hover:translate-y-1 group-hover:shadow-retro-sm transition-all duration-300">
+                        <i data-lucide="heart" class="w-10 h-10 text-scrapbook-text"></i>
+                    </div>
+                    <span class="font-display font-bold text-lg tracking-wide text-scrapbook-text group-hover:text-scrapbook-primary transition-colors">Coordinate</span>
+                </a>
+
+                <!-- Info -->
+                <a href="#" class="group flex flex-col items-center gap-3">
+                    <div class="w-24 h-24 bg-white rounded-full border-[3px] border-black shadow-retro flex items-center justify-center group-hover:translate-y-1 group-hover:shadow-retro-sm transition-all duration-300">
+                        <i data-lucide="info" class="w-10 h-10 text-scrapbook-text"></i>
+                    </div>
+                    <span class="font-display font-bold text-lg tracking-wide text-scrapbook-text group-hover:text-scrapbook-primary transition-colors">Info</span>
+                </a>
+
+                <!-- Coupon -->
+                <a href="#" class="group flex flex-col items-center gap-3">
+                    <div class="w-24 h-24 bg-white rounded-full border-[3px] border-black shadow-retro flex items-center justify-center group-hover:translate-y-1 group-hover:shadow-retro-sm transition-all duration-300">
+                        <i data-lucide="ticket" class="w-10 h-10 text-scrapbook-text"></i>
+                    </div>
+                    <span class="font-display font-bold text-lg tracking-wide text-scrapbook-text group-hover:text-scrapbook-primary transition-colors">Coupon</span>
+                </a>
+            </div>
+
+            <!-- 3. Check List -->
+            <div class="text-center pt-8">
+                <h2 class="text-4xl md:text-5xl font-black text-scrapbook-text tracking-wider uppercase mb-2">
+                    CHECK LIST
+                </h2>
+                <p class="font-body text-xl text-gray-500 mb-8">Don't miss these items</p>
+                
+                <button class="px-10 py-3 bg-white text-scrapbook-text font-bold text-lg border-[3px] border-black rounded-full shadow-retro hover:shadow-retro-sm hover:translate-y-1 transition-all group">
+                    VIEW ALL <span class="inline-block transition-transform group-hover:translate-x-1">></span>
+                </button>
+            </div>
+
+        </div>
+    </section>
+    <!-- ⬆️ END: Screenshot Features Section ⬆️ -->
+
+    <!-- Featured Products -->
+    <section class="py-20 bg-white border-y-4 border-double border-scrapbook-muted relative">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 relative inline-block uppercase">
+                    RANKING
+                    <svg class="absolute -bottom-2 w-full h-3 text-scrapbook-primary opacity-50" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0 5 Q 50 15 100 5" stroke="currentColor" stroke-width="4" fill="none" />
+                    </svg>
+                </h2>
+                <p class="font-body text-gray-500 text-xl mt-4">每日更新！いま売れているアイテム</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product Card 1 -->
+                <div class="group relative">
+                    <div class="relative bg-white border-2 border-black p-2 shadow-retro-sm transition-all duration-300 group-hover:shadow-retro group-hover:-translate-y-2 rounded-lg cursor-pointer">
+                        <div class="aspect-[3/4] bg-gray-100 overflow-hidden relative mb-3">
+                            <span class="absolute top-2 left-2 bg-scrapbook-secondary text-white text-xs font-bold px-2 py-1 z-10 border border-black shadow-[2px_2px_0py_0px_rgba(0,0,0,0.5)]">NEW</span>
+                            <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&q=80" class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110" alt="Product">
+                            
+                            <!-- Quick Add Overlay -->
+                            <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/90 backdrop-blur-sm border-t-2 border-black flex justify-center">
+                                <button class="w-full py-2 bg-scrapbook-text text-white font-bold text-sm uppercase tracking-wide hover:bg-scrapbook-primary transition-colors">Add to Cart</button>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-1 group-hover:text-scrapbook-primary transition-colors">Vintage Tee</h3>
+                        <p class="font-body text-gray-500 mb-2">Cotton Blend</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-xl">$45.00</span>
+                            <button class="text-scrapbook-text hover:text-red-500 transition-colors"><i data-lucide="heart" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="group relative">
+                     <div class="relative bg-white border-2 border-black p-2 shadow-retro-sm transition-all duration-300 group-hover:shadow-retro group-hover:-translate-y-2 rounded-lg cursor-pointer">
+                        <div class="aspect-[3/4] bg-gray-100 overflow-hidden relative mb-3">
+                            <img src="https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?w=400&q=80" class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110" alt="Product">
+                             <!-- Quick Add Overlay -->
+                             <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/90 backdrop-blur-sm border-t-2 border-black flex justify-center">
+                                <button class="w-full py-2 bg-scrapbook-text text-white font-bold text-sm uppercase tracking-wide hover:bg-scrapbook-primary transition-colors">Add to Cart</button>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-1 group-hover:text-scrapbook-primary transition-colors">Beige Coat</h3>
+                        <p class="font-body text-gray-500 mb-2">Wool</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-xl">$120.00</span>
+                            <button class="text-scrapbook-text hover:text-red-500 transition-colors"><i data-lucide="heart" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="group relative">
+                     <div class="relative bg-white border-2 border-black p-2 shadow-retro-sm transition-all duration-300 group-hover:shadow-retro group-hover:-translate-y-2 rounded-lg cursor-pointer">
+                        <div class="aspect-[3/4] bg-gray-100 overflow-hidden relative mb-3">
+                            <span class="absolute top-2 right-2 bg-scrapbook-accent text-white text-xs font-bold px-2 py-1 z-10 border border-black shadow-[2px_2px_0py_0px_rgba(0,0,0,0.5)] rotate-12">SALE</span>
+                            <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&q=80" class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110" alt="Product">
+                             <!-- Quick Add Overlay -->
+                             <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/90 backdrop-blur-sm border-t-2 border-black flex justify-center">
+                                <button class="w-full py-2 bg-scrapbook-text text-white font-bold text-sm uppercase tracking-wide hover:bg-scrapbook-primary transition-colors">Add to Cart</button>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-1 group-hover:text-scrapbook-primary transition-colors">Oxford Shirt</h3>
+                        <p class="font-body text-gray-500 mb-2">100% Cotton</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-xl text-scrapbook-accent">$65.00</span>
+                            <span class="text-sm line-through text-gray-400">$85.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Product Card 4 -->
+                 <div class="group relative">
+                    <div class="relative bg-white border-2 border-black p-2 shadow-retro-sm transition-all duration-300 group-hover:shadow-retro group-hover:-translate-y-2 rounded-lg cursor-pointer">
+                       <div class="aspect-[3/4] bg-gray-100 overflow-hidden relative mb-3">
+                           <img src="https://images.unsplash.com/photo-1551048665-6b9ba12d81b6?w=400&q=80" class="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110" alt="Product">
+                            <!-- Quick Add Overlay -->
+                            <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/90 backdrop-blur-sm border-t-2 border-black flex justify-center">
+                               <button class="w-full py-2 bg-scrapbook-text text-white font-bold text-sm uppercase tracking-wide hover:bg-scrapbook-primary transition-colors">Add to Cart</button>
+                           </div>
+                       </div>
+                       <h3 class="font-bold text-lg mb-1 group-hover:text-scrapbook-primary transition-colors">Denim Jacket</h3>
+                       <p class="font-body text-gray-500 mb-2">Classic Fit</p>
+                       <div class="flex justify-between items-center">
+                           <span class="font-bold text-xl">$95.00</span>
+                           <button class="text-scrapbook-text hover:text-red-500 transition-colors"><i data-lucide="heart" class="w-5 h-5"></i></button>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-scrapbook-text text-white py-12 relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div>
+                    <h3 class="font-display text-2xl font-bold mb-6 text-scrapbook-primary">Daytona Park</h3>
+                    <p class="text-gray-400 font-body text-lg">Curated fashion from Japan to style your everyday life.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Shop</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">New Arrivals</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Best Sellers</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Sale</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Support</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Shipping & Returns</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Newsletter</h4>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="bg-white/10 border-none text-white px-4 py-2 rounded-l-lg focus:outline-none w-full">
+                        <button class="bg-scrapbook-primary text-white px-4 py-2 rounded-r-lg hover:bg-white hover:text-scrapbook-primary transition-colors font-bold">JOIN</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-12 pt-8 text-center text-gray-500">
+                &copy; 2026 Daytona Park. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lucide Icons Init -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
