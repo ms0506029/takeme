@@ -178,8 +178,14 @@ export const NavClient: React.FC = () => {
           <NavLink href="/admin/collections/orders">
             所有訂單
           </NavLink>
+          <NavLink href="/admin/import-orders">
+            訂單匯入
+          </NavLink>
           <NavLink href="/admin/collections/carts">
             購物車
+          </NavLink>
+          <NavLink href="/admin/abandoned-carts">
+            遺棄購物車管理
           </NavLink>
           <NavLink href="/admin/collections/transactions">
             交易紀錄
@@ -190,6 +196,9 @@ export const NavClient: React.FC = () => {
         <NavGroup label="商品管理" icon={<Icons.Product />}>
           <NavLink href="/admin/collections/products">
             商品列表
+          </NavLink>
+          <NavLink href="/admin/import-products">
+            商品匯入
           </NavLink>
           <NavLink href="/admin/collections/categories">
             商品分類
@@ -203,6 +212,15 @@ export const NavClient: React.FC = () => {
         <NavGroup label="客戶管理" icon={<Icons.User />}>
           <NavLink href="/admin/collections/users">
             用戶列表
+          </NavLink>
+          <NavLink href="/admin/customer-analytics">
+            客戶分析
+          </NavLink>
+          <NavLink href="/admin/collections/member-levels">
+            會員等級
+          </NavLink>
+          <NavLink href="/admin/collections/point-transactions">
+            點數紀錄
           </NavLink>
           <NavLink href="/admin/collections/vendors">
             商家列表

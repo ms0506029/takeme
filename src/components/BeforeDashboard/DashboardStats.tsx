@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 /**
  * DashboardStats Component
  * Phase 7.0 (Pro Max) - Bento Card Style
+ * Phase 7.1.2 - Added Abandoned Cart Stats
  */
 
 interface DashboardStatsData {
@@ -31,6 +32,13 @@ interface DashboardStatsData {
       pageViews: number
       users: number
     }
+  }
+  abandonedCarts?: {
+    totalAbandoned: number
+    totalValue: number
+    todayAbandoned: number
+    todayValue: number
+    pendingReminders: number
   }
 }
 
@@ -72,6 +80,17 @@ const UsersRealtimeIcon = () => (
     <circle cx="9" cy="7" r="4"></circle>
     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+  </svg>
+)
+
+// Abandoned Cart Icon (Phase 7.1.2)
+const CartAbandonedIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="21" r="1"></circle>
+    <circle cx="20" cy="21" r="1"></circle>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+    <line x1="18" y1="6" x2="22" y2="10"></line>
+    <line x1="22" y1="6" x2="18" y2="10"></line>
   </svg>
 )
 
@@ -129,7 +148,7 @@ export const DashboardStats: React.FC = () => {
     )
   }
 
-  // Stat card data
+  // Stat card data (including abandoned carts from Phase 7.1.2)
   const cards = [
     {
       value: stats?.orders.pendingShipments || 0,
@@ -139,11 +158,16 @@ export const DashboardStats: React.FC = () => {
       iconColor: 'var(--color-primary)',
     },
     {
-      value: stats?.orders.unpaidOrders || 0,
-      label: '訂單未付款',
-      icon: <PaymentIcon />,
-      iconBg: 'var(--color-primary-lighter)',
-      iconColor: 'var(--color-primary-hover)',
+      value: stats?.abandonedCarts?.totalAbandoned || 0,
+      label: '遺棄購物車',
+      icon: <CartAbandonedIcon />,
+      iconBg: 'rgba(239, 68, 68, 0.1)',
+      iconColor: 'var(--color-error)',
+      isWarning: (stats?.abandonedCarts?.totalAbandoned || 0) > 0,
+      subLabel: stats?.abandonedCarts?.totalAbandoned 
+        ? `NT$ ${Math.round((stats.abandonedCarts.totalValue || 0) / 100).toLocaleString()}` 
+        : undefined,
+      link: '/admin/collections/carts?where[isAbandoned][equals]=true',
     },
     {
       value: stats?.products.lowStock || 0,

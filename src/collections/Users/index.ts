@@ -146,6 +146,29 @@ export const Users: CollectionConfig = {
         readOnly: true,
       },
     },
+    // 會員點數餘額
+    {
+      name: 'points',
+      type: 'number',
+      label: '點數餘額',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: '自動由點數交易計算',
+      },
+    },
+    // 點數交易紀錄
+    {
+      name: 'pointTransactions',
+      type: 'join',
+      collection: 'point-transactions',
+      on: 'customer',
+      admin: {
+        allowCreate: false,
+        defaultColumns: ['type', 'amount', 'description', 'createdAt'],
+      },
+    },
     // 訂單關聯
     {
       name: 'orders',

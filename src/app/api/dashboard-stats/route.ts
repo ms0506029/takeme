@@ -1,4 +1,5 @@
 import { getDailyTrafficTrend, getRealtimeData, getTrafficReport } from '@/lib/analytics/ga4'
+import { getAbandonedCartStats } from '@/lib/cart/abandoned-cart-service'
 import config from '@payload-config'
 import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
@@ -11,6 +12,7 @@ import { getPayload } from 'payload'
  * - 商品庫存警示
  * - GA4 流量數據
  * - 銷售統計
+ * - 遺棄購物車統計 (Phase 7.1.2)
  */
 
 export async function GET() {
@@ -24,6 +26,7 @@ export async function GET() {
       ga4Realtime,
       ga4Traffic,
       ga4Trend,
+      abandonedCartStats,
     ] = await Promise.all([
       // 訂單統計
       payload.find({
@@ -52,6 +55,8 @@ export async function GET() {
       getTrafficReport('7daysAgo', 'today'),
       // GA4 每日趨勢
       getDailyTrafficTrend(7),
+      // 遺棄購物車統計
+      getAbandonedCartStats(),
     ])
     
     // 計算營收 (簡化版 - 實際應從 transactions 計算)
@@ -94,6 +99,8 @@ export async function GET() {
         last7Days: ga4Traffic,
         dailyTrend: ga4Trend,
       },
+      // 遺棄購物車 KPI (Phase 7.1.2)
+      abandonedCarts: abandonedCartStats,
       // 時間戳
       timestamp: new Date().toISOString(),
     })
@@ -105,3 +112,4 @@ export async function GET() {
     )
   }
 }
+

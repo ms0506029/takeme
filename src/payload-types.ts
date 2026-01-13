@@ -74,6 +74,8 @@ export interface Config {
   collections: {
     users: User;
     vendors: Vendor;
+    'member-levels': MemberLevel;
+    'point-transactions': PointTransaction;
     promotions: Promotion;
     pages: Page;
     categories: Category;
@@ -96,6 +98,7 @@ export interface Config {
   };
   collectionsJoins: {
     users: {
+      pointTransactions: 'point-transactions';
       orders: 'orders';
       cart: 'carts';
       addresses: 'addresses';
@@ -110,6 +113,8 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     vendors: VendorsSelect<false> | VendorsSelect<true>;
+    'member-levels': MemberLevelsSelect<false> | MemberLevelsSelect<true>;
+    'point-transactions': PointTransactionsSelect<false> | PointTransactionsSelect<true>;
     promotions: PromotionsSelect<false> | PromotionsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
@@ -208,6 +213,15 @@ export interface User {
   lineUserId?: string | null;
   memberLevel?: ('bronze' | 'silver' | 'gold' | 'vip') | null;
   totalSpent?: number | null;
+  /**
+   * 自動由點數交易計算
+   */
+  points?: number | null;
+  pointTransactions?: {
+    docs?: (string | PointTransaction)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   orders?: {
     docs?: (string | Order)[];
     hasNextPage?: boolean;
@@ -305,6 +319,43 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * 會員點數增減紀錄
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "point-transactions".
+ */
+export interface PointTransaction {
+  id: string;
+  /**
+   * 點數所屬的會員
+   */
+  customer: string | User;
+  type: 'earn' | 'redeem' | 'manual-add' | 'manual-deduct' | 'expired' | 'bonus' | 'refund';
+  /**
+   * 正數為增加，負數為扣減
+   */
+  amount: number;
+  /**
+   * 系統自動計算
+   */
+  balanceAfter?: number | null;
+  description?: string | null;
+  /**
+   * 如果是消費獲得或退貨扣回，關聯到對應訂單
+   */
+  relatedOrder?: (string | null) | Order;
+  /**
+   * 此筆點數的有效期限
+   */
+  expiresAt?: string | null;
+  /**
+   * 手動調整時的操作人員
+   */
+  operator?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders".
  */
@@ -337,6 +388,28 @@ export interface Order {
   status?: OrderStatus;
   amount?: number | null;
   currency?: 'USD' | null;
+  /**
+   * 從外部平台匯入的原始訂單編號
+   */
+  externalOrderId?: string | null;
+  /**
+   * 外部平台的客戶 Email，用於後續對接
+   */
+  externalCustomerEmail?: string | null;
+  importedFrom?: ('easystore' | 'shopify' | 'other' | 'manual') | null;
+  importedAt?: string | null;
+  /**
+   * 從外部平台匯入的商品快照（JSON），用於後續對接
+   */
+  externalItems?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1223,6 +1296,14 @@ export interface Cart {
    * 此購物車是否被標記為遺棄
    */
   isAbandoned?: boolean | null;
+  /**
+   * 最後一次發送提醒的時間
+   */
+  reminderSentAt?: string | null;
+  /**
+   * 已發送提醒的次數
+   */
+  reminderCount?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1284,6 +1365,70 @@ export interface Address {
     | 'SE'
     | 'CH';
   phone?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * 定義會員等級規則與福利
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "member-levels".
+ */
+export interface MemberLevel {
+  id: string;
+  name: string;
+  /**
+   * 用於系統識別，不可重複
+   */
+  code: string;
+  /**
+   * 數字越大等級越高
+   */
+  order?: number | null;
+  /**
+   * 建議使用透明背景的 PNG 或 SVG
+   */
+  icon?: (string | null) | Media;
+  /**
+   * 用於 UI 顯示的主題色（Hex 格式）
+   */
+  color?: string | null;
+  /**
+   * 達到此金額即可升級
+   */
+  minSpent?: number | null;
+  /**
+   * 達到此訂單數即可升級（與消費金額取其一）
+   */
+  minOrders?: number | null;
+  /**
+   * 判斷升級的邏輯
+   */
+  upgradeLogic?: ('or' | 'and' | 'spent-only' | 'orders-only') | null;
+  /**
+   * 例如：5 表示打 95 折
+   */
+  discountPercent?: number | null;
+  /**
+   * 例如：2 表示消費可獲得雙倍點數
+   */
+  pointsMultiplier?: number | null;
+  /**
+   * 消費滿此金額免運費
+   */
+  freeShippingThreshold?: number | null;
+  /**
+   * 生日月份自動發放的購物金
+   */
+  birthdayBonus?: number | null;
+  /**
+   * 顯示給用戶看的等級介紹
+   */
+  description?: string | null;
+  /**
+   * 新用戶自動設為此等級（應只有一個等級勾選）
+   */
+  isDefault?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1455,6 +1600,14 @@ export interface PayloadLockedDocument {
         value: string | Vendor;
       } | null)
     | ({
+        relationTo: 'member-levels';
+        value: string | MemberLevel;
+      } | null)
+    | ({
+        relationTo: 'point-transactions';
+        value: string | PointTransaction;
+      } | null)
+    | ({
         relationTo: 'promotions';
         value: string | Promotion;
       } | null)
@@ -1568,6 +1721,8 @@ export interface UsersSelect<T extends boolean = true> {
   lineUserId?: T;
   memberLevel?: T;
   totalSpent?: T;
+  points?: T;
+  pointTransactions?: T;
   orders?: T;
   cart?: T;
   addresses?: T;
@@ -1606,6 +1761,44 @@ export interface VendorsSelect<T extends boolean = true> {
         autoAcceptOrders?: T;
         notificationEmail?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "member-levels_select".
+ */
+export interface MemberLevelsSelect<T extends boolean = true> {
+  name?: T;
+  code?: T;
+  order?: T;
+  icon?: T;
+  color?: T;
+  minSpent?: T;
+  minOrders?: T;
+  upgradeLogic?: T;
+  discountPercent?: T;
+  pointsMultiplier?: T;
+  freeShippingThreshold?: T;
+  birthdayBonus?: T;
+  description?: T;
+  isDefault?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "point-transactions_select".
+ */
+export interface PointTransactionsSelect<T extends boolean = true> {
+  customer?: T;
+  type?: T;
+  amount?: T;
+  balanceAfter?: T;
+  description?: T;
+  relatedOrder?: T;
+  expiresAt?: T;
+  operator?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2308,6 +2501,8 @@ export interface CartsSelect<T extends boolean = true> {
   currency?: T;
   abandonedAt?: T;
   isAbandoned?: T;
+  reminderSentAt?: T;
+  reminderCount?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2345,6 +2540,11 @@ export interface OrdersSelect<T extends boolean = true> {
   status?: T;
   amount?: T;
   currency?: T;
+  externalOrderId?: T;
+  externalCustomerEmail?: T;
+  importedFrom?: T;
+  importedAt?: T;
+  externalItems?: T;
   updatedAt?: T;
   createdAt?: T;
 }

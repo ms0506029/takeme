@@ -146,6 +146,88 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
 
+    // ====== 字型設定 ======
+    {
+      type: 'collapsible',
+      label: '字型設定',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: 'typography',
+          type: 'group',
+          label: '',
+          fields: [
+            {
+              name: 'headingFont',
+              type: 'select',
+              label: '標題字型',
+              defaultValue: 'Noto Sans TC',
+              options: [
+                { label: 'Noto Sans TC 思源黑體', value: 'Noto Sans TC' },
+                { label: 'Noto Serif TC 思源宋體', value: 'Noto Serif TC' },
+                { label: 'Inter', value: 'Inter' },
+                { label: 'Playfair Display', value: 'Playfair Display' },
+                { label: 'Montserrat', value: 'Montserrat' },
+                { label: 'Poppins', value: 'Poppins' },
+                { label: '系統預設', value: 'system-ui' },
+              ],
+              admin: {
+                description: '用於標題和重要文字',
+              },
+            },
+            {
+              name: 'bodyFont',
+              type: 'select',
+              label: '內文字型',
+              defaultValue: 'Noto Sans TC',
+              options: [
+                { label: 'Noto Sans TC 思源黑體', value: 'Noto Sans TC' },
+                { label: 'Noto Serif TC 思源宋體', value: 'Noto Serif TC' },
+                { label: 'Inter', value: 'Inter' },
+                { label: 'Open Sans', value: 'Open Sans' },
+                { label: 'Roboto', value: 'Roboto' },
+                { label: 'Lato', value: 'Lato' },
+                { label: '系統預設', value: 'system-ui' },
+              ],
+              admin: {
+                description: '用於段落和一般文字',
+              },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'baseFontSize',
+                  type: 'number',
+                  label: '基礎字級 (px)',
+                  defaultValue: 16,
+                  min: 12,
+                  max: 20,
+                  admin: {
+                    width: '50%',
+                  },
+                },
+                {
+                  name: 'lineHeight',
+                  type: 'number',
+                  label: '行高',
+                  defaultValue: 1.6,
+                  min: 1.2,
+                  max: 2.0,
+                  admin: {
+                    width: '50%',
+                    step: 0.1,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+
     // ====== SEO 預設 ======
     {
       type: 'collapsible',

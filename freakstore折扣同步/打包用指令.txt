@@ -1,0 +1,1 @@
+重新打包前要記得把舊有的firefox_profile和FreakDiscountSync.spec刪掉再打包

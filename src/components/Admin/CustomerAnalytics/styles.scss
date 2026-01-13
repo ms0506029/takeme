@@ -1,0 +1,306 @@
+/**
+ * Customer Analytics Dashboard Styles
+ * Phase 7.3.4 - UI/UX Pro Max compliant
+ */
+
+.analytics-dashboard {
+  padding: 2rem;
+  font-family: var(--font-body);
+  max-width: 1200px;
+  margin: 0 auto;
+
+  // Header
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem 0;
+    }
+
+    p {
+      color: var(--color-text-sub);
+      margin: 0;
+      font-size: 0.875rem;
+    }
+  }
+
+  // Buttons
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn-primary {
+    background: var(--color-primary);
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: var(--color-primary-hover);
+    }
+  }
+
+  .btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-text-main);
+    border: 1px solid var(--color-border);
+
+    &:hover:not(:disabled) {
+      background: var(--color-base-100);
+    }
+  }
+
+  // Summary Cards
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.users {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+      }
+
+      &.active {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+      }
+
+      &.orders {
+        background: rgba(168, 85, 247, 0.1);
+        color: #a855f7;
+      }
+
+      &.frequency {
+        background: rgba(249, 115, 22, 0.1);
+        color: #f97316;
+      }
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      color: var(--color-text-sub);
+      margin-top: 0.25rem;
+    }
+  }
+
+  // Section
+  .section {
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .section-desc {
+      color: var(--color-text-sub);
+      font-size: 0.875rem;
+      margin: 0 0 1.5rem 0;
+    }
+  }
+
+  // Segment Grid
+  .segment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .segment-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left-width: 4px;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+
+    .segment-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .segment-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .segment-label {
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    .segment-stats {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .segment-count {
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .segment-percent {
+      font-size: 0.875rem;
+      color: var(--color-text-sub);
+    }
+
+    .segment-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      opacity: 0.5;
+      transition: width 0.3s ease;
+    }
+  }
+
+  // Top Spenders
+  .top-spenders {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .spenders-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 0.875rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    th {
+      background: var(--color-base-100);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--color-text-sub);
+    }
+
+    .rank {
+      width: 40px;
+      font-weight: 600;
+      color: var(--color-text-sub);
+    }
+
+    .name a {
+      color: var(--color-primary);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .amount {
+      font-weight: 600;
+      text-align: right;
+      font-family: var(--font-mono, monospace);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: var(--color-base-50);
+    }
+  }
+
+  // States
+  .loading-state,
+  .error-state,
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+
+    p {
+      color: var(--color-text-sub);
+      margin: 0 0 1rem 0;
+    }
+  }
+
+  .spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

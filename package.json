@@ -61,6 +61,7 @@
     "lucide-react": "^0.477.0",
     "next": "15.4.10",
     "next-themes": "0.4.6",
+    "papaparse": "^5.5.3",
     "payload": "3.69.0",
     "prism-react-renderer": "^2.3.1",
     "qs-esm": "^7",
@@ -72,6 +73,7 @@
     "stripe": "18.5.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "xlsx": "^0.18.5",
     "zod": "^4.3.4"
   },
   "devDependencies": {
@@ -85,6 +87,7 @@
     "@types/dompurify": "^3.0.5",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "22.5.4",
+    "@types/papaparse": "^5.5.2",
     "@types/react": "19.2.1",
     "@types/react-dom": "19.2.1",
     "@vercel/git-hooks": "^1.0.0",

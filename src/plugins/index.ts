@@ -105,7 +105,65 @@ export const plugins: Plugin[] = [
         admin: {
           ...defaultCollection?.admin,
           group: '訂單管理',
+          defaultColumns: ['orderNumber', 'externalOrderId', 'status', 'amount', 'createdAt'],
         },
+        fields: [
+          ...defaultCollection.fields,
+          // ===== Phase 7.1.1: Import Tracking Fields =====
+          {
+            name: 'externalOrderId',
+            type: 'text',
+            label: '外部訂單編號',
+            index: true, // 用於重複檢測與更新
+            admin: {
+              position: 'sidebar',
+              description: '從外部平台匯入的原始訂單編號',
+            },
+          },
+          {
+            name: 'externalCustomerEmail',
+            type: 'email',
+            label: '外部客戶 Email',
+            admin: {
+              position: 'sidebar',
+              description: '外部平台的客戶 Email，用於後續對接',
+            },
+          },
+          {
+            name: 'importedFrom',
+            type: 'select',
+            label: '匯入來源',
+            options: [
+              { label: 'EasyStore', value: 'easystore' },
+              { label: 'Shopify', value: 'shopify' },
+              { label: '其他平台', value: 'other' },
+              { label: '手動建立', value: 'manual' },
+            ],
+            defaultValue: 'manual',
+            admin: {
+              position: 'sidebar',
+            },
+          },
+          {
+            name: 'importedAt',
+            type: 'date',
+            label: '匯入時間',
+            admin: {
+              position: 'sidebar',
+              date: {
+                displayFormat: 'yyyy-MM-dd HH:mm',
+              },
+            },
+          },
+          {
+            name: 'externalItems',
+            type: 'json',
+            label: '外部商品資料',
+            admin: {
+              description: '從外部平台匯入的商品快照（JSON），用於後續對接',
+            },
+          },
+        ],
       }),
     },
     carts: {
@@ -142,6 +200,28 @@ export const plugins: Plugin[] = [
             admin: {
               position: 'sidebar',
               description: '此購物車是否被標記為遺棄',
+            },
+          },
+          {
+            name: 'reminderSentAt',
+            type: 'date',
+            label: '最後提醒時間',
+            admin: {
+              position: 'sidebar',
+              description: '最後一次發送提醒的時間',
+              date: {
+                displayFormat: 'yyyy-MM-dd HH:mm',
+              },
+            },
+          },
+          {
+            name: 'reminderCount',
+            type: 'number',
+            label: '提醒次數',
+            defaultValue: 0,
+            admin: {
+              position: 'sidebar',
+              description: '已發送提醒的次數',
             },
           },
         ],
