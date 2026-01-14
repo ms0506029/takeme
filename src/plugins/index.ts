@@ -13,6 +13,7 @@ import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess'
 import { isAdmin } from '@/access/isAdmin'
 import { isDocumentOwner } from '@/access/isDocumentOwner'
 import { ProductsCollection } from '@/collections/Products'
+import { orderCompletionHook } from '@/hooks/orderCompletionHook'
 import { Page, Product } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 import { createStoragePlugin } from './storage'
@@ -106,6 +107,14 @@ export const plugins: Plugin[] = [
           ...defaultCollection?.admin,
           group: '訂單管理',
           defaultColumns: ['orderNumber', 'externalOrderId', 'status', 'amount', 'createdAt'],
+        },
+        // ===== Phase 7.3.3: Points Engine Hook =====
+        hooks: {
+          ...defaultCollection?.hooks,
+          afterChange: [
+            ...(defaultCollection?.hooks?.afterChange || []),
+            orderCompletionHook,
+          ],
         },
         fields: [
           ...defaultCollection.fields,

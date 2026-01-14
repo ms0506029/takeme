@@ -332,5 +332,267 @@ export const SiteSettings: GlobalConfig = {
         },
       ],
     },
+
+    // ====== 點數系統設定 ======
+    {
+      type: 'collapsible',
+      label: '點數系統設定',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: 'loyaltyPoints',
+          type: 'group',
+          label: '',
+          fields: [
+            // === 基本設定 ===
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'enabled',
+                  type: 'checkbox',
+                  label: '啟用點數系統',
+                  defaultValue: true,
+                  admin: {
+                    width: '100%',
+                    description: '關閉後，系統將不再累積或折抵點數',
+                  },
+                },
+              ],
+            },
+            // === 點數匯率 ===
+            {
+              type: 'row',
+              admin: {
+                condition: (data) => data?.loyaltyPoints?.enabled,
+              },
+              fields: [
+                {
+                  name: 'pointsPerAmount',
+                  type: 'number',
+                  label: '消費金額 (TWD)',
+                  defaultValue: 100,
+                  min: 1,
+                  admin: {
+                    width: '50%',
+                    description: '每消費多少元',
+                  },
+                },
+                {
+                  name: 'pointsEarned',
+                  type: 'number',
+                  label: '獲得點數',
+                  defaultValue: 1,
+                  min: 1,
+                  admin: {
+                    width: '50%',
+                    description: '可獲得幾點（正價商品）',
+                  },
+                },
+              ],
+            },
+            // === 點數折抵 ===
+            {
+              type: 'row',
+              admin: {
+                condition: (data) => data?.loyaltyPoints?.enabled,
+              },
+              fields: [
+                {
+                  name: 'pointValue',
+                  type: 'number',
+                  label: '1 點可折抵 (TWD)',
+                  defaultValue: 1,
+                  min: 0.1,
+                  admin: {
+                    width: '50%',
+                    step: 0.1,
+                    description: '例如：1 點 = 1 元',
+                  },
+                },
+                {
+                  name: 'minPointsToRedeem',
+                  type: 'number',
+                  label: '最低折抵點數',
+                  defaultValue: 100,
+                  min: 1,
+                  admin: {
+                    width: '50%',
+                    description: '累積滿多少點才能開始折抵',
+                  },
+                },
+              ],
+            },
+            // === 折扣商品規則 ===
+            {
+              name: 'discountProductRule',
+              type: 'group',
+              label: '折扣商品規則',
+              admin: {
+                condition: (data) => data?.loyaltyPoints?.enabled,
+                description: '已打折商品的點數回饋規則（不受會員等級倍率加成）',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'fixedPercentage',
+                      type: 'number',
+                      label: '固定回饋 %',
+                      defaultValue: 1,
+                      min: 0,
+                      max: 100,
+                      admin: {
+                        width: '50%',
+                        description: '折扣商品的固定點數回饋比例',
+                      },
+                    },
+                    {
+                      name: 'applyCampaignMultiplier',
+                      type: 'checkbox',
+                      label: '活動期間加倍',
+                      defaultValue: true,
+                      admin: {
+                        width: '50%',
+                        description: '例如：3 倍活動期間，折扣商品為 3%',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            // === 點數活動 ===
+            {
+              name: 'campaign',
+              type: 'group',
+              label: '點數加倍活動',
+              admin: {
+                condition: (data) => data?.loyaltyPoints?.enabled,
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'enabled',
+                      type: 'checkbox',
+                      label: '啟用加倍活動',
+                      defaultValue: false,
+                      admin: {
+                        width: '33%',
+                      },
+                    },
+                    {
+                      name: 'multiplier',
+                      type: 'number',
+                      label: '倍率',
+                      defaultValue: 2,
+                      min: 1,
+                      max: 10,
+                      admin: {
+                        width: '33%',
+                        condition: (data) => data?.loyaltyPoints?.campaign?.enabled,
+                        description: '例如：2 = 雙倍點數',
+                      },
+                    },
+                    {
+                      name: 'name',
+                      type: 'text',
+                      label: '活動名稱',
+                      admin: {
+                        width: '33%',
+                        condition: (data) => data?.loyaltyPoints?.campaign?.enabled,
+                        placeholder: '週年慶三倍點數',
+                      },
+                    },
+                  ],
+                },
+                {
+                  type: 'row',
+                  admin: {
+                    condition: (data) => data?.loyaltyPoints?.campaign?.enabled,
+                  },
+                  fields: [
+                    {
+                      name: 'startDate',
+                      type: 'date',
+                      label: '開始日期',
+                      admin: {
+                        width: '50%',
+                        date: {
+                          displayFormat: 'yyyy-MM-dd',
+                        },
+                      },
+                    },
+                    {
+                      name: 'endDate',
+                      type: 'date',
+                      label: '結束日期',
+                      admin: {
+                        width: '50%',
+                        date: {
+                          displayFormat: 'yyyy-MM-dd',
+                        },
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            // === 進階設定 ===
+            {
+              name: 'advanced',
+              type: 'group',
+              label: '進階設定',
+              admin: {
+                condition: (data) => data?.loyaltyPoints?.enabled,
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'pointsExpireDays',
+                      type: 'number',
+                      label: '點數有效期 (天)',
+                      defaultValue: 365,
+                      min: 0,
+                      admin: {
+                        width: '50%',
+                        description: '0 = 永不過期',
+                      },
+                    },
+                    {
+                      name: 'maxRedeemPercentage',
+                      type: 'number',
+                      label: '最高折抵 %',
+                      defaultValue: 100,
+                      min: 1,
+                      max: 100,
+                      admin: {
+                        width: '50%',
+                        description: '單筆訂單最多可折抵多少 % 金額',
+                      },
+                    },
+                  ],
+                },
+                {
+                  name: 'excludeShipping',
+                  type: 'checkbox',
+                  label: '運費不納入點數計算',
+                  defaultValue: true,
+                  admin: {
+                    description: '勾選後，運費不會累積點數',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
   ],
 }

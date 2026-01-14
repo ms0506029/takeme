@@ -1410,7 +1410,7 @@ export interface MemberLevel {
    */
   discountPercent?: number | null;
   /**
-   * 例如：2 表示消費可獲得雙倍點數
+   * 正價商品的點數倍率（例如：2 = 雙倍點數）。折扣商品不受此倍率影響。
    */
   pointsMultiplier?: number | null;
   /**
@@ -2789,6 +2789,20 @@ export interface SiteSetting {
     textMuted?: string | null;
     border?: string | null;
   };
+  typography?: {
+    /**
+     * 用於標題和重要文字
+     */
+    headingFont?:
+      | ('Noto Sans TC' | 'Noto Serif TC' | 'Inter' | 'Playfair Display' | 'Montserrat' | 'Poppins' | 'system-ui')
+      | null;
+    /**
+     * 用於段落和一般文字
+     */
+    bodyFont?: ('Noto Sans TC' | 'Noto Serif TC' | 'Inter' | 'Open Sans' | 'Roboto' | 'Lato' | 'system-ui') | null;
+    baseFontSize?: number | null;
+    lineHeight?: number | null;
+  };
   seo?: {
     defaultTitle?: string | null;
     defaultDescription?: string | null;
@@ -2803,6 +2817,65 @@ export interface SiteSetting {
     link?: string | null;
     backgroundColor?: string | null;
     textColor?: string | null;
+  };
+  loyaltyPoints?: {
+    /**
+     * 關閉後，系統將不再累積或折抵點數
+     */
+    enabled?: boolean | null;
+    /**
+     * 每消費多少元
+     */
+    pointsPerAmount?: number | null;
+    /**
+     * 可獲得幾點（正價商品）
+     */
+    pointsEarned?: number | null;
+    /**
+     * 例如：1 點 = 1 元
+     */
+    pointValue?: number | null;
+    /**
+     * 累積滿多少點才能開始折抵
+     */
+    minPointsToRedeem?: number | null;
+    /**
+     * 已打折商品的點數回饋規則（不受會員等級倍率加成）
+     */
+    discountProductRule?: {
+      /**
+       * 折扣商品的固定點數回饋比例
+       */
+      fixedPercentage?: number | null;
+      /**
+       * 例如：3 倍活動期間，折扣商品為 3%
+       */
+      applyCampaignMultiplier?: boolean | null;
+    };
+    campaign?: {
+      enabled?: boolean | null;
+      /**
+       * 例如：2 = 雙倍點數
+       */
+      multiplier?: number | null;
+      name?: string | null;
+      startDate?: string | null;
+      endDate?: string | null;
+    };
+    advanced?: {
+      /**
+       * 0 = 永不過期
+       */
+      pointsExpireDays?: number | null;
+      /**
+       * 單筆訂單最多可折抵多少 % 金額
+       */
+      maxRedeemPercentage?: number | null;
+      /**
+       * 勾選後，運費不會累積點數
+       */
+      excludeShipping?: boolean | null;
+    };
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -2978,6 +3051,14 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         textMuted?: T;
         border?: T;
       };
+  typography?:
+    | T
+    | {
+        headingFont?: T;
+        bodyFont?: T;
+        baseFontSize?: T;
+        lineHeight?: T;
+      };
   seo?:
     | T
     | {
@@ -2993,6 +3074,37 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         link?: T;
         backgroundColor?: T;
         textColor?: T;
+      };
+  loyaltyPoints?:
+    | T
+    | {
+        enabled?: T;
+        pointsPerAmount?: T;
+        pointsEarned?: T;
+        pointValue?: T;
+        minPointsToRedeem?: T;
+        discountProductRule?:
+          | T
+          | {
+              fixedPercentage?: T;
+              applyCampaignMultiplier?: T;
+            };
+        campaign?:
+          | T
+          | {
+              enabled?: T;
+              multiplier?: T;
+              name?: T;
+              startDate?: T;
+              endDate?: T;
+            };
+        advanced?:
+          | T
+          | {
+              pointsExpireDays?: T;
+              maxRedeemPercentage?: T;
+              excludeShipping?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;

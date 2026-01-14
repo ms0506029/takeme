@@ -145,8 +145,10 @@ export const MemberLevels: CollectionConfig = {
           label: '點數倍率',
           defaultValue: 1,
           min: 1,
+          max: 10,
           admin: {
-            description: '例如：2 表示消費可獲得雙倍點數',
+            description: '正價商品的點數倍率（例如：2 = 雙倍點數）。折扣商品不受此倍率影響。',
+            step: 0.1,
           },
         },
         {
