@@ -222,6 +222,12 @@ export const NavClient: React.FC = () => {
           <NavLink href="/admin/collections/point-transactions">
             點數紀錄
           </NavLink>
+          <NavLink href="/admin/collections/wishlist">
+            願望清單
+          </NavLink>
+          <NavLink href="/admin/collections/restock-requests">
+            補貨需求
+          </NavLink>
           <NavLink href="/admin/collections/vendors">
             商家列表
           </NavLink>

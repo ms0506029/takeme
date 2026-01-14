@@ -27,8 +27,10 @@ import { MemberLevels } from '@/collections/MemberLevels'
 import { Pages } from '@/collections/Pages'
 import { PointTransactions } from '@/collections/PointTransactions'
 import { Promotions } from '@/collections/Promotions'
+import { RestockRequests } from '@/collections/RestockRequests'
 import { Users } from '@/collections/Users'
 import { Vendors } from '@/collections/Vendors'
+import { Wishlist } from '@/collections/Wishlist'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
 import { SiteSettings } from '@/globals/SiteSettings'
@@ -63,7 +65,11 @@ export default buildConfig({
     locales: ['zh-TW', 'en'],
     defaultLocale: 'zh-TW',
   },
-  collections: [Users, Vendors, MemberLevels, PointTransactions, Promotions, Pages, Categories, Media, AdBanners],
+  collections: [
+    Users, Vendors, MemberLevels, PointTransactions, 
+    Wishlist, RestockRequests,  // 願望清單 + 補貨通知
+    Promotions, Pages, Categories, Media, AdBanners
+  ],
   db: mongooseAdapter({
     // 直接使用 process.env 以確保在 Runtime 時讀取（繞過 Next.js build-time 評估）
     // Zeabur 提供 MONGO_URI 或 MONGO_CONNECTION_STRING，本地開發使用 DATABASE_URL

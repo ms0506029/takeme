@@ -9,6 +9,8 @@
 import { CallToAction } from '@/blocks/CallToAction/config'
 import { Content } from '@/blocks/Content/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
+import { priceDropDetectionHook } from '@/hooks/priceDropDetectionHook'
+import { restockDetectionHook } from '@/hooks/restockDetectionHook'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { CollectionOverride } from '@payloadcms/plugin-ecommerce/types'
 import {
@@ -134,6 +136,15 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     inventory: true,
     meta: true,
     vendor: true,
+  },
+  // ===== 通知系統 Hooks =====
+  hooks: {
+    ...defaultCollection?.hooks,
+    afterChange: [
+      ...(defaultCollection?.hooks?.afterChange || []),
+      priceDropDetectionHook,   // 降價偵測
+      restockDetectionHook,     // 補貨偵測
+    ],
   },
   fields: [
     { name: 'title', type: 'text', required: true, label: '商品名稱' },
