@@ -1,75 +1,58 @@
 # Active Context
 
-**Last Updated：** 2026-01-15 02:35 (JST)
+**Last Updated：** 2026-01-16 00:30 (JST)
 
 ---
 
 ## 🎯 專案狀態
 
 **專案名稱：** TakeMeJapan - Scrapbook Retro E-commerce Platform  
-**當前階段：** ✅ Phase 7.5 - LINE Bot Integration + Wishlist System  
+**當前階段：** ✅ Phase 8 - 會員中心 (MyPage) 全部完成！  
 **技術棧：** Next.js 15 + Payload CMS 3.x + MongoDB + LINE Messaging API  
 **線上環境：** https://takemejapan.zeabur.app  
 **GitHub：** `ms0506029/takeme` (main branch)
 
 ---
 
-## ✅ 已完成功能（2026-01-15）
+## ✅ 今日完成功能（2026-01-16）
 
-### 1. 願望清單 + 補貨通知系統
+### Phase 8: 會員專屬頁面 (MyPage)
 
+#### Phase 8.1: 會員卡片 + Layout
 | 組件 | 路徑 | 功能 |
 |------|------|------|
-| **Wishlist Collection** | `src/collections/Wishlist.ts` | 用戶收藏商品、降價通知設定 |
-| **RestockRequests Collection** | `src/collections/RestockRequests.ts` | 缺貨補貨通知申請 |
-| **Price Drop Hook** | `src/hooks/priceDropDetectionHook.ts` | 商品價格監測 → 自動通知 |
-| **Restock Hook** | `src/hooks/restockDetectionHook.ts` | 庫存變化監測 → 自動通知 |
+| **MemberCard** | `src/components/account/MemberCard.tsx` | 條碼生成、等級顯示、升級進度條 |
+| **AccountNav** | `src/components/AccountNav/index.tsx` | 完整導航、10 個項目、分組顯示 |
+| **memberNumber 欄位** | `src/collections/Users/index.ts` | 自動生成 13 位會員編號 |
 
-### 2. LINE Bot 整合（參考 `line bot優化更新/` 資料夾）
-
-| 組件 | 路徑 | 功能 |
+#### Phase 8.2: 訂單 + 點數履歷
+| 頁面 | 路徑 | 功能 |
 |------|------|------|
-| **LineService** | `src/lib/line/line-service.ts` | Push/Reply API、Flex 建構器 |
-| **FlexTemplates** | `src/lib/line/flex-templates.ts` | 5 種 Flex Message 模板 |
-| **UserStateService** | `src/lib/line/user-state.ts` | 用戶狀態機（避免關鍵字誤觸） |
-| **LINE Webhook** | `src/app/api/line/webhook/route.ts` | 處理 follow/message/postback 事件 |
+| **訂單履歷** | `account/orders/page.tsx` | 訂單狀態標籤、商品預覽 |
+| **點數履歷** | `account/points/page.tsx` | 統計卡片、交易列表 |
 
-### 3. API 端點
-
-| 端點 | 方法 | 功能 |
+#### Phase 8.3: 收藏 + 補貨通知
+| 頁面 | 路徑 | 功能 |
 |------|------|------|
-| `/api/wishlist` | GET/POST/DELETE | 願望清單 CRUD |
-| `/api/restock-requests` | GET/POST/DELETE | 補貨申請 CRUD |
-| `/api/admin/restock-notify` | POST/GET | 後台手動通知 + 統計 |
-| `/api/line/webhook` | POST | LINE 事件處理 |
+| **收藏清單** | `account/wishlist/page.tsx` | 降價標籤、通知狀態 |
+| **補貨通知** | `account/restock-requests/page.tsx` | 狀態統計、通知管道 |
 
-### 4. Flex Message 模板
+#### Phase 8.4: 帳戶設定
+| 頁面 | 路徑 | 功能 |
+|------|------|------|
+| **基本資料** | `account/profile/page.tsx` | 表單編輯 + 帳戶摘要 |
+| **社群綁定** | `account/social/page.tsx` | LINE/Google 綁定管理 |
+| **安全設定** | `account/settings/page.tsx` | 密碼變更 + 帳戶刪除警告 |
 
-| 模板名稱 | 用途 |
-|----------|------|
-| `priceDrop` | 降價通知（含折扣%、原價/特價） |
-| `restock` | 補貨到貨通知 |
-| `memberBindingSuccess` | 會員綁定成功 + 折扣碼 |
-| `memberBindingFailed` | 綁定失敗 + 重試選項 |
-| `outOfStockInteractive` | 缺貨通知 + Postback 按鈕 |
+### Vibe Polish: Scrapbook Retro 視覺升級
+- MemberCard 加入膠帶裝飾效果
+- 全站使用 `shadow-retro` 硬陰影
+- 紙張紋理背景 (Grained Paper)
+- 所有按鈕/連結補上 `cursor-pointer`
 
----
-
-## ⚠️ 待設定項目
-
-### 環境變數
-```env
-# LINE Bot（必填）
-LINE_CHANNEL_ACCESS_TOKEN=E01ovFXScGEYxKd+OGsMzB...
-LINE_CHANNEL_SECRET=282f9e2b4c7e48a96c3c2428c587a1e9
-
-# Email fallback（選填）
-RESEND_API_KEY=...
-EMAIL_FROM=notifications@yourdomain.com
-```
-
-### LINE Developers Console
-- Webhook URL: `https://your-domain.com/api/line/webhook`
+### Header 對齊修正
+- Logo 使用 `absolute left-1/2 -translate-x-1/2` 實現精確置中
+- ScrapbookHeader 支援從後台讀取 `siteName`
 
 ---
 
@@ -77,80 +60,59 @@ EMAIL_FROM=notifications@yourdomain.com
 
 | 資源 | 路徑 | 用途 |
 |------|------|------|
-| **LINE Bot 參考** | `line bot優化更新/refactored/` | GAS 版本的成功邏輯 |
-| **LINE 模組** | `src/lib/line/` | Payload 版本的 LINE 整合 |
-| **通知服務** | `src/lib/notifications/` | 通知發送（LINE 優先 + Email fallback） |
-| **客戶頁面需求** | `memory-bank/customer-profile-page-requirements.md` | 前端待開發功能清單 |
-| 批量上架系統 | `freak store批量上架系統/` | Python 爬蟲 + EasyStore API 整合 |
-| 折扣同步系統 | `freakstore折扣同步/` | Python 折扣偵測 + EasyStore API 更新 |
-| UI/UX Workflow | `.agent/workflows/ui-ux-pro-max.md` | 設計系統搜尋工具 |
+| **會員卡片** | `src/components/account/MemberCard.tsx` | 條碼 + 等級 + 進度條 |
+| **ProfileForm** | `src/components/account/ProfileForm.tsx` | 資料編輯表單 |
+| **LINE Bot 參考** | `line bot優化更新/refactored/` | GAS 版本成功邏輯 |
+| **LINE 模組** | `src/lib/line/` | Payload 版 LINE 整合 |
+| **通知服務** | `src/lib/notifications/` | LINE 優先 + Email fallback |
+| **UI/UX Workflow** | `.agent/workflows/ui-ux-pro-max.md` | 設計系統搜尋工具 |
+| **Vibe Workflow** | `.agent/workflows/vibe.md` | 核心開發協議 |
 
 ---
 
-## 🔧 系統架構
+## 🔧 會員中心路由架構
 
-### LINE 通知流程
-```mermaid
-graph LR
-    subgraph "觸發來源"
-        A[商品降價] --> B[priceDropDetectionHook]
-        C[庫存補充] --> D[restockDetectionHook]
-    end
-    
-    subgraph "通知服務"
-        B --> E[NotificationService]
-        D --> E
-        E --> F{用戶有 LINE?}
-    end
-    
-    subgraph "發送通道"
-        F -->|是| G[LINE Push]
-        F -->|否| H[Email Resend]
-    end
 ```
-
-### 會員綁定流程
-```mermaid
-sequenceDiagram
-    participant U as 用戶
-    participant L as LINE Webhook
-    participant P as Payload CMS
-    
-    U->>L: 加入好友 (follow)
-    L->>U: 歡迎訊息 + 綁定選項
-    U->>L: 輸入 Email
-    L->>P: 查詢 Users collection
-    P-->>L: 用戶資料
-    L->>P: 更新 lineUserId
-    L->>U: 綁定成功 + 折扣碼
+/account                     → 儀表板 (MemberCard + 快捷入口 + 最近訂單)
+├── /orders                  → 訂單履歷
+├── /points                  → 點數履歷
+├── /wishlist                → 收藏清單
+├── /restock-requests        → 補貨通知
+├── /profile                 → 基本資料編輯
+├── /social                  → 社群綁定管理
+└── /settings                → 安全設定
 ```
 
 ---
 
-## 🚀 下一步（Phase 8）
+## 🚀 下一步（Phase 9）
 
-1. **前端整合**
-   - 商品頁愛心 Icon（加入願望清單）
-   - 缺貨時「補貨通知」按鈕
-   - 顧客個人頁 → 補貨申請履歷
+1. **商品頁愛心 Icon 整合**
+   - 點擊加入/移除願望清單
+   - 實時狀態更新
 
-2. **LINE Login 整合**
-   - 登入頁 LINE Login 按鈕
-   - 自動綁定 LINE User ID
+2. **缺貨時「補貨通知」按鈕**
+   - 庫存為 0 時顯示
+   - 一鍵申請通知
 
 3. **遺棄購物車提醒**
    - 識別未結帳購物車
    - LINE 推播提醒
+
+4. **LINE Login 整合**
+   - 登入頁 LINE Login 按鈕
+   - 自動綁定 LINE User ID
 
 ---
 
 ## 💡 給下一個對話視窗的提示
 
 - 用戶採用 **Vibe Coding** 方法論，所有變更需先更新 Memory Bank
+- **Phase 8 會員中心已全部完成**，共 7 個子頁面 + 2 個組件
 - **LINE Bot 整合已完成**，Webhook 在 `/api/line/webhook`
-- **願望清單/補貨通知後端已完成**，待前端整合
+- **願望清單/補貨通知後端已完成**，待商品頁前端整合
 - 通知發送優先使用 **LINE**，fallback 至 **Email (Resend)**
-- 現有爬蟲系統以 **EasyStore** 為目標平台，需重構為 **Payload CMS**
-- UI 設計需遵循 **UI/UX Pro Max** workflow
+- UI 設計需遵循 **UI/UX Pro Max** workflow（禁用 Emoji Icon，使用 Lucide SVG）
+- 視覺風格為 **Scrapbook Retro**（紙張紋理、硬陰影、膠帶裝飾）
 - 所有回覆使用 **繁體中文**
-
+- **後台可編輯網站名稱**：設定 → 網站設定 → 品牌識別 → 網站名稱
