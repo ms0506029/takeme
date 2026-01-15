@@ -1,0 +1,950 @@
+<script>
+// ==========================================
+// LINE OA 後台 JavaScript (GAS 版本 v2.0)
+// 使用 google.script.run 呼叫後端
+// 新增分頁與遞減排序功能
+// ==========================================
+
+// 管理員帳號設定
+const ADMIN_ACCOUNTS = {
+    'admin': 'takemejapan2024',
+    'staff': 'staff2024'
+};
+
+// 資料存儲
+let ordersData = [];
+let ordersFullData = [];  // 保存完整資料
+let customersData = [];
+let customersFullData = [];  // 保存完整資料
+let pendingOOSItems = [];
+let pendingShippingItems = [];
+let selectedOOSIds = new Set();
+let selectedShippingIds = new Set();
+
+// 分頁設定
+const PAGE_SIZE = 50;
+let currentOrdersPage = 1;
+let totalOrdersPages = 1;
+let currentCustomersPage = 1;
+let totalCustomersPages = 1;
+
+// 快取控制
+let ordersCache = null;           // 訂單資料快取
+let ordersCacheTime = null;       // 快取時間
+const CACHE_DURATION = 5 * 60 * 1000;  // 快取有效期 5 分鐘
+let searchDebounceTimer = null;   // 搜尋防抖計時器
+
+// ==========================================
+// 登入處理
+// ==========================================
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    if (ADMIN_ACCOUNTS[username] === password) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminDashboard').style.display = 'block';
+        document.getElementById('adminDashboard').classList.add('admin-container');
+        document.getElementById('currentUser').textContent = username;
+        
+        if (document.getElementById('rememberMe').checked) {
+            localStorage.setItem('loggedIn', 'true');
+            localStorage.setItem('username', username);
+        }
+        
+        initDashboard();
+    } else {
+        document.getElementById('loginError').style.display = 'block';
+    }
+});
+
+// 自動登入
+if (localStorage.getItem('loggedIn') === 'true') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminDashboard').style.display = 'block';
+    document.getElementById('currentUser').textContent = localStorage.getItem('username') || '管理員';
+    initDashboard();
+}
+
+function logout() {
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('username');
+    location.reload();
+}
+
+// ==========================================
+// 初始化
+// ==========================================
+
+function initDashboard() {
+    updateTime();
+    setInterval(updateTime, 60000);
+    loadDashboardStats();
+    
+    document.querySelectorAll('.sidebar-menu .nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const page = this.dataset.page;
+            goToPage(page);
+        });
+    });
+}
+
+function updateTime() {
+    const now = new Date();
+    document.getElementById('currentTime').textContent = 
+        now.toLocaleDateString('zh-TW') + ' ' + now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+}
+
+// ==========================================
+// 頁面切換
+// ==========================================
+
+function goToPage(page) {
+    document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+    
+    const targetPage = document.getElementById(page + 'Content');
+    if (targetPage) {
+        targetPage.style.display = 'block';
+    }
+    
+    document.querySelectorAll('.sidebar-menu .nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.dataset.page === page) {
+            link.classList.add('active');
+        }
+    });
+    
+    switch (page) {
+        case 'orders':
+            // 使用快取：如果有有效快取就不重新載入
+            if (!hasValidOrdersCache()) {
+                currentOrdersPage = 1;
+                loadOrders();
+            } else {
+                // 使用快取資料直接渲染
+                console.log('使用快取資料');
+            }
+            break;
+        case 'customers':
+            currentCustomersPage = 1;
+            loadCustomerBindings();
+            break;
+        case 'notifications':
+            loadPendingOOS();
+            loadPendingShipping();
+            break;
+    }
+}
+
+// ==========================================
+// 儀表板
+// ==========================================
+
+function loadDashboardStats() {
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                document.getElementById('totalOrders').textContent = result.totalOrders || 0;
+                document.getElementById('pendingOrders').textContent = result.pendingOrders || 0;
+                document.getElementById('completedOrders').textContent = result.completedOrders || 0;
+                document.getElementById('totalCustomers').textContent = result.totalCustomers || 0;
+            }
+        })
+        .withFailureHandler(function(error) {
+            console.error('載入統計失敗:', error);
+        })
+        .getStats();
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                document.getElementById('oosCount').textContent = result.totalCount || 0;
+            }
+        })
+        .getPendingOOSNotifications();
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                document.getElementById('shippingCount').textContent = result.totalCount || 0;
+            }
+        })
+        .getPendingShippingNotifications();
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                document.getElementById('bindingCount').textContent = result.totalCount || 0;
+            }
+        })
+        .getCustomerBindings({});
+}
+
+function refreshData() {
+    showToast('開始同步資料...', 'info');
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                showToast('同步完成！', 'success');
+                loadDashboardStats();
+            } else {
+                showToast('同步失敗: ' + result.error, 'error');
+            }
+        })
+        .withFailureHandler(function(error) {
+            showToast('同步失敗', 'error');
+        })
+        .syncEasyStoreOrders(5, 'web_admin');
+}
+
+/**
+ * 同步 LINE User ID
+ * 將「會員綁定記錄」表的 LINE_User_ID 填入「訂單管理」表
+ */
+function syncLineUserIds() {
+    const btn = document.getElementById('btnSyncLineUserIds');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>同步中...';
+    }
+    
+    showToast('開始同步 LINE User ID...', 'info');
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fab fa-line me-2"></i>同步 LINE User ID';
+            }
+            
+            if (result && result.success) {
+                showToast(`✅ 同步完成！已更新 ${result.totalUpdated || 0} 筆訂單`, 'success');
+                // 如果有更新，清除訂單快取並重新載入
+                if (result.totalUpdated > 0) {
+                    ordersCache = null;
+                    ordersCacheTime = null;
+                    loadDashboardStats();
+                }
+            } else {
+                showToast('同步失敗: ' + (result?.error || '未知錯誤'), 'error');
+            }
+        })
+        .withFailureHandler(function(error) {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fab fa-line me-2"></i>同步 LINE User ID';
+            }
+            showToast('同步失敗: ' + error, 'error');
+        })
+        .batchSyncLineUserIdsForWeb();
+}
+
+// ==========================================
+// 訂單管理（含分頁）
+// ==========================================
+
+function loadOrders() {
+    document.getElementById('ordersTableBody').innerHTML = 
+        '<tr><td colspan="7" class="text-center"><div class="spinner-border spinner-border-sm"></div> 載入中...</td></tr>';
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            // 加入 null 檢查
+            if (!result) {
+                console.error('後端返回 null');
+                showToast('載入失敗：後端無回應', 'error');
+                document.getElementById('ordersTableBody').innerHTML = 
+                    '<tr><td colspan="7" class="text-center text-danger">後端無回應，請檢查 GAS 執行紀錄</td></tr>';
+                return;
+            }
+            
+            if (result.success) {
+                ordersData = result.data || [];
+                totalOrdersPages = result.totalPages || 1;
+                currentOrdersPage = result.currentPage || 1;
+                
+                // 保存快取
+                ordersCache = {
+                    data: ordersData,
+                    totalPages: totalOrdersPages,
+                    currentPage: currentOrdersPage,
+                    totalCount: result.totalCount || 0
+                };
+                ordersCacheTime = Date.now();
+                
+                renderOrdersTable();
+                renderOrdersPagination(result.totalCount || 0, totalOrdersPages);
+            } else {
+                showToast('載入訂單失敗: ' + (result.error || '未知錯誤'), 'error');
+                document.getElementById('ordersTableBody').innerHTML = 
+                    '<tr><td colspan="7" class="text-center text-danger">載入失敗: ' + (result.error || '') + '</td></tr>';
+            }
+        })
+        .withFailureHandler(function(error) {
+            console.error('GAS 錯誤:', error);
+            showToast('載入失敗: ' + error, 'error');
+            document.getElementById('ordersTableBody').innerHTML = 
+                '<tr><td colspan="7" class="text-center text-danger">GAS 錯誤: ' + error + '</td></tr>';
+        })
+        .getOrdersWithQueueStatus({ 
+            page: currentOrdersPage, 
+            pageSize: PAGE_SIZE,
+            search: document.getElementById('orderSearch')?.value || '',
+            status: document.getElementById('orderStatus')?.value || '',
+            dateFrom: document.getElementById('dateFrom')?.value || '',
+            dateTo: document.getElementById('dateTo')?.value || ''
+        });
+}
+
+function renderOrdersTable() {
+    const tbody = document.getElementById('ordersTableBody');
+    
+    if (!ordersData || ordersData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">暫無訂單資料</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = ordersData.map(order => `
+        <tr>
+            <td><input type="checkbox" class="form-check-input order-checkbox" value="${order.orderNumber || ''}"></td>
+            <td><code>${order.orderNumber || '-'}</code></td>
+            <td>${order.customerName || '-'}</td>
+            <td>${order.queueItemCount || 0}</td>
+            <td><span class="badge" style="background-color: ${order.overallStatusColor || '#6c757d'}; color: white;">
+                ${order.overallStatus || '處理中'}
+            </span></td>
+            <td>${formatDate(order.orderDate)}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-info" onclick="viewOrderDetail('${order.orderNumber}')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderOrdersPagination(totalCount, totalPages) {
+    // 找或建立分頁容器
+    let paginationContainer = document.getElementById('ordersPagination');
+    if (!paginationContainer) {
+        // 在表格後插入分頁
+        const tableWrapper = document.querySelector('#ordersContent .content-body');
+        if (tableWrapper) {
+            const div = document.createElement('div');
+            div.id = 'ordersPagination';
+            div.className = 'mt-3 d-flex justify-content-between align-items-center';
+            tableWrapper.appendChild(div);
+            paginationContainer = div;
+        }
+    }
+    
+    if (!paginationContainer) return;
+    
+    const startItem = (currentOrdersPage - 1) * PAGE_SIZE + 1;
+    const endItem = Math.min(currentOrdersPage * PAGE_SIZE, totalCount);
+    
+    paginationContainer.innerHTML = `
+        <div class="text-muted">
+            顯示第 ${startItem}-${endItem} 筆，共 ${totalCount} 筆訂單
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item ${currentOrdersPage <= 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToOrdersPage(1); return false;">首頁</a>
+                </li>
+                <li class="page-item ${currentOrdersPage <= 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToOrdersPage(${currentOrdersPage - 1}); return false;">上一頁</a>
+                </li>
+                <li class="page-item active">
+                    <span class="page-link">${currentOrdersPage} / ${totalPages}</span>
+                </li>
+                <li class="page-item ${currentOrdersPage >= totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToOrdersPage(${currentOrdersPage + 1}); return false;">下一頁</a>
+                </li>
+                <li class="page-item ${currentOrdersPage >= totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToOrdersPage(${totalPages}); return false;">末頁</a>
+                </li>
+            </ul>
+        </nav>
+    `;
+}
+
+function goToOrdersPage(page) {
+    if (page < 1 || page > totalOrdersPages) return;
+    currentOrdersPage = page;
+    loadOrders();
+}
+
+/**
+ * 強制重新載入訂單（清除快取）
+ */
+function refreshOrders() {
+    ordersCache = null;
+    ordersCacheTime = null;
+    currentOrdersPage = 1;
+    loadOrders();
+    showToast('訂單資料已重新載入', 'info');
+}
+
+/**
+ * 應用訂單篩選
+ */
+function applyOrderFilters() {
+    currentOrdersPage = 1;
+    loadOrders();
+}
+
+/**
+ * 搜尋防抖（避免每次按鍵都觸發請求）
+ */
+function debounceSearch() {
+    if (searchDebounceTimer) {
+        clearTimeout(searchDebounceTimer);
+    }
+    searchDebounceTimer = setTimeout(() => {
+        currentOrdersPage = 1;
+        loadOrders();
+    }, 400);  // 400ms 後才觸發
+}
+
+/**
+ * 檢查是否有有效快取
+ */
+function hasValidOrdersCache() {
+    if (!ordersCache || !ordersCacheTime) return false;
+    return (Date.now() - ordersCacheTime) < CACHE_DURATION;
+}
+
+function filterOrders() {
+    // 相容舊函數名稱
+    applyOrderFilters();
+}
+
+function toggleSelectAllOrders() {
+    const checked = document.getElementById('selectAllOrders').checked;
+    document.querySelectorAll('.order-checkbox').forEach(cb => cb.checked = checked);
+}
+
+// ==========================================
+// 客戶管理（含分頁）
+// ==========================================
+
+function loadCustomerBindings() {
+    document.getElementById('customersTableBody').innerHTML = 
+        '<tr><td colspan="6" class="text-center"><div class="spinner-border spinner-border-sm"></div> 載入中...</td></tr>';
+    
+    const searchVal = document.getElementById('customerSearch')?.value || '';
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            // 加入 null 檢查
+            if (!result) {
+                console.error('後端返回 null');
+                showToast('載入失敗：後端無回應', 'error');
+                document.getElementById('customersTableBody').innerHTML = 
+                    '<tr><td colspan="6" class="text-center text-danger">後端無回應</td></tr>';
+                return;
+            }
+            
+            if (result.success) {
+                customersData = result.data || [];
+                totalCustomersPages = result.totalPages || 1;
+                currentCustomersPage = result.currentPage || 1;
+                
+                renderCustomersTable();
+                renderCustomersPagination(result.totalCount || 0, totalCustomersPages);
+            } else {
+                showToast('載入失敗: ' + (result.error || ''), 'error');
+                document.getElementById('customersTableBody').innerHTML = 
+                    '<tr><td colspan="6" class="text-center text-danger">載入失敗: ' + (result.error || '') + '</td></tr>';
+            }
+        })
+        .withFailureHandler(function(error) {
+            console.error('GAS 錯誤:', error);
+            showToast('載入失敗: ' + error, 'error');
+            document.getElementById('customersTableBody').innerHTML = 
+                '<tr><td colspan="6" class="text-center text-danger">GAS 錯誤: ' + error + '</td></tr>';
+        })
+        .getCustomerBindings({ page: currentCustomersPage, pageSize: PAGE_SIZE, search: searchVal });
+}
+
+function renderCustomersTable() {
+    const tbody = document.getElementById('customersTableBody');
+    
+    if (!customersData || customersData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">暫無會員資料</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = customersData.map(c => `
+        <tr>
+            <td>${c.customerName || c.lineDisplayName || '-'}</td>
+            <td>${c.email || '-'}</td>
+            <td>${c.orderCount || 0}</td>
+            <td>
+                <span class="badge ${c.bindStatus === 'active' ? 'bg-success' : 'bg-secondary'}">
+                    ${c.bindStatus === 'active' ? '已綁定' : c.bindStatus || '未知'}
+                </span>
+            </td>
+            <td>${formatDate(c.bindTime)}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-info" onclick="viewCustomerBindingDetail('${c.lineUserId}', '${c.email}')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderCustomersPagination(totalCount, totalPages) {
+    let paginationContainer = document.getElementById('customersPagination');
+    if (!paginationContainer) {
+        const tableWrapper = document.querySelector('#customersContent .content-body');
+        if (tableWrapper) {
+            const div = document.createElement('div');
+            div.id = 'customersPagination';
+            div.className = 'mt-3 d-flex justify-content-between align-items-center';
+            tableWrapper.appendChild(div);
+            paginationContainer = div;
+        }
+    }
+    
+    if (!paginationContainer) return;
+    
+    const startItem = (currentCustomersPage - 1) * PAGE_SIZE + 1;
+    const endItem = Math.min(currentCustomersPage * PAGE_SIZE, totalCount);
+    
+    paginationContainer.innerHTML = `
+        <div class="text-muted">
+            顯示第 ${startItem}-${endItem} 筆，共 ${totalCount} 筆會員
+        </div>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item ${currentCustomersPage <= 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToCustomersPage(1); return false;">首頁</a>
+                </li>
+                <li class="page-item ${currentCustomersPage <= 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToCustomersPage(${currentCustomersPage - 1}); return false;">上一頁</a>
+                </li>
+                <li class="page-item active">
+                    <span class="page-link">${currentCustomersPage} / ${totalPages}</span>
+                </li>
+                <li class="page-item ${currentCustomersPage >= totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToCustomersPage(${currentCustomersPage + 1}); return false;">下一頁</a>
+                </li>
+                <li class="page-item ${currentCustomersPage >= totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="goToCustomersPage(${totalPages}); return false;">末頁</a>
+                </li>
+            </ul>
+        </nav>
+    `;
+}
+
+function goToCustomersPage(page) {
+    if (page < 1 || page > totalCustomersPages) return;
+    currentCustomersPage = page;
+    loadCustomerBindings();
+}
+
+function filterCustomers() {
+    currentCustomersPage = 1;
+    loadCustomerBindings();
+}
+
+// ==========================================
+// 通知管理
+// ==========================================
+
+function loadPendingOOS() {
+    document.getElementById('oosTableBody').innerHTML = 
+        '<tr><td colspan="6" class="text-center"><div class="spinner-border spinner-border-sm"></div> 載入中...</td></tr>';
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                pendingOOSItems = result.items || [];
+                document.getElementById('oosBadge').textContent = pendingOOSItems.length;
+                renderOOSTable();
+            } else {
+                showToast('載入失敗', 'error');
+            }
+        })
+        .withFailureHandler(function(error) {
+            showToast('載入失敗: ' + error, 'error');
+        })
+        .getPendingOOSNotifications();
+}
+
+function renderOOSTable() {
+    const tbody = document.getElementById('oosTableBody');
+    
+    if (pendingOOSItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">✅ 目前沒有待發送的缺貨通知</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = pendingOOSItems.map(item => `
+        <tr>
+            <td><input type="checkbox" class="form-check-input oos-checkbox" value="${item.queueId}" 
+                ${item.canSend ? '' : 'disabled'} onchange="updateOOSSelection(this)"></td>
+            <td><strong>${item.productName || '-'}</strong></td>
+            <td><code>${item.esOrderNo || '-'}</code></td>
+            <td>${item.customerName || '-'}</td>
+            <td>${item.canSend ? '<span class="badge bg-success">已綁定</span>' : '<span class="badge bg-secondary">未綁定</span>'}</td>
+            <td>
+                ${item.canSend ? `<button class="btn btn-sm btn-outline-danger" onclick="sendSingleOOS('${item.queueId}')">
+                    <i class="fas fa-paper-plane"></i>
+                </button>` : '-'}
+            </td>
+        </tr>
+    `).join('');
+}
+
+function loadPendingShipping() {
+    document.getElementById('shippingTableBody').innerHTML = 
+        '<tr><td colspan="7" class="text-center"><div class="spinner-border spinner-border-sm"></div> 載入中...</td></tr>';
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                pendingShippingItems = result.items || [];
+                document.getElementById('shippingBadge').textContent = pendingShippingItems.length;
+                renderShippingTable();
+            } else {
+                showToast('載入失敗', 'error');
+            }
+        })
+        .withFailureHandler(function(error) {
+            showToast('載入失敗: ' + error, 'error');
+        })
+        .getPendingShippingNotifications();
+}
+
+function renderShippingTable() {
+    const tbody = document.getElementById('shippingTableBody');
+    
+    if (pendingShippingItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">✅ 目前沒有待發送的物流通知</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = pendingShippingItems.map(item => `
+        <tr>
+            <td><input type="checkbox" class="form-check-input shipping-checkbox" value="${item.queueId}"
+                ${item.canSend ? '' : 'disabled'} onchange="updateShippingSelection(this)"></td>
+            <td><strong>${item.productName || '-'}</strong></td>
+            <td><code>${item.esOrderNo || '-'}</code></td>
+            <td><span class="badge bg-info">${item.boxId || '-'}</span></td>
+            <td>${item.trackingJPtoTW || '-'}</td>
+            <td>${item.customerName || '-'}</td>
+            <td>
+                ${item.canSend ? `<button class="btn btn-sm btn-outline-primary" onclick="sendSingleShipping('${item.queueId}')">
+                    <i class="fas fa-paper-plane"></i>
+                </button>` : '-'}
+            </td>
+        </tr>
+    `).join('');
+}
+
+// 選擇處理
+function toggleSelectAllOOS() {
+    const checked = document.getElementById('selectAllOOS').checked;
+    document.querySelectorAll('.oos-checkbox:not(:disabled)').forEach(cb => {
+        cb.checked = checked;
+        if (checked) selectedOOSIds.add(cb.value);
+        else selectedOOSIds.delete(cb.value);
+    });
+}
+
+function updateOOSSelection(cb) {
+    if (cb.checked) selectedOOSIds.add(cb.value);
+    else selectedOOSIds.delete(cb.value);
+}
+
+function toggleSelectAllShipping() {
+    const checked = document.getElementById('selectAllShipping').checked;
+    document.querySelectorAll('.shipping-checkbox:not(:disabled)').forEach(cb => {
+        cb.checked = checked;
+        if (checked) selectedShippingIds.add(cb.value);
+        else selectedShippingIds.delete(cb.value);
+    });
+}
+
+function updateShippingSelection(cb) {
+    if (cb.checked) selectedShippingIds.add(cb.value);
+    else selectedShippingIds.delete(cb.value);
+}
+
+// 發送通知
+function sendSingleOOS(queueId) {
+    const item = pendingOOSItems.find(i => i.queueId === queueId);
+    if (!item || !confirm(`確定要發送缺貨通知給「${item.customerName || '客戶'}」嗎？`)) return;
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                showToast('通知已發送', 'success');
+                loadPendingOOS();
+            } else {
+                showToast('發送失敗: ' + (result.error || ''), 'error');
+            }
+        })
+        .sendOOSNotificationFromBackend(item);
+}
+
+function sendSelectedOOS() {
+    if (selectedOOSIds.size === 0) {
+        showToast('請先選擇要發送的商品', 'warning');
+        return;
+    }
+    
+    const items = pendingOOSItems.filter(i => selectedOOSIds.has(i.queueId));
+    let sent = 0;
+    
+    items.forEach(item => {
+        google.script.run
+            .withSuccessHandler(function(result) {
+                sent++;
+                if (sent === items.length) {
+                    showToast(`已發送 ${sent} 筆通知`, 'success');
+                    selectedOOSIds.clear();
+                    loadPendingOOS();
+                }
+            })
+            .sendOOSNotificationFromBackend(item);
+    });
+}
+
+function sendSingleShipping(queueId) {
+    const item = pendingShippingItems.find(i => i.queueId === queueId);
+    if (!item || !confirm(`確定要發送物流通知給「${item.customerName || '客戶'}」嗎？`)) return;
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (result.success) {
+                showToast('通知已發送', 'success');
+                loadPendingShipping();
+            } else {
+                showToast('發送失敗: ' + (result.error || ''), 'error');
+            }
+        })
+        .sendShippingNotificationFromBackend(item);
+}
+
+function sendSelectedShipping() {
+    if (selectedShippingIds.size === 0) {
+        showToast('請先選擇要發送的商品', 'warning');
+        return;
+    }
+    
+    const items = pendingShippingItems.filter(i => selectedShippingIds.has(i.queueId));
+    let sent = 0;
+    
+    items.forEach(item => {
+        google.script.run
+            .withSuccessHandler(function(result) {
+                sent++;
+                if (sent === items.length) {
+                    showToast(`已發送 ${sent} 筆通知`, 'success');
+                    selectedShippingIds.clear();
+                    loadPendingShipping();
+                }
+            })
+            .sendShippingNotificationFromBackend(item);
+    });
+}
+
+// ==========================================
+// 公用函數
+// ==========================================
+
+function formatDate(date) {
+    if (!date) return '-';
+    try {
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return '-';
+        return d.toLocaleDateString('zh-TW');
+    } catch (e) {
+        return '-';
+    }
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+    const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
+    toast.innerHTML = `<i class="fas fa-${icon} me-2"></i>${message}`;
+    container.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+function viewOrderDetail(orderNo) {
+    showToast('載入訂單詳情...', 'info');
+    
+    google.script.run
+        .withSuccessHandler(function(result) {
+            if (!result || !result.success) {
+                showToast('載入失敗: ' + (result?.error || '未知錯誤'), 'error');
+                return;
+            }
+            
+            showOrderDetailModal(result.order, result.items);
+        })
+        .withFailureHandler(function(error) {
+            showToast('載入失敗: ' + error, 'error');
+        })
+        .getOrderDetail(orderNo);
+}
+
+function showOrderDetailModal(order, items) {
+    // 移除舊的 Modal
+    const oldModal = document.getElementById('orderDetailModal');
+    if (oldModal) oldModal.remove();
+    
+    // 建立 Modal HTML - 商品列表（含購買備註、箱號、入箱日期）
+    const itemsHtml = items.length > 0 
+        ? items.map((item, idx) => {
+            // 缺貨用紅色底，其他狀態用藍色
+            const isOOS = (item.purchaseStatus || '').includes('缺貨');
+            const statusClass = isOOS ? 'bg-danger' : 'bg-info';
+            
+            return `
+            <tr>
+                <td>${idx + 1}</td>
+                <td><strong>${item.productName || '-'}</strong></td>
+                <td><code>${item.sku || '-'}</code></td>
+                <td>${item.color || '-'} / ${item.size || '-'}</td>
+                <td>${item.qtyOrdered || 1}</td>
+                <td><span class="badge ${statusClass}">${item.purchaseStatus || '待處理'}</span></td>
+                <td>${item.purchaseNote || '-'}</td>
+                <td>${item.boxNumber || item.boxId || '-'}</td>
+                <td>${item.packedAt || '-'}</td>
+            </tr>
+        `;}).join('')
+        : '<tr><td colspan="9" class="text-center text-muted">暫無商品資料</td></tr>';
+    
+    const modalHtml = `
+        <div class="modal fade" id="orderDetailModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
+                        <h5 class="modal-title">
+                            <i class="fas fa-file-invoice me-2"></i>訂單詳情 #${order.orderNumber}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" onclick="closeOrderModal()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- 訂單基本資訊 -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header"><i class="fas fa-info-circle me-2"></i>訂單資訊</div>
+                                    <div class="card-body">
+                                        <p><strong>訂單編號：</strong><code>${order.orderNumber}</code></p>
+                                        <p><strong>訂單日期：</strong>${order.orderDate || '-'}</p>
+                                        <p><strong>訂單金額：</strong>NT$ ${order.totalAmount || 0}</p>
+                                        <p><strong>整體狀態：</strong>
+                                            <span class="badge" style="background-color: ${order.overallStatusColor}; color: white;">
+                                                ${order.overallStatus}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header"><i class="fas fa-user me-2"></i>客戶資訊</div>
+                                    <div class="card-body">
+                                        <p><strong>客戶姓名：</strong>${order.customerName || '-'}</p>
+                                        <p><strong>電子郵件：</strong>${order.customerEmail || '-'}</p>
+                                        <p><strong>LINE 名稱：</strong>${order.lineDisplayName || '-'}</p>
+                                        <p><strong>LINE 綁定：</strong>
+                                            ${order.lineUserId 
+                                                ? '<span class="badge bg-success">已綁定</span>' 
+                                                : '<span class="badge bg-secondary">未綁定</span>'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 商品列表 -->
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-box me-2"></i>商品列表 (${items.length} 件)
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>商品名稱</th>
+                                                <th>SKU</th>
+                                                <th>規格</th>
+                                                <th>數量</th>
+                                                <th>採購狀態</th>
+                                                <th>採購備註</th>
+                                                <th>箱號</th>
+                                                <th>入箱日期</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${itemsHtml}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeOrderModal()">
+                            <i class="fas fa-times me-1"></i>關閉
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 插入 Modal
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // 顯示 Modal
+    const modal = document.getElementById('orderDetailModal');
+    modal.classList.add('show');
+    modal.style.display = 'block';
+    document.body.classList.add('modal-open');
+    
+    // 新增背景遮罩
+    const backdrop = document.createElement('div');
+    backdrop.className = 'modal-backdrop fade show';
+    backdrop.id = 'orderModalBackdrop';
+    document.body.appendChild(backdrop);
+}
+
+function closeOrderModal() {
+    const modal = document.getElementById('orderDetailModal');
+    const backdrop = document.getElementById('orderModalBackdrop');
+    if (modal) modal.remove();
+    if (backdrop) backdrop.remove();
+    document.body.classList.remove('modal-open');
+}
+
+function viewCustomerDetail(orderNo) {
+    // 使用相同的訂單詳情功能
+    viewOrderDetail(orderNo);
+}
+</script>
+

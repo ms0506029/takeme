@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>採購彙總</title>
+  <style>
+    /* 共用樣式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      color: #333;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .toolbar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      color: white;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .btn-primary {
+      background: #4A90E2;
+    }
+    
+    .btn-primary:hover {
+      background: #357ABD;
+    }
+    
+    .btn-secondary {
+      background: #95a5a6;
+    }
+    
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+    
+    .btn-success {
+      background: #4CAF50;
+    }
+    
+    .btn-success:hover {
+      background: #45a049;
+    }
+    
+    /* 頁面專用樣式 */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .summary-table th {
+      background: #4A90E2;
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-weight: bold;
+    }
+    
+    .summary-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .summary-table tr:hover {
+      background: #f8f9fa;
+    }
+    
+    .discount-panel {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    .discount-panel.active {
+      display: block;
+    }
+    
+    .input-group {
+      margin: 15px 0;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+      font-size: 14px;
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: #4A90E2;
+    }
+    
+    .price-input {
+      width: 120px;
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      background: white;
+      border-radius: 8px;
+    }
+    
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📊 採購彙總</h1>
+      <p>統整相同品項、一鍵勾選、單價套用、折扣分攤</p>
+      <a href="<?= appUrl ?>" class="btn btn-secondary">← 回主選單</a>
+    </div>
+    
+    <div class="toolbar">
+      <button onclick="loadSummary()" class="btn btn-primary">🔄 重新載入</button>
+      <button onclick="toggleDiscountPanel()" class="btn btn-success">💰 折扣分攤工具</button>
+    </div>
+    
+    <!-- 折扣分攤面板 -->
+    <div class="discount-panel" id="discountPanel">
+      <h3>💰 折扣分攤計算</h3>
+      <p>選取要分攤折扣的品項（勾選後），輸入實付金額，系統會自動依比例計算每個商品的實際單價</p>
+      
+      <div class="input-group">
+        <label>實付金額（日圓）：</label>
+        <input type="number" id="actualPaid" placeholder="例如：25000">
+      </div>
+      
+      <button onclick="calculateDiscount()" class="btn btn-primary">計算折扣分攤</button>
+      
+      <div id="discountResult" style="margin-top: 20px;"></div>
+    </div>
+    
+    <!-- 載入中 -->
+    <div id="loading" class="loading">
+      🔄 載入中...
+    </div>
+    
+    <!-- 彙總表格 -->
+    <div id="summaryContainer" style="display: none;">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th width="50">選取</th>
+            <th>商品名稱</th>
+            <th>SKU</th>
+            <th>顏色</th>
+            <th>尺寸</th>
+            <th width="80">總數量</th>
+            <th width="80">訂單數</th>
+            <th width="120">單價</th>
+            <th width="200">操作</th>
+          </tr>
+        </thead>
+        <tbody id="summaryTable"></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <script>
+    let summaryData = [];
+    let selectedItems = [];
+    
+
+    
+    function loadSummary() {
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('summaryContainer').style.display = 'none';
+      
+      google.script.run
+        .withSuccessHandler(handleSummarySuccess)
+        .withFailureHandler(handleError)
+        .apiGetProcurementSummary();
+    }
+    
+    function handleSummarySuccess(result) {
+      document.getElementById('loading').style.display = 'none';
+      
+      if (result.success) {
+        summaryData = result.data;
+        renderSummary();
+        document.getElementById('summaryContainer').style.display = 'block';
+      } else {
+        alert('載入失敗：' + result.error);
+      }
+    }
+    
+    function renderSummary() {
+      const tbody = document.getElementById('summaryTable');
+      tbody.innerHTML = '';
+      
+      if (summaryData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;">暫無資料</td></tr>';
+        return;
+      }
+      
+      summaryData.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="checkbox" class="checkbox" data-index="${index}" onchange="handleCheckbox(${index})"></td>
+          <td>${item.productName || '-'}</td>
+          <td>${item.sku || '-'}</td>
+          <td>${item.color || '-'}</td>
+          <td>${item.size || '-'}</td>
+          <td><strong>${item.totalQty}</strong></td>
+          <td>${item.orderCount} 張</td>
+          <td><input type="number" class="price-input" id="price_${index}" value="${item.actualPurchasePrice || ''}" placeholder="單價"></td>
+          <td>
+            <button onclick="selectAllRows(${index})" class="btn btn-primary" style="font-size: 12px;">勾選相關行</button>
+            <button onclick="applyPrice(${index})" class="btn btn-success" style="font-size: 12px;">套用單價</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+    
+    function handleCheckbox(index) {
+      const checkbox = document.querySelector(`input[data-index="${index}"]`);
+      if (checkbox.checked) {
+        if (!selectedItems.includes(index)) selectedItems.push(index);
+      } else {
+        selectedItems = selectedItems.filter(i => i !== index);
+      }
+    }
+    
+    function selectAllRows(index) {
+      const item = summaryData[index];
+      if (!item) return;
+      
+      if (!confirm(`確定要勾選所有包含此品項的 Queue 行嗎？\n\n商品：${item.productName}\nSKU：${item.sku}\n總數量：${item.totalQty}`)) return;
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            alert(`✅ 已勾選 ${result.affectedRows} 個 Queue 行`);
+          } else {
+            alert('操作失敗：' + result.error);
+          }
+        })
+        .withFailureHandler(handleError)
+        .apiSelectRowsByKey(item.key);
+    }
+    
+    function applyPrice(index) {
+      const item = summaryData[index];
+      const price = parseFloat(document.getElementById(`price_${index}`).value);
+      
+      if (!price || price <= 0) {
+        alert('請輸入有效的單價');
+        return;
+      }
+      
+      if (!confirm(`確定要將單價 ${price} 套用到所有相關 Queue 行嗎？\n\n商品：${item.productName}\n受影響行數：約 ${item.orderCount} 行`)) return;
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            alert(`✅ 已套用單價到 ${result.affectedRows} 個 Queue 行`);
+            item.actualPurchasePrice = price;
+          } else {
+            alert('操作失敗：' + result.error);
+          }
+        })
+        .withFailureHandler(handleError)
+        .apiApplyUnitPriceToKey(item.key, price);
+    }
+    
+    function toggleDiscountPanel() {
+      document.getElementById('discountPanel').classList.toggle('active');
+    }
+    
+    function calculateDiscount() {
+      const actualPaid = parseFloat(document.getElementById('actualPaid').value);
+      
+      if (!actualPaid || actualPaid <= 0) {
+        alert('請輸入有效的實付金額');
+        return;
+      }
+      
+      if (selectedItems.length === 0) {
+        alert('請先勾選要分攤折扣的品項');
+        return;
+      }
+      
+      const items = selectedItems.map(index => {
+        const item = summaryData[index];
+        const listPrice = parseFloat(document.getElementById(`price_${index}`).value) || item.actualPurchasePrice || 0;
+        return {
+          key: item.key,
+          productName: item.productName,
+          totalQty: item.totalQty,
+          listPrice: listPrice
+        };
+      });
+      
+      google.script.run
+        .withSuccessHandler(showDiscountResult)
+        .withFailureHandler(handleError)
+        .apiCalculateDiscount(items, actualPaid);
+    }
+    
+    function showDiscountResult(result) {
+      if (!result.success) {
+        alert('計算失敗：' + result.error);
+        return;
+      }
+      
+      const resultDiv = document.getElementById('discountResult');
+      let html = '<h4>計算結果</h4>';
+      html += `<p>原價總額：¥${result.totalOriginal.toFixed(2)}</p>`;
+      html += `<p>實付金額：¥${result.totalAfterDiscount.toFixed(2)}</p>`;
+      html += `<p>折扣比例：${(result.discountRate * 100).toFixed(2)}%</p>`;
+      html += '<table class="summary-table" style="margin-top: 10px;"><thead><tr><th>商品</th><th>數量</th><th>原單價</th><th>實際單價</th></tr></thead><tbody>';
+      
+      result.items.forEach(item => {
+        html += `<tr>
+          <td>${item.productName}</td>
+          <td>${item.totalQty}</td>
+          <td>¥${item.listPrice.toFixed(2)}</td>
+          <td><strong>¥${item.actualUnitPrice.toFixed(2)}</strong></td>
+        </tr>`;
+      });
+      
+      html += '</tbody></table>';
+      html += '<button onclick="applyDiscountResult()" class="btn btn-success" style="margin-top: 15px;">✅ 確認套用到 Queue</button>';
+      
+      resultDiv.innerHTML = html;
+      window.discountResult = result;
+    }
+    
+    function applyDiscountResult() {
+      if (!window.discountResult) return;
+      if (!confirm('確定要將計算結果套用到 Queue 表嗎？')) return;
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            alert(`✅ 已套用到 ${result.affectedRows} 個 Queue 行`);
+            loadSummary();
+            document.getElementById('discountPanel').classList.remove('active');
+          } else {
+            alert('套用失敗：' + result.error);
+          }
+        })
+        .withFailureHandler(handleError)
+        .apiApplyDiscountToQueue(window.discountResult.items);
+    }
+    
+    function handleError(error) {
+      console.error(error);
+      alert('發生錯誤：' + error.message);
+      document.getElementById('loading').style.display = 'none';
+    }
+    
+    window.onload = function() {
+      loadSummary();
+    };
+  </script>
+</body>
+</html>

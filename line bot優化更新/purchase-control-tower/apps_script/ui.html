@@ -1,0 +1,370 @@
+<!doctype html>
+<meta charset="utf-8">
+<script>
+// ====== 基礎工具 ======
+const EXEC_BASE = '<?= ScriptApp.getService().getUrl(); ?>';
+function qs(id){ return document.getElementById(id); }
+function msg(s){ qs('msg').innerHTML = s; }
+function busyOn(text){ const el=qs('busy'); el.style.display='inline-block'; el.textContent=text||'處理中…'; }
+function busyOff(){ const el=qs('busy'); el.style.display='none'; }
+function int(v){ v=parseFloat(v); return isNaN(v)?0:v; }
+function floor(v){ return Math.floor(v); }
+async function api(path){
+  const url = EXEC_BASE + (path.startsWith('?')? path : ('?'+path));
+  // 不帶 credentials，避免跨網域轉址時被 CORS 攔下（Apps Script 回應為 *）
+  const r = await fetch(url);
+  const ct = r.headers.get('content-type')||'';
+  if(!ct.includes('application/json')){
+    // 以文字回傳錯誤，方便除錯
+    const t = await r.text();
+    return {ok:false, error:'非 JSON 回應', text:t};
+  }
+  return await r.json();
+}
+
+// ====== 載入 ======
+window.addEventListener('load', refresh);
+window.addEventListener('load', function(){
+  var el = document.getElementById('docDate');
+  if(el && !el.value){
+    var d = new Date();
+    var yyyy = d.getFullYear();
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    var dd = String(d.getDate()).padStart(2,'0');
+    el.value = yyyy + '-' + mm + '-' + dd;
+  }
+});
+
+// 統計 + 已購未回寫
+async function refresh(){
+  busyOn('載入中…');
+  let j = await api('?action=listQueue');
+  if(!j.ok && /尚未設定試算表 ID/.test(j.error||'')){
+    // 自動初始化並綁定
+    await api('?action=initSheets');
+    j = await api('?action=listQueue');
+  }
+  if(!j.ok){ msg('載入失敗：'+j.error); return; }
+  const d=j.data;
+  qs('stats').innerHTML = '<b>統計</b><div class="row">'
+    + '<span class="tag">待購 '+d.counts.pending+'</span>'
+    + '<span class="tag">鎖定 '+d.counts.locked+'</span>'
+    + '<span class="tag">已購 '+d.counts.done+'</span>'
+    + '<span class="tag">已購未回寫 '+d.counts.toWrite+'</span>'
+    + '</div>';
+  renderToWrite(d.toWriteRows||[]);
+  await loadCandidates();
+  await loadBatches();
+  busyOff();
+}
+
+function renderToWrite(rows){
+  var body=(rows||[]).map(function(x){
+    return '<tr>'
+      + '<td>'+(x['ES訂單號']||'')+'</td>'
+      + '<td>'+(x['ERP銷貨單號']||'')+'</td>'
+      + '<td>'+(x['SKU']||'')+'</td>'
+      + '<td>'+(x['顏色']||'')+'</td>'
+      + '<td>'+(x['尺寸']||'')+'</td>'
+      + '<td>'+(x['數量']||'')+'</td>'
+      + '<td>'+(x['採購備註']||'')+'</td>'
+      + '</tr>';
+  }).join('');
+  qs('list').innerHTML = '<table><thead><tr>'
+    + '<th>ES訂單</th><th>ERP單</th><th>SKU</th><th>色</th><th>尺</th><th>數</th><th>備註</th>'
+    + '</tr></thead><tbody>'+body+'</tbody></table>';
+}
+
+// 匯出摘要 CSV
+async function exportCsv(){
+  busyOn('產生 CSV…');
+  const j = await api('?action=exportEcountCsv');
+  if(!j.ok){ msg('匯出失敗：'+j.error); return; }
+  var a=j.data;
+  var html='已產生：<a target="_blank" href="'+a.memo.url+'">'+a.memo.name+'</a>';
+  if(a.status){ html+='、<a target="_blank" href="'+a.status.url+'">'+a.status.name+'</a>'; }
+  msg(html);
+  refresh();
+  busyOff();
+}
+
+// 匯入（Drive 檔案ID）
+async function importEs(){
+  var id=qs('fileId').value.trim();
+  if(!id){ qs('importMsg').innerText='請貼上 Drive 檔案 ID'; return; }
+  busyOn('匯入中…');
+  let j=await api('?action=importEsXlsx&fileId='+encodeURIComponent(id));
+  if(!j.ok && /尚未設定試算表 ID/.test(j.error||'')){
+    await api('?action=initSheets');
+    j=await api('?action=importEsXlsx&fileId='+encodeURIComponent(id));
+  }
+  if(!j.ok){ qs('importMsg').innerText='匯入失敗：'+j.error; return; }
+  qs('importMsg').innerText='已匯入 '+j.data.inserted+' 筆（Products）';
+  refresh();
+  busyOff();
+}
+
+// 匯入（本機上傳）
+function importEsLocal(){
+  var f=qs('esFile').files[0];
+  if(!f){ qs('importMsg').innerText='請選擇 Excel 檔（.xlsx）'; return; }
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var dataUrl=ev.target.result||'';
+    var b64 = (dataUrl.indexOf(',')>=0 ? dataUrl.split(',')[1] : dataUrl);
+    if(!(window.google && google.script && google.script.run)){
+      qs('importMsg').innerText='此功能需在 GAS 網頁中開啟（HtmlService）';
+      return;
+    }
+    qs('importMsg').innerText='上傳中...';
+    busyOn('上傳中…');
+    google.script.run
+      .withSuccessHandler(function(res){
+        if(res && res.ok){
+          qs('importMsg').innerText='已匯入 '+((res.data && res.data.inserted)||0)+' 筆（本機上傳）';
+          refresh();
+        }else{
+          qs('importMsg').innerText='匯入失敗：'+(res && res.error);
+        }
+        busyOff();
+      })
+      .withFailureHandler(function(err){ qs('importMsg').innerText='匯入失敗：'+err; busyOff(); })
+      .importEsXlsxUploaded(f.name, b64);
+  };
+  reader.readAsDataURL(f);
+}
+
+// 待處理清單
+function picked(){ return Array.prototype.slice.call(document.querySelectorAll('.pick:checked')).map(function(el){ return el.value; }).join(','); }
+function recalc(){
+  var rate=int(qs('rate').value), shipping=int(qs('shipping').value);
+  var picks=Array.prototype.slice.call(document.querySelectorAll('.pick:checked')).map(function(cb){ return parseInt(cb.value,10); });
+  var sumJpy=0;
+  picks.forEach(function(r){
+    var price=int((document.querySelector('.price[data-row="'+r+'"]').value)||'0');
+    var tr=document.querySelector('.pick[value="'+r+'"]').closest('tr');
+    var qty=int((tr && tr.querySelectorAll('td')[6] && tr.querySelectorAll('td')[6].textContent) || '1');
+    sumJpy += price*qty;
+  });
+  var totalJpy=sumJpy+shipping, totalTwd=rate? floor(totalJpy*rate):0;
+  qs('sum').innerText='合計：商品合計 JPY '+sumJpy+' + 運費 JPY '+shipping+' = JPY '+totalJpy+'；TWD(無條件捨去) '+totalTwd;
+}
+
+async function loadCandidates(){
+  const j=await api('?action=listCandidates');
+  if(!j.ok) return;
+  var rows=(j.data.rows||[]).map(function(x){
+    var price=x['採購單價JPY']||'';
+    var cols=[
+      '<input type="checkbox" class="pick" value="'+x.rowIndex+'"/>',
+      x['ES訂單號']||'', x['SKU']||'', x['品名']||'', x['顏色']||'', x['尺寸']||'', x['數量']||'',
+      '<input type="number" class="price" data-row="'+x.rowIndex+'" value="'+price+'" style="width:100px"/>',
+      x['採購狀態']||'', x['採購批次ID']||''
+    ];
+    return '<tr>'+cols.map(function(v){ return '<td>'+v+'</td>'; }).join('')+'</tr>';
+  }).join('');
+  qs('candidates').innerHTML = '<table><thead><tr><th><input type="checkbox" id="pickAll"/></th><th>ES訂單</th><th>SKU</th><th>品名</th><th>色</th><th>尺</th><th>數</th><th>單價JPY</th><th>狀態</th><th>批次</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  var a=qs('pickAll');
+  if(a){ a.addEventListener('change', function(){ Array.prototype.forEach.call(document.querySelectorAll('.pick'), function(cb){ cb.checked=a.checked; }); }); }
+  Array.prototype.forEach.call(document.querySelectorAll('.price'), function(el){ el.addEventListener('input', recalc); });
+  Array.prototype.forEach.call(document.querySelectorAll('.pick'), function(el){ el.addEventListener('change', recalc); });
+  qs('rate').addEventListener('input', recalc);
+  qs('shipping').addEventListener('input', recalc);
+  recalc();
+}
+
+// 標記
+async function updateSel(op, extra){
+  var rows=picked();
+  if(!rows){ msg('請先勾選列'); return; }
+  var url='?action=updateSelection&op='+op+'&rows='+encodeURIComponent(rows);
+  if(extra){ url+=extra; }
+  busyOn('更新中…');
+  const j=await api(url);
+  if(!j.ok){ msg('更新失敗：'+j.error); return; }
+  if(j.data && j.data.batchId){ msg('已標記 '+j.data.updated+' 筆，批次 '+j.data.batchId); }
+  else { msg('已更新 '+j.data.updated+' 筆'); }
+  refresh();
+  busyOff();
+}
+function markPurchasedNewBatch(){
+  var sup=qs('supplier').value, jp=qs('jpOrder').value.trim();
+  var order=picked().split(',').map(function(s){ return parseInt(s,10); }).filter(Boolean);
+  var priceMap=order.map(function(r){ var el=document.querySelector('.price[data-row="'+r+'"]'); return (el && el.value)? el.value:'0'; }).join(',');
+  var rate=qs('rate').value||'', shipping=qs('shipping').value||'';
+  var extra='&supplier='+encodeURIComponent(sup)+'&jpOrder='+encodeURIComponent(jp)+'&prices='+encodeURIComponent(priceMap)+'&rate='+encodeURIComponent(rate)+'&shipping='+encodeURIComponent(shipping);
+  updateSel('purchaseNewBatch', extra);
+}
+function markPurchasedOnly(){
+  var order=picked().split(',').map(function(s){ return parseInt(s,10); }).filter(Boolean);
+  if(!order.length){ msg('請先勾選列'); return; }
+  var priceMap=order.map(function(r){ var el=document.querySelector('.price[data-row="'+r+'"]'); return (el && el.value)? el.value:'0'; }).join(',');
+  var extra='&prices='+encodeURIComponent(priceMap);
+  updateSel('markPurchasedOnly', extra);
+}
+function markOOS(){ updateSel('markOOS'); }
+function markPreorder(){
+  var rows=picked(); if(!rows){ msg('請先勾選列'); return; }
+  var ymRaw=qs('preYm').value.trim();
+  if(!ymRaw){ msg('請輸入預購月份'); return; }
+  var ym=ymRaw;
+  if(/^[0-9]{1,2}$/.test(ymRaw)){
+    var year=new Date().getFullYear();
+    ym=year + '-' + ymRaw.padStart(2,'0');
+  } else if(/^[0-9]{4}$/.test(ymRaw)){
+    ym=ymRaw + '-01';
+  }
+  if(!/^[0-9]{4}-[0-9]{2}$/.test(ym)){ msg('請輸入預購月份（格式 YYYY-MM，例如 2025-11）'); return; }
+  qs('preYm').value = ym; // 回填標準格式
+  var xu=qs('preXun').value;
+  var extra='&preYm='+encodeURIComponent(ym)+'&preXun='+encodeURIComponent(xu);
+  updateSel('markPreorder', extra);
+}
+
+// 批次清單/下載
+async function loadBatches(){
+  const j=await api('?action=listBatches');
+  if(!j.ok) return;
+  var rows=(j.data.rows||[]).map(function(b){
+    var a='<a href="#" onclick="downloadBatchPo(\''+b.id+'\')">下載</a>';
+    return '<tr><td>'+b.created+'</td><td>'+b.id+'</td><td>'+b.supplier+'</td><td>'+(b.rate||'')+'</td><td>'+(b.shipping||'')+'</td><td>'+b.count+'</td><td>'+a+'</td></tr>';
+  }).join('');
+  qs('batchList').innerHTML = '<table><thead><tr><th>建立時間</th><th>批次ID</th><th>供應商</th><th>匯率</th><th>運費JPY</th><th>筆數</th><th>操作</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+function downloadBatchByInput(){
+  var id=qs('batchIdInput').value.trim();
+  if(!id){ msg('請輸入批次ID'); return; }
+  downloadBatchPo(id);
+}
+
+// 下載『批次 ECOUNT 採購單』Excel（與「下載選取 ECOUNT 採購單 Excel」一致）
+function downloadBatchPo(id){
+  busyOn('產生 Excel…');
+  api('?action=exportBatchEcountPo&batchId='+encodeURIComponent(id))
+    .then(function(j){
+      if(!j.ok){ msg('下載失敗：'+j.error); return; }
+      var f=j.data.file; msg('已產生：<a target="_blank" href="'+f.url+'">'+f.name+'</a>');
+      window.open(f.url,'_blank');
+    })
+    .catch(function(err){ msg('下載失敗：'+err); })
+    .finally(function(){ busyOff(); });
+}
+
+function downloadSelectedItems(){
+  var rows=picked(); if(!rows){ msg('請先勾選列'); return; }
+  var sup=qs('supplier').value; var shipping=qs('shipping').value||'';
+  busyOn('產生 CSV…');
+  api('?action=exportSelectedItemsCsv&rows='+encodeURIComponent(rows)+'&supplier='+encodeURIComponent(sup)+'&shipping='+encodeURIComponent(shipping))
+    .then(function(j){
+      if(!j.ok){ msg('下載失敗：'+j.error); return; }
+      var f=j.data.file; msg('已產生：<a target="_blank" href="'+f.url+'">'+f.name+'</a>');
+      window.open(f.url,'_blank');
+    })
+    .catch(function(err){ msg('下載失敗：'+err); })
+    .finally(function(){ busyOff(); });
+}
+
+function downloadSelectedEcountPo(){
+  var rows=picked(); if(!rows){ msg('請先勾選列'); return; }
+  var sup=qs('supplier').value; var jp=qs('jpOrder').value||''; var rate=qs('rate').value||''; var shipping=qs('shipping').value||'';
+  // 傳遞勾選列對應的單價（即便未先標記，也能用 UI 單價）
+  var order=rows.split(',').map(function(s){ return parseInt(s,10); }).filter(Boolean);
+  var priceMap=order.map(function(r){ var el=document.querySelector('.price[data-row="'+r+'"]'); return (el && el.value)? el.value:'0'; }).join(',');
+  var doc = (document.getElementById('docDate')||{}).value || '';
+  var docYmd = doc ? doc.replace(/-/g,'') : '';
+  busyOn('產生 Excel…');
+  api('?action=exportSelectedEcountPoCsv'
+      +'&rows='+encodeURIComponent(rows)
+      +'&supplier='+encodeURIComponent(sup)
+      +'&jpOrder='+encodeURIComponent(jp)
+      +'&rate='+encodeURIComponent(rate)
+      +'&shipping='+encodeURIComponent(shipping)
+      +'&prices='+encodeURIComponent(priceMap)
+      +'&docDate='+encodeURIComponent(docYmd)
+      +'&format=xlsx')
+    .then(function(j){
+      if(!j.ok){ msg('下載失敗：'+j.error); return; }
+      var f=j.data.file; msg('已產生：<a target="_blank" href="'+f.url+'">'+f.name+'</a>');
+      window.open(f.url,'_blank');
+    })
+    .catch(function(err){ msg('下載失敗：'+err); })
+    .finally(function(){ busyOff(); });
+}
+
+// 全域掛載（避免 onclick 找不到）
+window.importEsLocal=importEsLocal;
+window.importEs=importEs;
+window.markPurchasedNewBatch=markPurchasedNewBatch;
+window.markOOS=markOOS;
+window.markPreorder=markPreorder;
+window.downloadBatchByInput=downloadBatchByInput;
+window.downloadBatchPo=downloadBatchPo;
+window.downloadSelectedEcountPo=downloadSelectedEcountPo;
+</script>
+<style>
+  body{font-family:-apple-system,Segoe UI,Roboto,Arial; padding:20px; line-height:1.6}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  button{padding:8px 14px;border-radius:10px;border:1px solid #ddd;cursor:pointer;background:#fff}
+  .card{border:1px solid #eee;border-radius:14px;padding:14px;margin-top:14px}
+  table{border-collapse:collapse;width:100%}
+  th,td{border-bottom:1px solid #f0f0f0;padding:6px 8px;font-size:13px}
+  .tag{padding:2px 8px;border-radius:999px;background:#f3f4f6;font-size:12px}
+</style>
+
+<h2>採購控制塔 PRO（Safari 版）</h2>
+<div class="row">
+  <button onclick="exportCsv()">⏬ 產生 ECOUNT 匯入 CSV（摘要）</button>
+  <button onclick="refresh()">🔄 重新整理</button>
+  <span id="busy" style="display:none;margin-left:8px;padding:2px 8px;background:#eef;border:1px solid #99f;border-radius:6px;color:#334">處理中…</span>
+  <span id="msg"></span>
+  </div>
+
+<div class="card">
+  <h3>匯入 EasyStore Excel</h3>
+  <div class="row">
+    <input id="fileId" placeholder="貼上 Drive 檔案 ID（.xlsx）" style="min-width:360px;padding:6px 8px"/>
+    <button onclick="importEs()">📥 由 Drive 檔案ID 匯入</button>
+    <span style="color:#888">或</span>
+    <input type="file" id="esFile" accept=".xlsx,.xls"/>
+    <button onclick="importEsLocal()">📤 上傳本機 Excel 匯入</button>
+    <small>連結例：https://drive.google.com/file/d/這段就是檔案ID/view</small>
+  </div>
+  <div id="importMsg"></div>
+</div>
+
+<div id="stats" class="card"></div>
+
+<div class="card">
+  <h3>待處理清單（勾選後標記）</h3>
+  <div class="row" style="gap:8px;margin-bottom:8px">
+    <label>供應商 <select id="supplier"><option value="freak-j">freak-j</option><option value="zozo-h">zozo-h</option></select></label>
+    <input id="jpOrder" placeholder="日本訂單號（選填）"/>
+    <label>匯率 <input id="rate" placeholder="例：0.21" style="width:100px"/></label>
+    <label>單據日期 <input id="docDate" type="date" style="width:160px"/></label>
+    <label>運費JPY <input id="shipping" placeholder="0" style="width:120px"/></label>
+    <button onclick="markPurchasedOnly()">✅ 只標記已購（不建批次）</button>
+    <button onclick="markPurchasedNewBatch()">✅ 標記已購（建立新批次）</button>
+    <button onclick="downloadSelectedItems()">⬇️ 下載選取 items CSV</button>
+    <button onclick="downloadSelectedEcountPo()">⬇️ 下載選取 ECOUNT 採購單 Excel</button>
+    <button onclick="markOOS()">⛔ 標記缺貨</button>
+    <label>預購月份 <input id="preYm" placeholder="YYYY-MM" style="width:120px"/></label>
+    <label>旬 <select id="preXun"><option>上</option><option>中</option><option>下</option></select></label>
+    <button onclick="markPreorder()">🗓️ 標記預購</button>
+  </div>
+  <div id="candidates"></div>
+  <div id="sum" style="margin-top:8px;color:#555"></div>
+</div>
+
+<div class="card">
+  <h3>批次下載</h3>
+  <div class="row" style="gap:8px;margin-bottom:8px">
+    <input id="batchIdInput" placeholder="輸入批次ID 例：freak-j-20251022-123045" style="min-width:320px"/>
+    <button onclick="downloadBatchByInput()">⬇️ 下載該批次 採購單 Excel</button>
+  </div>
+  <div id="batchList"></div>
+  </div>
+
+<div class="card">
+  <h3>已購但未回寫 ERP</h3>
+  <div id="list"></div>
+</div>

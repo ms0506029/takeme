@@ -1,0 +1,55 @@
+<!-- 客戶管理頁面 -->
+<div id="customersContent" class="page-content" style="display: none;">
+    <div class="content-card">
+        <div class="content-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-users me-2"></i>會員綁定管理</h5>
+            <button class="btn btn-light btn-sm" onclick="loadCustomerBindings()">
+                <i class="fas fa-sync-alt me-1"></i>重新整理
+            </button>
+        </div>
+        <div class="content-body">
+            <!-- 搜尋區 -->
+            <div class="filter-section mb-3">
+                <div class="row align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">搜尋</label>
+                        <input type="text" class="form-control" id="customerSearch" 
+                               placeholder="輸入 Email 或 LINE 名稱" onkeyup="filterCustomers()">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">綁定狀態</label>
+                        <select class="form-select" id="bindingFilter" onchange="filterCustomers()">
+                            <option value="">全部</option>
+                            <option value="bound">已綁定</option>
+                            <option value="unbound">未綁定</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100" onclick="filterCustomers()">
+                            <i class="fas fa-search me-1"></i>搜尋
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 會員表格 -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>會員姓名</th>
+                            <th>Email</th>
+                            <th>訂單總數</th>
+                            <th>綁定狀態</th>
+                            <th>綁定時間</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <tr><td colspan="6" class="text-center text-muted">載入中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

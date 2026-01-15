@@ -1,0 +1,90 @@
+<!-- 儀表板頁面 -->
+<div id="dashboardContent" class="page-content">
+    <!-- 統計卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="stats-card">
+                <i class="fas fa-shopping-cart stats-icon"></i>
+                <div class="stats-number" id="totalOrders">0</div>
+                <div class="stats-label">總訂單數</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stats-card">
+                <i class="fas fa-clock stats-icon"></i>
+                <div class="stats-number" id="pendingOrders">0</div>
+                <div class="stats-label">待處理訂單</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stats-card">
+                <i class="fas fa-check-circle stats-icon"></i>
+                <div class="stats-number" id="completedOrders">0</div>
+                <div class="stats-label">已完成訂單</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stats-card">
+                <i class="fas fa-users stats-icon"></i>
+                <div class="stats-number" id="totalCustomers">0</div>
+                <div class="stats-label">客戶總數</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 待辦事項 -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="stats-card" style="border-left-color: #e17055;">
+                <i class="fas fa-exclamation-triangle stats-icon" style="color: #e17055;"></i>
+                <div class="stats-number" id="oosCount" style="color: #e17055;">0</div>
+                <div class="stats-label">待通知缺貨</div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="stats-card" style="border-left-color: #74b9ff;">
+                <i class="fas fa-shipping-fast stats-icon" style="color: #74b9ff;"></i>
+                <div class="stats-number" id="shippingCount" style="color: #74b9ff;">0</div>
+                <div class="stats-label">待通知物流</div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="stats-card" style="border-left-color: #00b894;">
+                <i class="fab fa-line stats-icon" style="color: #00b894;"></i>
+                <div class="stats-number" id="bindingCount" style="color: #00b894;">0</div>
+                <div class="stats-label">已綁定會員</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 快速操作 -->
+    <div class="content-card">
+        <div class="content-header">
+            <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>快速操作</h5>
+        </div>
+        <div class="content-body">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <button class="btn btn-outline-primary w-100" onclick="refreshData()">
+                        <i class="fas fa-sync-alt me-2"></i>同步 EasyStore 資料
+                    </button>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <button class="btn btn-outline-success w-100" onclick="syncLineUserIds()" id="btnSyncLineUserIds">
+                        <i class="fab fa-line me-2"></i>同步 LINE User ID
+                    </button>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <button class="btn btn-outline-warning w-100" onclick="goToPage('notifications')">
+                        <i class="fas fa-bell me-2"></i>通知管理
+                    </button>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <button class="btn btn-outline-info w-100" onclick="goToPage('customers')">
+                        <i class="fas fa-users me-2"></i>客戶管理
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

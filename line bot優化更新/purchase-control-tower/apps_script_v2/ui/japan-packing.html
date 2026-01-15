@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本裝箱管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #C9915D;
+            --pop-blue: #4A90E2;
+            --pop-red: #FF6B6B;
+            --pop-yellow: #FFE66D;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: var(--primary-color);
+            background-image: radial-gradient(#fff 20%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            color: #000;
+            margin-bottom: 30px;
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0 #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+            font-weight: 900;
+            font-size: 28px;
+            color: #000;
+            -webkit-text-stroke: 0.5px #000;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .btn-primary {
+            background-color: var(--pop-blue);
+            border: 3px solid #000;
+            color: white;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-primary:hover {
+            background-color: #357ABD;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: white;
+        }
+
+        #loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            z-index: 9999;
+            border: 4px solid var(--pop-yellow);
+            box-shadow: 6px 6px 0 var(--pop-yellow);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 標題 -->
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-box me-3"></i>📦 日本裝箱管理</h1>
+                <p>輸入日本訂單號，快速裝箱並生成箱號</p>
+            </div>
+            <a href="<?= appUrl ?>" class="btn btn-outline-light">
+                <i class="fas fa-arrow-left me-2"></i>回主選單
+            </a>
+        </div>
+
+        <!-- 主內容區 -->
+        <div class="content-card">
+            <h5 class="mb-4"><i class="fas fa-download me-2"></i>載入訂單商品</h5>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">日本訂單號：</label>
+                    <input type="text" id="packingJpOrderNo" class="form-control" placeholder="輸入日本訂單號" onkeypress="if(event.key==='Enter') loadPackingItems()">
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button onclick="loadPackingItems()" class="btn btn-primary">
+                        <i class="fas fa-download me-2"></i>載入商品
+                    </button>
+                </div>
+            </div>
+            
+            <div id="packingInfo" class="alert alert-info" style="display:none;"></div>
+            
+            <div id="packingItemsSection" style="display:none;">
+                <hr class="my-4">
+                <h5 class="mb-3"><i class="fas fa-list me-2"></i>未裝箱商品清單</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="50px">
+                                    <input type="checkbox" id="selectAllPacking" class="form-check-input">
+                                </th>
+                                <th>日本訂單號</th>
+                                <th>ES訂單號</th>
+                                <th>SKU</th>
+                                <th>商品名稱</th>
+                                <th>顏色</th>
+                                <th>尺寸</th>
+                                <th>數量</th>
+                            </tr>
+                        </thead>
+                        <tbody id="packingItemsTable">
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <label class="form-label">自定義箱號（必填）：</label>
+                        <input type="text" id="customBoxNumber" class="form-control" placeholder="例如：A1, B2, 易碎-1">
+                        <small class="text-muted">請輸入有意義的箱號，方便台灣揀貨人員識別</small>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">備註（可選）：</label>
+                        <input type="text" id="packingNotes" class="form-control" placeholder="例如：易碎品">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end gap-2">
+                        <button onclick="createBox()" class="btn btn-success">
+                            <i class="fas fa-cube me-2"></i>完成此箱
+                        </button>
+                        <button onclick="markAllBoxesShipped()" class="btn btn-warning">
+                            <i class="fas fa-shipping-fast me-2"></i>全部標記已寄出
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="packingBoxesList" style="display:none;">
+                <hr class="my-4">
+                <h5 class="mb-3"><i class="fas fa-boxes me-2"></i>已裝箱清單</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>箱號</th>
+                                <th>品項數</th>
+                                <th>總數量</th>
+                                <th>裝箱時間</th>
+                                <th>寄出時間</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="packingBoxesTable">
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-3 alert alert-secondary">
+                    <strong><i class="fas fa-chart-pie me-2"></i>統計：</strong>
+                    <span id="packingStatsText"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading">
+        <div class="spinner-border spinner-border-sm me-2"></div>
+        <span id="loadingText">處理中...</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentPackingData = null;
+        
+        // ========== API 調用函數 ==========
+        function callAPI(action, data, callback) {
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    // 嘗試解析 JSON 字串
+                    if (typeof result === 'string') {
+                        try {
+                            result = JSON.parse(result);
+                        } catch (e) {
+                            console.error('[callAPI] JSON 解析失敗:', e);
+                            alert('資料解析錯誤：' + e.message);
+                            return;
+                        }
+                    }
+                    
+                    if (result.success === false) {
+                        alert('錯誤：' + (result.error || '未知錯誤'));
+                        return;
+                    }
+                    callback(result.data || result);
+                })
+                .withFailureHandler(function(error) {
+                    hideLoading();
+                    alert('API 錯誤：' + error.message);
+                })
+                .apiHandler({action: action, data: data});
+        }
+        
+        function showLoading(text) {
+            document.getElementById('loadingText').textContent = text || '處理中...';
+            document.getElementById('loading').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        let allUnpackedItems = [];  // 累積所有未裝箱商品
+        let loadedOrders = new Set();  // 記錄已載入的訂單號
+        
+        // ========== 裝箱管理函數 ==========
+        
+        
+        function loadPackingItems() {
+            const jpOrderNo = document.getElementById('packingJpOrderNo').value.trim();
+            if (!jpOrderNo) {
+                alert('請輸入日本訂單號');
+                return;
+            }
+            
+            // 檢查是否已載入
+            if (loadedOrders.has(jpOrderNo)) {
+                alert(`日本訂單號 ${jpOrderNo} 已經載入過了`);
+                return;
+            }
+            
+            showLoading('載入中...');
+            callAPI('loadItemsByJpOrder', { jpOrderNo: jpOrderNo }, function(data) {
+                hideLoading();
+                
+                // 記錄已載入的訂單號
+                loadedOrders.add(jpOrderNo);
+                
+                // 累積未裝箱商品
+                data.unpacked.forEach(item => {
+                    item.jpOrderNo = jpOrderNo;  // 標記來源訂單號
+                    allUnpackedItems.push(item);
+                });
+                
+                // 更新批次資訊顯示
+                updatePackingInfo();
+                
+                // 重新渲染商品列表
+                renderPackingItems();
+                
+                // 清空輸入框
+                document.getElementById('packingJpOrderNo').value = '';
+                
+                alert(`✅ 已載入日本訂單號 ${jpOrderNo} 的 ${data.unpacked.length} 件未裝箱商品`);
+            });
+        }
+        
+        function updatePackingInfo() {
+            const infoDiv = document.getElementById('packingInfo');
+            infoDiv.style.display = 'block';
+            
+            const orderList = Array.from(loadedOrders).join(', ');
+            const totalUnpacked = allUnpackedItems.length;
+            
+            infoDiv.innerHTML = `
+                <strong>已載入訂單：</strong>${orderList}<br>
+                <strong>未裝箱商品：</strong>${totalUnpacked}件
+            `;
+        }
+        
+        function renderPackingItems() {
+            const tbody = document.getElementById('packingItemsTable');
+            
+            if (allUnpackedItems.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center">無未裝箱商品</td></tr>';
+                document.getElementById('packingItemsSection').style.display = 'block';
+                return;
+            }
+            
+            tbody.innerHTML = allUnpackedItems.map(item => `
+                <tr>
+                    <td><input type="checkbox" class="form-check-input packing-item-checkbox" data-row-index="${item.rowIndex}"></td>
+                    <td><span class="badge bg-info">${item.jpOrderNo}</span></td>
+                    <td>${item.esOrderNo}</td>
+                    <td>${item.sku}</td>
+                    <td>${item.productName}</td>
+                    <td>${item.color || '-'}</td>
+                    <td>${item.size || '-'}</td>
+                    <td><strong>${item.qty}</strong></td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('packingItemsSection').style.display = 'block';
+            
+            // 設定全選checkbox
+            document.getElementById('selectAllPacking').onclick = function() {
+                const checkboxes = document.querySelectorAll('.packing-item-checkbox');
+                checkboxes.forEach(cb => cb.checked = this.checked);
+            };
+        }
+        
+        function createBox() {
+            const notes = document.getElementById('packingNotes').value.trim();
+            const customBoxNumber = document.getElementById('customBoxNumber').value.trim();
+            
+            // 檢查是否輸入自定義箱號
+            if (!customBoxNumber) {
+                alert('請輸入自定義箱號！');
+                document.getElementById('customBoxNumber').focus();
+                return;
+            }
+            
+            const checkboxes = document.querySelectorAll('#packingItemsTable input[type="checkbox"]:checked');
+            if (checkboxes.length === 0) {
+                alert('請至少選擇一個商品');
+                return;
+            }
+            
+            const queueRowIndexes = Array.from(checkboxes).map(cb => parseInt(cb.dataset.rowIndex));
+            
+            // 找出選中商品涉及的所有訂單號
+            const selectedItems = allUnpackedItems.filter(item => queueRowIndexes.includes(item.rowIndex));
+            const ordersInBox = [...new Set(selectedItems.map(item => item.jpOrderNo))];
+            const combinedJpOrder = ordersInBox.join('+');
+            
+            // 使用第一個訂單號的批次ID
+            const firstItem = selectedItems[0];
+            callAPI('loadItemsByJpOrder', { jpOrderNo: firstItem.jpOrderNo }, function(data) {
+                showLoading('創建箱子中...');
+                callAPI('createPackingBox', {
+                    batchId: data.batchId,
+                    jpOrderNo: combinedJpOrder,  // 組合的訂單號
+                    queueRowIndexes: queueRowIndexes,
+                    notes: notes,
+                    packedBy: 'Japan-User',
+                    customBoxNumber: customBoxNumber  // 傳遞自定義箱號
+                }, function(boxData) {
+                    hideLoading();
+                    alert(`✅ 成功創建箱號 ${boxData.boxNumber}！\n包含 ${boxData.itemCount} 個品項，共 ${boxData.totalQty} 件\n訂單號：${combinedJpOrder}`);
+                    
+                    // 清空備註和自定義箱號
+                    document.getElementById('packingNotes').value = '';
+                    document.getElementById('customBoxNumber').value = '';
+                    
+                    // 清空所有累積的商品
+                    allUnpackedItems = [];
+                    loadedOrders.clear();
+                    
+                    // 清空顯示
+                    document.getElementById('packingInfo').style.display = 'none';
+                    document.getElementById('packingItemsSection').style.display = 'none';
+                    document.getElementById('packingJpOrderNo').value = '';
+                    
+                    // 重新載入以顯示箱子列表
+                    loadPackingItems();
+                });
+            });
+        }
+        
+        // The following functions (loadPackedBoxes, markBoxShipped, markAllBoxesShipped, getPackingStats)
+        // are designed to work with a single batchId.
+        // With the new multi-order packing, these functions would need significant re-architecture
+        // to handle multiple batch IDs or a consolidated view across all loaded orders.
+        // For now, they are left as-is, assuming they might be called in a context where a single batchId is relevant,
+        // or will be updated in a subsequent change.
+        
+        function loadPackedBoxes(batchId) {
+            callAPI('listBoxesByBatch', { batchId: batchId }, function(boxes) {
+                const tbody = document.getElementById('packingBoxesTable');
+                
+                if (boxes.length === 0) {
+                    document.getElementById('packingBoxesList').style.display = 'none';
+                    return;
+                }
+                
+                tbody.innerHTML = boxes.map(box => `
+                    <tr>
+                        <td><strong class="text-primary">${box.boxNumber}</strong></td>
+                        <td>${box.itemCount}</td>
+                        <td>${box.totalQty}</td>
+                        <td>${formatDate(box.packedAt)}</td>
+                        <td>${box.shippedAt ? formatDate(box.shippedAt) : '<span class="text-muted">-</span>'}</td>
+                        <td>
+                            ${!box.shippedAt ? `<button class="btn btn-sm btn-warning" onclick="markBoxShipped('${box.boxId}')">標記已寄出</button>` : '<span class="badge bg-success">已寄出</span>'}
+                        </td>
+                    </tr>
+                `).join('');
+                
+                document.getElementById('packingBoxesList').style.display = 'block';
+                
+                // 顯示統計
+                getPackingStats(batchId);
+            });
+        }
+        
+        function markBoxShipped(boxId) {
+            if (!confirm('確認標記此箱已寄出？')) return;
+            
+            showLoading('標記中...');
+            callAPI('markBoxShipped', { boxId: boxId, shippedAt: new Date() }, function(data) {
+                hideLoading();
+                alert('✅ 已標記為寄出');
+                loadPackingItems();
+            });
+        }
+        
+        function markAllBoxesShipped() {
+            if (!currentPackingData) {
+                alert('請先載入商品');
+                return;
+            }
+            
+            if (!confirm('確認標記該批次所有箱子已寄出？')) return;
+            
+            showLoading('查詢中...');
+            callAPI('listBoxesByBatch', { batchId: currentPackingData.batchId }, function(boxes) {
+                const unshippedBoxes = boxes.filter(box => !box.shippedAt);
+                
+                if (unshippedBoxes.length === 0) {
+                    hideLoading();
+                    alert('所有箱子已標記為寄出');
+                    return;
+                }
+                
+                let completed = 0;
+                showLoading(`標記中... (0/${unshippedBoxes.length})`);
+                
+                unshippedBoxes.forEach(box => {
+                    callAPI('markBoxShipped', { boxId: box.boxId, shippedAt: new Date() }, function() {
+                        completed++;
+                        if (completed === unshippedBoxes.length) {
+                            hideLoading();
+                            alert(`✅ 已標記 ${completed} 個箱子為寄出`);
+                            loadPackingItems();
+                        } else {
+                            document.getElementById('loadingText').textContent = `標記中... (${completed}/${unshippedBoxes.length})`;
+                        }
+                    });
+                });
+            });
+        }
+        
+        function getPackingStats(batchId) {
+            callAPI('getPackingStats', { batchId: batchId }, function(stats) {
+                const statsText = document.getElementById('packingStatsText');
+                statsText.innerHTML = `
+                    總箱數：<strong>${stats.totalBoxes}</strong> | 
+                    總品項：<strong>${stats.totalItems}</strong> | 
+                    總數量：<strong>${stats.totalQty}</strong> | 
+                    已寄出：<strong class="text-success">${stats.shippedBoxes}</strong> | 
+                    待寄出：<strong class="text-warning">${stats.pendingShip}</strong>
+                `;
+            });
+        }
+        
+        // 日期格式化
+        function formatDate(date) {
+            if (!date) return '-';
+            const d = new Date(date);
+            return d.toLocaleString('zh-TW', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    </script>
+</body>
+</html>

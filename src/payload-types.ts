@@ -76,6 +76,8 @@ export interface Config {
     vendors: Vendor;
     'member-levels': MemberLevel;
     'point-transactions': PointTransaction;
+    wishlist: Wishlist;
+    'restock-requests': RestockRequest;
     promotions: Promotion;
     pages: Page;
     categories: Category;
@@ -115,6 +117,8 @@ export interface Config {
     vendors: VendorsSelect<false> | VendorsSelect<true>;
     'member-levels': MemberLevelsSelect<false> | MemberLevelsSelect<true>;
     'point-transactions': PointTransactionsSelect<false> | PointTransactionsSelect<true>;
+    wishlist: WishlistSelect<false> | WishlistSelect<true>;
+    'restock-requests': RestockRequestsSelect<false> | RestockRequestsSelect<true>;
     promotions: PromotionsSelect<false> | PromotionsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
@@ -206,6 +210,10 @@ export interface User {
    * 此用戶所屬的商家帳號
    */
   vendor?: (string | null) | Vendor;
+  /**
+   * 系統自動生成的 13 位會員編號
+   */
+  memberNumber?: string | null;
   phone?: string | null;
   /**
    * 自動由 LINE 綁定流程填入
@@ -1434,6 +1442,77 @@ export interface MemberLevel {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wishlist".
+ */
+export interface Wishlist {
+  id: string;
+  /**
+   * 收藏此商品的顧客
+   */
+  customer: string | User;
+  /**
+   * 收藏的商品
+   */
+  product: string | Product;
+  variant?: {
+    color?: string | null;
+    size?: string | null;
+    sku?: string | null;
+    /**
+     * 加入願望清單時的價格，用於判斷降價
+     */
+    priceAtAdd?: number | null;
+  };
+  /**
+   * 當此商品降價時發送通知
+   */
+  notifyOnPriceDrop?: boolean | null;
+  /**
+   * 避免重複通知相同價格
+   */
+  lastNotifiedPrice?: number | null;
+  lastNotifiedAt?: string | null;
+  addedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * 客戶希望補貨的商品清單
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "restock-requests".
+ */
+export interface RestockRequest {
+  id: string;
+  customer: string | User;
+  product: string | Product;
+  variant?: {
+    color?: string | null;
+    size?: string | null;
+    sku?: string | null;
+  };
+  /**
+   * 通知狀態
+   */
+  status: 'pending' | 'notified' | 'cancelled';
+  /**
+   * 使用的通知管道（自動選擇或手動指定）
+   */
+  notificationChannel?: ('line' | 'email') | null;
+  requestedAt?: string | null;
+  /**
+   * 發送通知的時間
+   */
+  notifiedAt?: string | null;
+  /**
+   * 內部備註（顧客不可見）
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "promotions".
  */
 export interface Promotion {
@@ -1608,6 +1687,14 @@ export interface PayloadLockedDocument {
         value: string | PointTransaction;
       } | null)
     | ({
+        relationTo: 'wishlist';
+        value: string | Wishlist;
+      } | null)
+    | ({
+        relationTo: 'restock-requests';
+        value: string | RestockRequest;
+      } | null)
+    | ({
         relationTo: 'promotions';
         value: string | Promotion;
       } | null)
@@ -1717,6 +1804,7 @@ export interface UsersSelect<T extends boolean = true> {
   name?: T;
   roles?: T;
   vendor?: T;
+  memberNumber?: T;
   phone?: T;
   lineUserId?: T;
   memberLevel?: T;
@@ -1799,6 +1887,50 @@ export interface PointTransactionsSelect<T extends boolean = true> {
   relatedOrder?: T;
   expiresAt?: T;
   operator?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wishlist_select".
+ */
+export interface WishlistSelect<T extends boolean = true> {
+  customer?: T;
+  product?: T;
+  variant?:
+    | T
+    | {
+        color?: T;
+        size?: T;
+        sku?: T;
+        priceAtAdd?: T;
+      };
+  notifyOnPriceDrop?: T;
+  lastNotifiedPrice?: T;
+  lastNotifiedAt?: T;
+  addedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "restock-requests_select".
+ */
+export interface RestockRequestsSelect<T extends boolean = true> {
+  customer?: T;
+  product?: T;
+  variant?:
+    | T
+    | {
+        color?: T;
+        size?: T;
+        sku?: T;
+      };
+  status?: T;
+  notificationChannel?: T;
+  requestedAt?: T;
+  notifiedAt?: T;
+  notes?: T;
   updatedAt?: T;
   createdAt?: T;
 }

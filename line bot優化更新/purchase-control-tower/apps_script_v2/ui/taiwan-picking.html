@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣揀貨查詢</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #C9915D;
+            --pop-blue: #4A90E2;
+            --pop-red: #FF6B6B;
+            --pop-yellow: #FFE66D;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: var(--primary-color);
+            background-image: radial-gradient(#fff 20%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            color: #000;
+            margin-bottom: 30px;
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0 #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+            font-weight: 900;
+            font-size: 28px;
+            color: #000;
+            -webkit-text-stroke: 0.5px #000;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .btn-primary {
+            background-color: var(--pop-blue);
+            border: 3px solid #000;
+            color: white;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-primary:hover {
+            background-color: #357ABD;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: white;
+        }
+
+        .btn-outline-light {
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #000;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline-light:hover {
+            background: #fff;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: #000;
+        }
+
+        #loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            z-index: 9999;
+            border: 4px solid var(--pop-yellow);
+            box-shadow: 6px 6px 0 var(--pop-yellow);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 標題 -->
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-clipboard-check me-3"></i>📋 台灣揀貨查詢 <span class="badge bg-secondary fs-6">v2.0</span></h1>
+                <p>輸入箱號查詢內容物，標記揀貨完成</p>
+            </div>
+            <a href="<?= appUrl ?>" class="btn btn-outline-light">
+                <i class="fas fa-arrow-left me-2"></i>回主選單
+            </a>
+        </div>
+
+        <!-- 主內容區 -->
+        <div class="content-card">
+            <h5 class="mb-4"><i class="fas fa-search me-2"></i>查詢箱內容物</h5>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">箱號：</label>
+                    <input type="number" id="pickingBoxId" class="form-control" placeholder="輸入箱號（例如：1, 2, 3...）" min="1" onkeypress="if(event.key==='Enter') loadBoxContents()">
+                    <small class="text-muted">輸入簡單數字即可，例如：1</small>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button onclick="loadBoxContents()" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>查詢
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 結果區 -->
+        <div id="pickingResult" class="content-card" style="display:none;">
+            <div class="alert alert-success">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong><i class="fas fa-box me-2"></i>箱號：</strong><span id="resultBoxId" class="ms-2"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong><i class="fas fa-barcode me-2"></i>日本訂單號：</strong><span id="resultJpOrder" class="ms-2"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong><i class="fas fa-cubes me-2"></i>總件數：</strong><span id="resultTotalQty" class="ms-2"></span>件
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 備註區 - 顯眼位置 -->
+            <div id="notesSection" class="alert alert-warning border-warning mb-3" style="display:none; border-left: 5px solid #ffc107;">
+                <div class="d-flex align-items-start">
+                    <div class="me-3">
+                        <i class="fas fa-sticky-note fa-2x text-warning"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="alert-heading mb-2">
+                            <i class="fas fa-exclamation-triangle me-2"></i>重要備註
+                        </h5>
+                        <p id="resultNotes" class="mb-0 fs-5 fw-bold" style="white-space: pre-wrap;"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <h5 class="mb-3"><i class="fas fa-list-ul me-2"></i>箱內商品明細</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>序號</th>
+                            <th>ES訂單號</th>
+                            <th>SKU</th>
+                            <th>商品名稱</th>
+                            <th>規格</th>
+                            <th>數量</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pickingItemsTable">
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-4 p-3 border rounded bg-light">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <button onclick="markPickingComplete()" class="btn btn-success btn-lg">
+                            <i class="fas fa-check-double me-2"></i>標記揀貨完成
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-muted">
+                            <div><strong><i class="fas fa-clock me-2"></i>揀貨完成時間：</strong><span id="resultPickedAt" class="ms-2">-</span></div>
+                            <div class="mt-1"><strong><i class="fas fa-user me-2"></i>揀貨人：</strong><span id="resultPickedBy" class="ms-2">-</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading">
+        <div class="spinner-border spinner-border-sm me-2"></div>
+        <span id="loadingText">處理中...</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentBoxData = null;
+        
+        // ========== API 調用函數 ==========
+        function callAPI(action, data, callback) {
+            console.log('[callAPI] 開始調用:', action, '參數:', data);
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    console.log('[callAPI] API Response 原始數據:', result);
+                    console.log('[callAPI] Response 類型:', typeof result);
+                    console.log('[callAPI] Response 是否為 null:', result === null);
+                    console.log('[callAPI] Response 是否為 undefined:', result === undefined);
+                    
+                    // 嘗試解析 JSON 字串 (如果後端返回的是字串)
+                    if (typeof result === 'string') {
+                        try {
+                            console.log('[callAPI] 收到字串，嘗試解析 JSON');
+                            result = JSON.parse(result);
+                            console.log('[callAPI] 解析後的數據:', result);
+                        } catch (e) {
+                            console.error('[callAPI] JSON 解析失敗:', e);
+                        }
+                    }
+
+                    // 處理各種可能的返回格式
+                    if (!result) {
+                        console.error('[callAPI] 錯誤：result 為 falsy 值');
+                        alert('錯誤：伺服器無回應');
+                        hideLoading();
+                        return;
+                    }
+                    
+                    console.log('[callAPI] result 有 success 屬性:', result.hasOwnProperty('success'));
+                    
+                    // 如果有 success 屬性
+                    if (result.hasOwnProperty('success')) {
+                        console.log('[callAPI] result.success =', result.success);
+                        if (result.success === false) {
+                            console.error('[callAPI] API 返回失敗:', result.error);
+                            alert('錯誤：' + (result.error || '未知錯誤'));
+                            hideLoading();
+                            return;
+                        }
+                        // 成功：提取 data（如果有），否則使用整個 result
+                        console.log('[callAPI] result.data =', result.data);
+                        console.log('[callAPI] result.data 類型:', typeof result.data);
+                        if (result.data) {
+                            console.log('[callAPI] 調用 callback，傳入 result.data');
+                            callback(result.data);
+                        } else {
+                            // data 不存在，直接使用 result（去除 success 屬性）
+                            console.log('[callAPI] 沒有 data 屬性，直接使用 result');
+                            callback(result);
+                        }
+                    } else {
+                        // 沒有 success 屬性，直接使用結果
+                        console.log('[callAPI] 沒有 success 屬性，直接使用 result');
+                        callback(result);
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    hideLoading();
+                    console.error('API 錯誤:', error);
+                    alert('API 錯誤：' + error.message);
+                })
+                .apiHandler({action: action, data: data});
+        }
+        
+        function showLoading(text) {
+            document.getElementById('loadingText').textContent = text || '處理中...';
+            document.getElementById('loading').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        // ========== 揀貨查詢函數 ==========
+        
+        function loadBoxContents() {
+            const boxId = document.getElementById('pickingBoxId').value.trim();
+            
+            if (!boxId) {
+                alert('請輸入箱號');
+                return;
+            }
+            
+            showLoading('查詢中...');
+            callAPI('getBoxContents', { boxNumber: boxId }, function(result) {
+                hideLoading();
+                
+                console.log('Box Contents:', result);
+                
+                if (!result || !result.boxId) {
+                    alert('查詢失敗：無法取得箱子資料');
+                    return;
+                }
+                
+                currentBoxData = result;
+                
+                // 顯示基本資訊
+                document.getElementById('resultBoxId').textContent = result.boxId;
+                document.getElementById('resultJpOrder').textContent = result.jpOrderNo;
+                document.getElementById('resultTotalQty').textContent = result.totalQty;
+                
+                // 顯示備註（如果有）
+                const notesSection = document.getElementById('notesSection');
+                const notesText = document.getElementById('resultNotes');
+                if (result.notes && result.notes.trim()) {
+                    notesText.textContent = result.notes;
+                    notesSection.style.display = 'block';
+                } else {
+                    notesSection.style.display = 'none';
+                }
+                
+                // 顯示揀貨狀態
+                document.getElementById('resultPickedAt').textContent = result.pickedAt ? formatDate(result.pickedAt) : '-';
+                document.getElementById('resultPickedBy').textContent = result.pickedBy || '-';
+                
+                // 顯示商品明細
+                const tbody = document.getElementById('pickingItemsTable');
+                tbody.innerHTML = result.items.map((item, index) => {
+                    const spec = [item.color, item.size].filter(Boolean).join(' / ');
+                    return `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.esOrderNo}</td>
+                            <td><code>${item.sku}</code></td>
+                            <td>${item.productName}</td>
+                            <td>${spec || '-'}</td>
+                            <td><strong>${item.qty}</strong></td>
+                        </tr>
+                    `;
+                }).join('');
+                
+                document.getElementById('pickingResult').style.display = 'block';
+                
+                // 滾動到結果區
+                document.getElementById('pickingResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        }
+        
+        function markPickingComplete() {
+            if (!currentBoxData) {
+                alert('請先查詢箱號');
+                return;
+            }
+            
+            if (currentBoxData.pickedAt) {
+                alert('⚠️ 此箱已於 ' + formatDate(currentBoxData.pickedAt) + ' 標記為揀貨完成');
+                return;
+            }
+            
+            if (!confirm('✅ 確認標記揀貨完成？')) return;
+            
+            showLoading('標記中...');
+            callAPI('markBoxPicked', {
+                boxId: currentBoxData.boxId,
+                pickedBy: 'Taiwan-User'
+                // 移除 pickedAt 參數，讓後端自動生成時間戳
+            }, function(result) {
+                hideLoading();
+                alert('✅ 已標記為揀貨完成');
+                
+                // 更新顯示
+                document.getElementById('resultPickedAt').textContent = formatDate(result.pickedAt);
+                document.getElementById('resultPickedBy').textContent = 'Taiwan-User';
+                
+                currentBoxData.pickedAt = result.pickedAt;
+                currentBoxData.pickedBy = 'Taiwan-User';
+            });
+        }
+        
+        // 日期格式化
+        function formatDate(date) {
+            if (!date) return '-';
+            const d = new Date(date);
+            return d.toLocaleString('zh-TW', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // 支援Enter鍵查詢
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Taiwan Picking UI v2.0 Loaded');
+            const boxInput = document.getElementById('pickingBoxId');
+            if (boxInput) {
+                boxInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') loadBoxContents();
+                });
+            } else {
+                console.error('找不到 pickingBoxId 元素');
+            }
+        });
+    </script>
+</body>
+</html>

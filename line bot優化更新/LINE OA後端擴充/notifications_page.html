@@ -1,0 +1,513 @@
+<!-- ==========================================
+     通知管理頁面內容
+     用於替換 LINE OA 後端 HTML 中的 notificationsContent
+     ========================================== -->
+
+<div id="notificationsContent" class="page-content" style="display: none;">
+    <!-- 標籤頁 -->
+    <ul class="nav nav-tabs mb-3" id="notifyTabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#oosPanel">
+                <i class="fas fa-exclamation-triangle me-2"></i>⚠️ 缺貨待通知
+                <span class="badge bg-danger ms-2" id="oosBadge">0</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#shippingPanel">
+                <i class="fas fa-shipping-fast me-2"></i>📦 物流待發送
+                <span class="badge bg-primary ms-2" id="shippingBadge">0</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#historyPanel">
+                <i class="fas fa-history me-2"></i>📋 發送紀錄
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- 缺貨通知面板 -->
+        <div class="tab-pane fade show active" id="oosPanel">
+            <div class="content-card">
+                <div class="content-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>待發送缺貨通知</h5>
+                    <button class="btn btn-light btn-sm" onclick="loadPendingOOS()">
+                        <i class="fas fa-sync-alt me-1"></i>重新整理
+                    </button>
+                </div>
+                <div class="content-body">
+                    <!-- 批量操作 -->
+                    <div class="bulk-actions mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="selectAllOOS" onchange="toggleSelectAllOOS()">
+                                <label class="form-check-label" for="selectAllOOS">全選</label>
+                            </div>
+                            <div>
+                                <button class="btn btn-warning btn-sm" onclick="previewOOSNotification()">
+                                    <i class="fas fa-eye me-1"></i>預覽
+                                </button>
+                                <button class="btn btn-danger btn-sm ms-2" onclick="sendSelectedOOS()">
+                                    <i class="fas fa-paper-plane me-1"></i>發送所選
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 缺貨商品表格 -->
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="oosTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th width="50px">選擇</th>
+                                    <th>商品名稱</th>
+                                    <th>訂單編號</th>
+                                    <th>顧客</th>
+                                    <th>LINE 狀態</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="oosTableBody">
+                                <tr><td colspan="6" class="text-center text-muted">載入中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 物流通知面板 -->
+        <div class="tab-pane fade" id="shippingPanel">
+            <div class="content-card">
+                <div class="content-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-shipping-fast me-2"></i>待發送物流通知</h5>
+                    <button class="btn btn-light btn-sm" onclick="loadPendingShipping()">
+                        <i class="fas fa-sync-alt me-1"></i>重新整理
+                    </button>
+                </div>
+                <div class="content-body">
+                    <!-- 批量操作 -->
+                    <div class="bulk-actions mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="selectAllShipping" onchange="toggleSelectAllShipping()">
+                                <label class="form-check-label" for="selectAllShipping">全選</label>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary btn-sm" onclick="sendSelectedShipping()">
+                                    <i class="fas fa-paper-plane me-1"></i>發送所選
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 物流商品表格 -->
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="shippingTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th width="50px">選擇</th>
+                                    <th>商品名稱</th>
+                                    <th>訂單編號</th>
+                                    <th>箱號</th>
+                                    <th>追蹤號碼</th>
+                                    <th>顧客</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shippingTableBody">
+                                <tr><td colspan="7" class="text-center text-muted">載入中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 發送紀錄面板 -->
+        <div class="tab-pane fade" id="historyPanel">
+            <div class="content-card">
+                <div class="content-header">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>通知發送紀錄</h5>
+                </div>
+                <div class="content-body">
+                    <p class="text-muted">功能開發中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 預覽 Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title"><i class="fas fa-eye me-2"></i>訊息預覽</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="previewContent" class="p-3 bg-light rounded">
+                    <!-- 預覽內容 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" onclick="confirmSendOOS()">
+                    <i class="fas fa-paper-plane me-1"></i>確認發送
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==========================================
+// 通知管理 JavaScript
+// ==========================================
+
+const API_BASE = 'YOUR_API_URL'; // 替換為實際 API URL
+
+let pendingOOSItems = [];
+let pendingShippingItems = [];
+let selectedOOSIds = new Set();
+let selectedShippingIds = new Set();
+
+// 載入缺貨待通知列表
+async function loadPendingOOS() {
+    try {
+        document.getElementById('oosTableBody').innerHTML = 
+            '<tr><td colspan="6" class="text-center"><div class="spinner-border spinner-border-sm"></div> 載入中...</td></tr>';
+        
+        const response = await fetch(`${API_BASE}?action=getPendingOOSNotifications`);
+        const result = await response.json();
+        
+        if (result.success) {
+            pendingOOSItems = result.items;
+            renderOOSTable();
+            document.getElementById('oosBadge').textContent = result.items.length;
+        } else {
+            showToast('載入失敗: ' + result.error, 'error');
+        }
+    } catch (error) {
+        console.error('載入缺貨列表失敗:', error);
+        showToast('載入失敗', 'error');
+    }
+}
+
+// 渲染缺貨表格
+function renderOOSTable() {
+    const tbody = document.getElementById('oosTableBody');
+    
+    if (pendingOOSItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">✅ 目前沒有待發送的缺貨通知</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = pendingOOSItems.map(item => `
+        <tr>
+            <td>
+                <input type="checkbox" class="form-check-input oos-checkbox" 
+                       value="${item.queueId}" 
+                       ${item.canSend ? '' : 'disabled'}
+                       onchange="updateOOSSelection(this)">
+            </td>
+            <td>
+                <strong>${item.productName}</strong>
+                ${item.color || item.size ? `<br><small class="text-muted">${[item.color, item.size].filter(Boolean).join(' / ')}</small>` : ''}
+            </td>
+            <td><code>${item.esOrderNo}</code></td>
+            <td>${item.customerName || '-'}</td>
+            <td>
+                ${item.canSend 
+                    ? '<span class="badge bg-success">已綁定</span>' 
+                    : '<span class="badge bg-secondary">未綁定</span>'}
+            </td>
+            <td>
+                ${item.canSend 
+                    ? `<button class="btn btn-sm btn-outline-danger" onclick="sendSingleOOS('${item.queueId}')">
+                         <i class="fas fa-paper-plane"></i>
+                       </button>` 
+                    : '-'}
+            </td>
+        </tr>
+    `).join('');
+}
+
+// 載入物流待發送列表
+async function loadPendingShipping() {
+    try {
+        document.getElementById('shippingTableBody').innerHTML = 
+            '<tr><td colspan="7" class="text-center"><div class="spinner-border spinner-border-sm"></div> 載入中...</td></tr>';
+        
+        const response = await fetch(`${API_BASE}?action=getPendingShippingNotifications`);
+        const result = await response.json();
+        
+        if (result.success) {
+            pendingShippingItems = result.items;
+            renderShippingTable();
+            document.getElementById('shippingBadge').textContent = result.items.length;
+        } else {
+            showToast('載入失敗: ' + result.error, 'error');
+        }
+    } catch (error) {
+        console.error('載入物流列表失敗:', error);
+        showToast('載入失敗', 'error');
+    }
+}
+
+// 渲染物流表格
+function renderShippingTable() {
+    const tbody = document.getElementById('shippingTableBody');
+    
+    if (pendingShippingItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">✅ 目前沒有待發送的物流通知</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = pendingShippingItems.map(item => `
+        <tr>
+            <td>
+                <input type="checkbox" class="form-check-input shipping-checkbox" 
+                       value="${item.queueId}" 
+                       ${item.canSend ? '' : 'disabled'}
+                       onchange="updateShippingSelection(this)">
+            </td>
+            <td><strong>${item.productName}</strong></td>
+            <td><code>${item.esOrderNo}</code></td>
+            <td><span class="badge bg-info">${item.boxId}</span></td>
+            <td>${item.trackingJPtoTW || '-'}</td>
+            <td>${item.customerName || '-'}</td>
+            <td>
+                ${item.canSend 
+                    ? `<button class="btn btn-sm btn-outline-primary" onclick="sendSingleShipping('${item.queueId}')">
+                         <i class="fas fa-paper-plane"></i>
+                       </button>` 
+                    : '-'}
+            </td>
+        </tr>
+    `).join('');
+}
+
+// 全選缺貨
+function toggleSelectAllOOS() {
+    const checked = document.getElementById('selectAllOOS').checked;
+    document.querySelectorAll('.oos-checkbox:not(:disabled)').forEach(cb => {
+        cb.checked = checked;
+        if (checked) {
+            selectedOOSIds.add(cb.value);
+        } else {
+            selectedOOSIds.delete(cb.value);
+        }
+    });
+}
+
+// 全選物流
+function toggleSelectAllShipping() {
+    const checked = document.getElementById('selectAllShipping').checked;
+    document.querySelectorAll('.shipping-checkbox:not(:disabled)').forEach(cb => {
+        cb.checked = checked;
+        if (checked) {
+            selectedShippingIds.add(cb.value);
+        } else {
+            selectedShippingIds.delete(cb.value);
+        }
+    });
+}
+
+// 更新缺貨選擇
+function updateOOSSelection(checkbox) {
+    if (checkbox.checked) {
+        selectedOOSIds.add(checkbox.value);
+    } else {
+        selectedOOSIds.delete(checkbox.value);
+    }
+}
+
+// 更新物流選擇
+function updateShippingSelection(checkbox) {
+    if (checkbox.checked) {
+        selectedShippingIds.add(checkbox.value);
+    } else {
+        selectedShippingIds.delete(checkbox.value);
+    }
+}
+
+// 預覽缺貨通知
+function previewOOSNotification() {
+    if (selectedOOSIds.size === 0) {
+        showToast('請先選擇要發送的商品', 'warning');
+        return;
+    }
+    
+    const selectedItems = pendingOOSItems.filter(i => selectedOOSIds.has(i.queueId));
+    
+    let previewHtml = '<div class="flex-preview">';
+    previewHtml += '<div class="preview-header bg-warning text-dark p-2 rounded-top"><strong>⚠️ 商品缺貨通知</strong></div>';
+    previewHtml += '<div class="preview-body p-3">';
+    selectedItems.forEach(item => {
+        previewHtml += `<p><strong>${item.productName}</strong><br><small>訂單：${item.esOrderNo}</small></p>`;
+    });
+    previewHtml += '<p>很抱歉，您訂購的商品目前暫時缺貨。<br>請問您願意等待補貨嗎？預計需要 2-4 天。</p>';
+    previewHtml += '</div>';
+    previewHtml += '<div class="preview-footer p-2">';
+    previewHtml += '<button class="btn btn-success btn-sm w-100 mb-2">🟢 願意等待（2-4天）</button>';
+    previewHtml += '<button class="btn btn-outline-secondary btn-sm w-100">🔴 不願等待（申請退款）</button>';
+    previewHtml += '</div></div>';
+    
+    document.getElementById('previewContent').innerHTML = previewHtml;
+    new bootstrap.Modal(document.getElementById('previewModal')).show();
+}
+
+// 確認發送缺貨通知
+async function confirmSendOOS() {
+    bootstrap.Modal.getInstance(document.getElementById('previewModal')).hide();
+    await sendSelectedOOS();
+}
+
+// 發送選中的缺貨通知
+async function sendSelectedOOS() {
+    if (selectedOOSIds.size === 0) {
+        showToast('請先選擇要發送的商品', 'warning');
+        return;
+    }
+    
+    const selectedItems = pendingOOSItems.filter(i => selectedOOSIds.has(i.queueId));
+    let successCount = 0;
+    
+    for (const item of selectedItems) {
+        try {
+            const params = new URLSearchParams({
+                action: 'sendOOSNotification',
+                queueId: item.queueId,
+                lineUserId: item.lineUserId,
+                productName: item.productName,
+                esOrderNo: item.esOrderNo,
+                color: item.color || '',
+                size: item.size || ''
+            });
+            
+            const response = await fetch(`${API_BASE}?${params}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                successCount++;
+            }
+        } catch (error) {
+            console.error('發送失敗:', item.queueId, error);
+        }
+    }
+    
+    showToast(`已發送 ${successCount}/${selectedItems.length} 筆通知`, successCount > 0 ? 'success' : 'error');
+    selectedOOSIds.clear();
+    loadPendingOOS();
+}
+
+// 發送單筆缺貨通知
+async function sendSingleOOS(queueId) {
+    const item = pendingOOSItems.find(i => i.queueId === queueId);
+    if (!item) return;
+    
+    if (!confirm(`確定要發送缺貨通知給「${item.customerName}」嗎？`)) return;
+    
+    try {
+        const params = new URLSearchParams({
+            action: 'sendOOSNotification',
+            queueId: item.queueId,
+            lineUserId: item.lineUserId,
+            productName: item.productName,
+            esOrderNo: item.esOrderNo,
+            color: item.color || '',
+            size: item.size || ''
+        });
+        
+        const response = await fetch(`${API_BASE}?${params}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast('通知已發送', 'success');
+            loadPendingOOS();
+        } else {
+            showToast('發送失敗: ' + result.error, 'error');
+        }
+    } catch (error) {
+        showToast('發送失敗', 'error');
+    }
+}
+
+// 發送選中的物流通知
+async function sendSelectedShipping() {
+    if (selectedShippingIds.size === 0) {
+        showToast('請先選擇要發送的商品', 'warning');
+        return;
+    }
+    
+    const selectedItems = pendingShippingItems.filter(i => selectedShippingIds.has(i.queueId));
+    let successCount = 0;
+    
+    for (const item of selectedItems) {
+        try {
+            const params = new URLSearchParams({
+                action: 'sendShippingNotification',
+                queueId: item.queueId,
+                lineUserId: item.lineUserId,
+                productName: item.productName,
+                esOrderNo: item.esOrderNo,
+                boxId: item.boxId,
+                trackingNo: item.trackingJPtoTW || ''
+            });
+            
+            const response = await fetch(`${API_BASE}?${params}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                successCount++;
+            }
+        } catch (error) {
+            console.error('發送失敗:', item.queueId, error);
+        }
+    }
+    
+    showToast(`已發送 ${successCount}/${selectedItems.length} 筆通知`, successCount > 0 ? 'success' : 'error');
+    selectedShippingIds.clear();
+    loadPendingShipping();
+}
+
+// 發送單筆物流通知
+async function sendSingleShipping(queueId) {
+    const item = pendingShippingItems.find(i => i.queueId === queueId);
+    if (!item) return;
+    
+    if (!confirm(`確定要發送物流通知給「${item.customerName}」嗎？`)) return;
+    
+    try {
+        const params = new URLSearchParams({
+            action: 'sendShippingNotification',
+            queueId: item.queueId,
+            lineUserId: item.lineUserId,
+            productName: item.productName,
+            esOrderNo: item.esOrderNo,
+            boxId: item.boxId,
+            trackingNo: item.trackingJPtoTW || ''
+        });
+        
+        const response = await fetch(`${API_BASE}?${params}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast('通知已發送', 'success');
+            loadPendingShipping();
+        } else {
+            showToast('發送失敗: ' + result.error, 'error');
+        }
+    } catch (error) {
+        showToast('發送失敗', 'error');
+    }
+}
+
+// 初始化：切換到通知管理時載入資料
+document.querySelector('[data-page="notifications"]').addEventListener('click', function() {
+    loadPendingOOS();
+    loadPendingShipping();
+});
+</script>

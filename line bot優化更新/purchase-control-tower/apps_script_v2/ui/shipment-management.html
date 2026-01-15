@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>箱號管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+        <style>
+        :root {
+            --primary-color: #C9915D;
+            --pop-blue: #4A90E2;
+            --pop-red: #FF6B6B;
+            --pop-yellow: #FFE66D;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: var(--primary-color);
+            background-image: radial-gradient(#fff 20%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            color: #000;
+            margin-bottom: 30px;
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0 #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+            font-weight: 900;
+            font-size: 28px;
+            color: #000;
+            -webkit-text-stroke: 0.5px #000;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .btn-primary {
+            background-color: var(--pop-blue);
+            border: 3px solid #000;
+            color: white;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-primary:hover {
+            background-color: #357ABD;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: white;
+        }
+
+        #loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            z-index: 9999;
+            border: 4px solid var(--pop-yellow);
+            box-shadow: 6px 6px 0 var(--pop-yellow);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-shipping-fast me-2"></i>箱號管理</h1>
+                <p>建立箱號、管理箱內商品、追蹤物流狀態</p>
+            </div>
+            <a href="<?= appUrl ?>" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>回主選單
+            </a>
+        </div>
+        
+        <div class="row">
+            <!-- 建立新箱號 -->
+            <div class="col-md-7">
+                <div class="content-card">
+                    <h3><i class="fas fa-plus-circle me-2"></i>建立新箱號</h3>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">箱號 ID（選填，留空自動生成）：</label>
+                        <input type="text" id="shipmentId" class="form-control" placeholder="例如：SH-20250115-001">
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">日本→台灣追蹤碼：</label>
+                            <input type="text" id="trackingJPtoTW" class="form-control" placeholder="例如：1234567890">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">日本出貨日期：</label>
+                            <input type="date" id="shipDateJP" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">預計台灣到達日：</label>
+                            <input type="date" id="etaTW" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">狀態：</label>
+                            <select id="status" class="form-select">
+                                <option value="在日本">在日本</option>
+                                <option value="已出發">已出發</option>
+                                <option value="在途">在途</option>
+                                <option value="已抵台">已抵台</option>
+                                <option value="已清點">已清點</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">備註：</label>
+                        <textarea id="memo" class="form-control" rows="3" placeholder="其他備註資訊"></textarea>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">要加入此箱的 Queue 列索引（用逗號分隔）：</label>
+                        <input type="text" id="queueRowIndices" class="form-control" placeholder="例如：2,3,5,8">
+                        <div class="form-text">提示：請先到 Google Sheets 確認要加入的列號</div>
+                    </div>
+                    
+                    <button onclick="createShipment()" class="btn btn-primary w-100">
+                        <i class="fas fa-check me-2"></i>建立箱號
+                    </button>
+                </div>
+            </div>
+
+            <!-- 查詢箱號 -->
+            <div class="col-md-5">
+                <div class="content-card">
+                    <h3><i class="fas fa-search me-2"></i>查詢箱號資訊</h3>
+                    
+                    <div class="input-group mb-3">
+                        <input type="text" id="queryShipmentId" class="form-control" placeholder="例如：SH-20250115-001">
+                        <button onclick="queryShipment()" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>查詢
+                        </button>
+                    </div>
+                    
+                    <div id="shipmentInfo"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function createShipment() {
+            const shipmentId = document.getElementById('shipmentId').value.trim();
+            const trackingJPtoTW = document.getElementById('trackingJPtoTW').value.trim();
+            const shipDateJP = document.getElementById('shipDateJP').value;
+            const etaTW = document.getElementById('etaTW').value;
+            const status = document.getElementById('status').value;
+            const memo = document.getElementById('memo').value.trim();
+            const queueRowIndicesStr = document.getElementById('queueRowIndices').value.trim();
+            
+            if (!trackingJPtoTW) {
+                alert('請輸入追蹤碼');
+                return;
+            }
+            
+            if (!queueRowIndicesStr) {
+                alert('請輸入要加入的 Queue 列索引');
+                return;
+            }
+            
+            // 解析列索引
+            const queueRowIndices = queueRowIndicesStr.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+            
+            if (queueRowIndices.length === 0) {
+                alert('列索引格式錯誤');
+                return;
+            }
+            
+            const headerData = {
+                shipmentId: shipmentId,
+                trackingJPtoTW: trackingJPtoTW,
+                shipDateJP: shipDateJP,
+                etaTW: etaTW,
+                status: status,
+                memo: memo
+            };
+            
+            if (!confirm(`確定要建立箱號嗎？\n\n追蹤碼：${trackingJPtoTW}\n包含品項數：${queueRowIndices.length}`)) {
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        alert(`✅ 箱號建立成功！\n\n箱號 ID：${result.shipmentId}`);
+                        clearForm();
+                    } else {
+                        alert('建立失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiCreateShipment(headerData, queueRowIndices);
+        }
+        
+        function queryShipment() {
+            const shipmentId = document.getElementById('queryShipmentId').value.trim();
+            
+            if (!shipmentId) {
+                alert('請輸入箱號 ID');
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        displayShipmentInfo(result.data);
+                    } else {
+                        alert('查詢失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiGetShipmentInfo(shipmentId);
+        }
+        
+        function displayShipmentInfo(data) {
+            const container = document.getElementById('shipmentInfo');
+            const header = data.header;
+            const details = data.details;
+            
+            let html = '<div class="shipment-info">';
+            html += '<h4><i class="fas fa-box me-2"></i>箱號基本資訊</h4>';
+            html += `<p><strong>箱號 ID：</strong>${header.shipmentId}</p>`;
+            html += `<p><strong>追蹤碼：</strong>${header.trackingJPtoTW || '-'}</p>`;
+            html += `<p><strong>出貨日期：</strong>${header.shipDateJP || '-'}</p>`;
+            html += `<p><strong>預計到達：</strong>${header.etaTW || '-'}</p>`;
+            html += `<p><strong>狀態：</strong><span class="badge bg-success">${header.status}</span></p>`;
+            html += `<p><strong>備註：</strong>${header.memo || '-'}</p>`;
+            
+            html += '<h4 class="mt-4"><i class="fas fa-list me-2"></i>箱內商品明細</h4>';
+            html += '<div class="table-responsive"><table class="table table-sm table-hover"><thead><tr>';
+            html += '<th>訂單編號</th><th>SKU</th><th>顏色</th><th>尺寸</th><th>數量</th><th>訂單摘要</th>';
+            html += '</tr></thead><tbody>';
+            
+            details.forEach(item => {
+                html += `<tr>
+                    <td>${item.esOrderNo}</td>
+                    <td>${item.sku}</td>
+                    <td>${item.color || '-'}</td>
+                    <td>${item.size || '-'}</td>
+                    <td>${item.qtyInShipment}</td>
+                    <td><small class="text-muted">${item.orderSummary || '-'}</small></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table></div>';
+            html += `<div class="mt-2 text-end text-muted">總計：<strong>${details.length}</strong> 個品項</div>`;
+            html += '</div>';
+            
+            container.innerHTML = html;
+        }
+        
+        function clearForm() {
+            document.getElementById('shipmentId').value = '';
+            document.getElementById('trackingJPtoTW').value = '';
+            document.getElementById('shipDateJP').value = '';
+            document.getElementById('etaTW').value = '';
+            document.getElementById('memo').value = '';
+            document.getElementById('queueRowIndices').value = '';
+        }
+        
+        function handleError(error) {
+            console.error(error);
+            alert('發生錯誤：' + error.message);
+        }
+    </script>
+</body>
+</html>

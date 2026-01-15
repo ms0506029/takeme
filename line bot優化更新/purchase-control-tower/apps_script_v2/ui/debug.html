@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Debug Page</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .success { color: green; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>✅ Debug Page Loaded</h1>
+  <p>If you can see this, the Web App is working.</p>
+  <p>Current Time: <span id="time"></span></p>
+  <script>
+    document.getElementById('time').textContent = new Date().toString();
+  </script>
+</body>
+</html>

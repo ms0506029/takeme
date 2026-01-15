@@ -1,0 +1,1467 @@
+<div class="bg-ultralight-gray">
+	<div class="beams-pc-wrapper">
+		<div class="breadcrumb-list">
+			<ul itemscope="" itemtype="https://schema.org/BreadcrumbList">
+				<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+					<a itemprop="item" href="https://www.beams.co.jp/"><span itemprop="name">TOP</span></a>
+					<meta itemprop="position" content="1">
+				</li>
+				<li class="right-arrow">&gt;</li>
+				
+				<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+					<a itemprop="item" href="/raybeams"><span itemprop="name">Ray BEAMS</span></a>
+					<meta itemprop="position" content="2">
+				</li>
+				<li class="right-arrow">&gt;</li>
+				<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+					<a itemprop="item" href="/category/bag/?label=0061"><span itemprop="name">バッグ</span></a>
+					<meta itemprop="position" content="3">
+				</li>
+				
+				<li class="right-arrow">&gt;</li>
+				<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+					<a itemprop="item" href="/category/bag_12/?label=0061"><span itemprop="name">その他バッグ</span></a>
+					<meta itemprop="position" content="4">
+				</li>
+				
+				<li class="right-arrow">&gt;</li>
+				<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+					<a itemprop="item" href="/item/raybeams/bag/61612083024/"><span itemprop="name">【WEB限定】DANTON / ローヌ 14</span></a>
+					<meta itemprop="position" content="5">
+				</li>
+			</ul>
+		</div>
+
+		
+
+		
+			
+		
+
+		<input type="hidden" value="" id="hidden_variation_group">
+		<input type="hidden" value="0" id="variation_design_type">
+		<input type="hidden" value="61612083024" id="hidden_goods">
+
+		<div class="item-detail-container">
+			<div class="item-detail-main">
+
+				<div class="item-image-container initialized">
+	<div class="bx-wrapper" style="max-width: 600px;"><div class="bx-viewport" aria-live="polite" style="width: 100%; overflow: hidden; position: relative; height: 720px;"><ul class="item-detail-slideshow zoomcheck" style="width: 9215%; position: relative; transition-timing-function: ease-in-out; transition-duration: 0s; transform: translate3d(-1200px, 0px, 0px);"><li class="item-image bx-clone" style="float: left; list-style: none; position: relative; width: 600px;" aria-hidden="true">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_8.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_D_8.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_8.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+		<li class="item-image" style="float: left; list-style: none; position: relative; width: 600px;" aria-hidden="true">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_C_1.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_C_1.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_C_1.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+<li class="item-image sk-on" aria-hidden="false" style="float: left; list-style: none; position: relative; width: 600px;">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_C_3.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_C_3.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_C_3.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+<li class="item-image" aria-hidden="true" style="float: left; list-style: none; position: relative; width: 600px;">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_1.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_D_1.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_1.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+<li class="item-image" aria-hidden="true" style="float: left; list-style: none; position: relative; width: 600px;">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_2.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_D_2.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_2.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+<li class="item-image" aria-hidden="true" style="float: left; list-style: none; position: relative; width: 600px;">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_3.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_D_3.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_3.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+<li class="item-image" aria-hidden="true" style="float: left; list-style: none; position: relative; width: 600px;">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_4.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_D_4.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_4.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+<li class="item-image" aria-hidden="true" style="float: left; list-style: none; position: relative; width: 600px;">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_5.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_D_5.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_5.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+<li class="item-image" aria-hidden="true" style="float: left; list-style: none; position: relative; width: 600px;">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_6.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_D_6.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_6.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+<li class="item-image" style="float: left; list-style: none; position: relative; width: 600px;" aria-hidden="true">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_8.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_D_8.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_D_8.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li>
+
+	<li class="item-image bx-clone" style="float: left; list-style: none; position: relative; width: 600px;" aria-hidden="true">
+	<img alt="item main image" data-caption="" data-original="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_C_1.jpg" data-zoom-image="//cdn.beams.co.jp/img/goods/61612083024/O/61612083024_C_1.jpg" height="720" width="600" src="//cdn.beams.co.jp/img/goods/61612083024/L/61612083024_C_1.jpg" loading="eager" decoding="sync" class="lazy-loaded">
+</li></ul></div><div class="bx-controls"></div></div>
+	<div id="slideshow-arrow-prev"><a class="bx-prev" href=""></a></div>
+	<div id="slideshow-arrow-next"><a class="bx-next" href=""></a></div>
+</div>
+
+
+				<div class="item-caption"></div>
+
+				<ul class="item-image-thumbnail-container initialized">
+<li class="item-image-thumbnail" data-color="07">
+	<img src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_C_1.jpg" data-color-cd="07" alt="OYSTER WHITE" loading="eager" decoding="sync">
+	<span>OYSTER WHITE</span>
+</li>
+<li class="item-image-thumbnail on" data-color="19">
+	<img src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_C_3.jpg" data-color-cd="19" alt="BLACK" loading="eager" decoding="sync">
+	<span>BLACK</span>
+</li>
+<li class="item-image-thumbnail">
+	<img src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_D_1.jpg" data-color-cd="" alt="" loading="eager" decoding="sync">
+	
+</li>
+<li class="item-image-thumbnail">
+	<img src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_D_2.jpg" data-color-cd="" alt="" loading="eager" decoding="sync">
+	
+</li>
+<li class="item-image-thumbnail">
+	<img src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_D_3.jpg" data-color-cd="" alt="" loading="eager" decoding="sync">
+	
+</li>
+<li class="item-image-thumbnail">
+	<img src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_D_4.jpg" data-color-cd="" alt="" loading="eager" decoding="sync">
+	
+</li>
+<li class="item-image-thumbnail">
+	<img src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_D_5.jpg" data-color-cd="" alt="" loading="eager" decoding="sync">
+	
+</li>
+<li class="item-image-thumbnail">
+	<img src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_D_6.jpg" data-color-cd="" alt="" loading="eager" decoding="sync">
+	
+</li>
+<li class="item-image-thumbnail">
+	<img src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_D_8.jpg" data-color-cd="" alt="" loading="eager" decoding="sync">
+	
+</li>
+
+</ul>
+
+				<div class="item-detail-tab-container">
+					<div class="item-detail-tab-inner">
+						<button class="item-detail-tab-btn itemstyle active" type="button">スタイリング・フォトログ・ビデオ・ブログ</button>
+						<button class="item-detail-tab-btn itemreview" type="button">レビュー(7)</button>
+					</div>
+				</div>
+				
+				<div class="item-detail-tab-content itemstyle active">
+				<div id="styling_block" class="ready">
+	<div class="listed-items-4columns-small">
+		<div class="item-detail-left-headline">
+			スタイリング
+			<a class="styling-see-more" href="/styling/?q=61612083024">もっと見る＞</a>
+		</div>
+		
+<div class="bx-wrapper" style="max-width: 310px;"><div class="bx-viewport" aria-live="polite" style="width: 100%; overflow: hidden; position: relative; height: 249px;"><ul class="beams-list-image styling-bxslider-container" style="width: 2215%; position: relative; transition-duration: 0s; transform: translate3d(0px, 0px, 0px);">
+	<li class="beams-list-image-item has-author beams-list-image-item--has-height-size" aria-hidden="false" style="float: left; list-style: none; position: relative; width: 155px;">
+	 <a href="/styling/ttb/1029540/">
+		 <div class="beams-list-image-item-img">
+			 <img alt="styling_image" src="//cdn-cms.beams.co.jp/cdn/cms/styling/1029540/main_tvvl9C_s.jpg">
+		 </div>
+	 </a>
+	 <div class="beams-list-image-item__meta--height-size">
+			<a href="/styling/ttb/1029540/">
+			 163cm / サイズ ONE SIZE
+			</a>
+	 </div>
+	 <div class="beams-list-image-item-author">
+			
+			<div class="beams-list-image-item-author-thumb">
+				<a href="/styling/ttb/1029540/">
+						<img alt="松本 佳菜子" src="//cdn-cms.beams.co.jp/cdn/cms/staff/2643/profile_ZVKaDc_s.jpg">
+				</a>
+			</div>
+			
+			<div class="beams-list-image-item-author-meta">
+				
+				<a href="/styling/ttb/1029540/">
+					<div class="name">松本 佳菜子</div>
+				</a>
+				
+				
+						
+						<a href="/styling/?beams_shop=121">
+							<div class="belong">
+								ビームス 二子玉川
+							</div>
+						</a>
+						
+				
+			</div>
+	 </div>
+</li>
+<li class="beams-list-image-item has-author beams-list-image-item--has-height-size" aria-hidden="false" style="float: left; list-style: none; position: relative; width: 155px;">
+	 <a href="/styling/raybeams/1016134/">
+		 <div class="beams-list-image-item-img">
+			 <img alt="styling_image" src="//cdn-cms.beams.co.jp/cdn/cms/styling/1016134/main_6xqV8B_s.jpg">
+		 </div>
+	 </a>
+	 <div class="beams-list-image-item__meta--height-size">
+			<a href="/styling/raybeams/1016134/">
+			 163cm / サイズ ONE SIZE
+			</a>
+	 </div>
+	 <div class="beams-list-image-item-author">
+			
+			<div class="beams-list-image-item-author-thumb">
+				<a href="/styling/raybeams/1016134/">
+						<img alt="翔子" src="//cdn-cms.beams.co.jp/cdn/cms/staff/1322/profile_PDoRPi_s.jpg">
+				</a>
+			</div>
+			
+			<div class="beams-list-image-item-author-meta">
+				
+				<a href="/styling/raybeams/1016134/">
+					<div class="name">翔子</div>
+				</a>
+				
+				
+						
+						<a href="/styling/?label=0061">
+							<div class="belong">
+								Ray BEAMS
+							</div>
+						</a>
+						
+				
+			</div>
+	 </div>
+</li>
+
+</ul></div><div class="bx-controls bx-has-controls-direction" style="display: none;"><div class="bx-controls-direction"><a class="bx-prev disabled" href=""></a><a class="bx-next disabled" href=""></a></div></div></div>
+
+	</div>
+</div>
+				<div id="photolog_block" class="ready">
+<div class="photolog">
+	<div class="listed-items-4columns-small">
+		<div class="item-detail-left-headline">フォトログ</div>
+		
+<div class="bx-wrapper" style="max-width: 310px;"><div class="bx-viewport" aria-live="polite" style="width: 100%; overflow: hidden; position: relative; height: 261px;"><ul class="beams-list-image photolog-bxslider-container" style="width: 2215%; position: relative; transition-duration: 0s; transform: translate3d(0px, 0px, 0px);">
+	<li class="beams-list-image-item has-author" aria-hidden="false" style="float: left; list-style: none; position: relative; width: 155px;">
+	<a href="/photolog/ttb/1022439/">
+		<div class="beams-list-image-item-img">
+			<img alt="photolog_image" src="//cdn-cms.beams.co.jp/cdn/cms/photolog/1022439/main_L9vCWX_s.jpg">
+		</div>
+	</a>
+	<a href="/photolog/ttb/1022439/">
+		<div class="lead">
+			【DANTON】ダントンの斜め掛けバック！体にフィットするので背負いやすいです！ペットボトルも余裕で入るサイズ感です◎！
+		</div>
+	</a>
+	<div class="beams-list-image-item-author">
+		
+		<div class="beams-list-image-item-author-thumb">
+			<a href="/photolog/ttb/1022439/">
+				<img alt="松本 佳菜子" src="//cdn-cms.beams.co.jp/cdn/cms/staff/2643/profile_ZVKaDc_s.jpg">
+			</a>
+		</div>
+		
+		<div class="beams-list-image-item-author-meta">
+				
+					<a href="/photolog/ttb/1022439/">
+						<div class="name">松本 佳菜子</div>
+					</a>
+				
+				
+				
+				<a href="/photolog/?beams_shop=121">
+					<div class="belong">
+						ビームス 二子玉川
+					</div>
+				</a>
+				
+			
+		</div>
+	</div>
+</li>
+<li class="beams-list-image-item has-author" aria-hidden="false" style="float: left; list-style: none; position: relative; width: 155px;">
+	<a href="/photolog/raybeams/950162/">
+		<div class="beams-list-image-item-img">
+			<img alt="photolog_image" src="//cdn-cms.beams.co.jp/cdn/cms/photolog/950162/main_yd6um1_s.jpg">
+		</div>
+	</a>
+	<a href="/photolog/raybeams/950162/">
+		<div class="lead">
+			オンラインの予約で1番人気の【DANTON / ローヌ 14】をご紹介！なんと言ってもどこか懐かしさもあるワンショルダーがポイントのバッグです◎。ポケットも沢山ついているので機能性も高く、14Lの使いやすい容量となっています:)
+		</div>
+	</a>
+	<div class="beams-list-image-item-author">
+		
+		<div class="beams-list-image-item-author-thumb">
+			<a href="/photolog/raybeams/950162/">
+				<img alt="翔子" src="//cdn-cms.beams.co.jp/cdn/cms/staff/1322/profile_PDoRPi_s.jpg">
+			</a>
+		</div>
+		
+		<div class="beams-list-image-item-author-meta">
+				
+					<a href="/photolog/raybeams/950162/">
+						<div class="name">翔子</div>
+					</a>
+				
+				
+				
+				<a href="/photolog/?label=0061">
+					<div class="belong">
+						Ray BEAMS
+					</div>
+				</a>
+				
+			
+		</div>
+	</div>
+</li>
+
+</ul></div><div class="bx-controls bx-has-controls-direction" style="display: none;"><div class="bx-controls-direction"><a class="bx-prev disabled" href=""></a><a class="bx-next disabled" href=""></a></div></div></div>
+
+	</div>
+</div>
+</div>
+				<div id="video_block" class="video ready">
+<div class="listed-items-4columns-small">
+	<div class="item-detail-left-headline">ビデオ</div>
+	<div class="item-detail-video-container">
+	
+<ul class="beams-list-image video-list">
+	<li class="beams-list-image-item">
+	<div class="beams-list-image-item-img">
+		<div class="videoHolder" style="">
+			<div class="cri-liveact-player playHover thumbnail" data-ljt-url="//cdn-cms.beams.co.jp/cdn/cms/video/132484/thumbnail_a.xml" data-base-url="//cdn-cms.beams.co.jp/cdn/cms/video/132484/" data-play-trigger="tap" data-loop="false" data-content-type="thumbnail" data-link="/video/raybeams/132484/" data-fulltime="0:36"><div class="lac-div liveact-player__element--reset-highlight lac-div--width-set" style="width: 60.049383px; position: relative; cursor: pointer;"><canvas id="liveact-canvas-0" width="228" height="405" class="lac-div__fit liveact-player__element--reset-touch" style=""></canvas><div class="liveact-link-highlight" style="opacity: 0;"></div><div class="lac-screen-play lac-button liveact-player__element--invisible"></div><div class="liveact-controls liveact-controls--no-seekbar" style="opacity: 1;"><div class="lac-minimenu-field"><div class="lac-minimenu lac-chapter-minimenu"><div class="lac-minimenu-wrap"><div class="lac-minimenu-header">チャプター設定</div><div class="lac-minimenu-pin lac-button lac-pin"></div><div class="lac-minimenu-body"><ol></ol></div><div class="lac-minimenu-footer"><div class="lac-onminimenu-button lac-chapter-add"><div class="lac-onminimenu-inner-button">追加</div></div><div class="lac-onminimenu-button lac-toggle-unit"><div class="lac-onminimenu-inner-button">単位: フレーム</div></div></div></div></div><div class="lac-minimenu lac-playback-range-minimenu"><div class="lac-minimenu-wrap"><div class="lac-minimenu-header">再生範囲調整モード</div><div class="lac-minimenu-pin lac-button lac-pin"></div><div class="lac-minimenu-body"><div class="lac-playback-range-minimenu-item"><label>開始<input type="number" min="0" max="45" step="1"></label></div><div class="lac-playback-range-minimenu-item"><label>終了<input type="number" min="0" max="45" step="1"></label></div></div><div class="lac-minimenu-footer"><div class="lac-onminimenu-button lac-toggle-unit"><div class="lac-onminimenu-inner-button">単位: フレーム</div></div></div></div></div><div class="lac-minimenu lac-playback-rate-minimenu"><div class="lac-minimenu-wrap"><div class="lac-minimenu-header">再生速度設定</div><div class="lac-minimenu-pin lac-button lac-pin"></div><div class="lac-minimenu-body"><div class="lac-playback-rate-minimenu-line"><div class="lac-slider lac-slider--playback-rate"><div class="lac-slider-wrap"><div class="lac-slider-background"><div class="lac-slider-background-inner"></div></div><div class="lac-slider-base"></div><div class="lac-slider-pointer" style="left: 33.333333%;"></div></div></div><select><option value="2">2.00</option><option value="1.5">1.50</option><option value="1">1.00</option><option value="0.5">0.50</option></select></div></div><div class="lac-minimenu-footer"></div></div></div></div><div class="lac-row"><div class="lac-play lac-button liveact-player__element--invisible"></div><div class="lac-slider lac-slider--seek lac-seekbar liveact-player__element--invisible"><div class="lac-slider-wrap lac-seekbar-wrap"><div class="lac-slider-background lac-seekbar-background"><div class="lac-slider-background-inner lac-seekbar-background-inner"></div></div><div class="lac-slider-base lac-seekbar-base"></div><div class="lac-slider-pointer lac-seekbar-pointer" style="left: 0%;"></div><div class="lac-seekbar-loading" style="background: linear-gradient(90deg, rgb(70, 70, 70) 0%, rgb(70, 70, 70) 100%);"></div><div class="lac-seekbar-current" style="width: 0%;"></div><div class="lac-seekbar-prohibited" style="background: linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 100%, rgb(0, 0, 0) 100%, rgb(0, 0, 0) 100%);"></div><div class="lac-seekbar-separator-list"></div><div class="lac-playback-range-arrow-list"><div class="lac-playback-range-arrow" style="left: 0%;"></div><div class="lac-playback-range-arrow" style="left: 100%;"></div></div></div></div><div class="lac-time liveact-player__element--invisible">0:00/0:03</div><div class="lac-volume lac-button liveact-player__element--invisible"></div><div class="lac-loop lac-button liveact-player__element--invisible"></div><div class="lac-swipe-ui-mode-toggle lac-button liveact-player__element--invisible"></div><div class="lac-gyro-sensor lac-button liveact-player__element--invisible"></div><div class="lac-swipe-ui-zoom-in lac-button liveact-player__element--invisible"></div><div class="lac-swipe-ui-zoom-out lac-button liveact-player__element--invisible"></div><div class="lac-fullscreen lac-button liveact-player__element--invisible"></div><div class="lac-chapter lac-button liveact-player__element--invisible"></div><div class="lac-playback-range lac-button liveact-player__element--invisible"></div><div class="lac-prev-frame lac-button liveact-player__element--invisible"></div><div class="lac-next-frame lac-button liveact-player__element--invisible"></div><div class="lac-playback-rate lac-button liveact-player__element--invisible" data-playback-rate="1.00"></div></div></div></div><div class="button-video"><p class="video-status"><i></i><span class="txt">0:36</span></p></div></div>
+
+		</div>
+		<a href="/video/raybeams/132484/">
+			<p class="lead">
+				【DANTON】今期も可愛いDANTONが入荷してきます〜！DANTONのアイテムを使ったスタイルを動画でご紹介しております〜！身長163cmです！参考にしていただけると嬉しいです♡
+			</p>
+		</a>
+	</div>
+	<div class="beams-list-image-item-author">
+		
+		<div class="beams-list-image-item-author-thumb">
+			<a href="/video/raybeams/132484/">
+				<img alt="松本 佳菜子" src="//cdn-cms.beams.co.jp/cdn/cms/staff/2643/profile_ZVKaDc_s.jpg">
+			</a>
+		</div>
+		
+		<div class="beams-list-image-item-author-meta">
+			
+				<div class="name">
+					<a href="/video/raybeams/132484/">
+						松本 佳菜子
+					</a>
+				</div>
+			
+			
+				
+				<div class="belong">
+					<a href="/video/?label=0061">Ray BEAMS</a>
+				</div>
+				
+			
+		</div>
+	</div>
+</li>
+<li class="beams-list-image-item">
+	<div class="beams-list-image-item-img">
+		<div class="videoHolder" style="">
+			<div class="cri-liveact-player playHover thumbnail" data-ljt-url="//cdn-cms.beams.co.jp/cdn/cms/video/131633/thumbnail_a.xml" data-base-url="//cdn-cms.beams.co.jp/cdn/cms/video/131633/" data-play-trigger="tap" data-loop="false" data-content-type="thumbnail" data-link="/video/raybeams/131633/" data-fulltime="0:20"><div class="lac-div liveact-player__element--reset-highlight lac-div--width-set" style="width: 71.111111px; position: relative; cursor: pointer;"><canvas id="liveact-canvas-1" width="228" height="342" class="lac-div__fit liveact-player__element--reset-touch" style=""></canvas><div class="liveact-link-highlight" style="opacity: 0;"></div><div class="lac-screen-play lac-button liveact-player__element--invisible"></div><div class="liveact-controls liveact-controls--no-seekbar" style="opacity: 1;"><div class="lac-minimenu-field"><div class="lac-minimenu lac-chapter-minimenu"><div class="lac-minimenu-wrap"><div class="lac-minimenu-header">チャプター設定</div><div class="lac-minimenu-pin lac-button lac-pin"></div><div class="lac-minimenu-body"><ol></ol></div><div class="lac-minimenu-footer"><div class="lac-onminimenu-button lac-chapter-add"><div class="lac-onminimenu-inner-button">追加</div></div><div class="lac-onminimenu-button lac-toggle-unit"><div class="lac-onminimenu-inner-button">単位: フレーム</div></div></div></div></div><div class="lac-minimenu lac-playback-range-minimenu"><div class="lac-minimenu-wrap"><div class="lac-minimenu-header">再生範囲調整モード</div><div class="lac-minimenu-pin lac-button lac-pin"></div><div class="lac-minimenu-body"><div class="lac-playback-range-minimenu-item"><label>開始<input type="number" min="0" max="45" step="1"></label></div><div class="lac-playback-range-minimenu-item"><label>終了<input type="number" min="0" max="45" step="1"></label></div></div><div class="lac-minimenu-footer"><div class="lac-onminimenu-button lac-toggle-unit"><div class="lac-onminimenu-inner-button">単位: フレーム</div></div></div></div></div><div class="lac-minimenu lac-playback-rate-minimenu"><div class="lac-minimenu-wrap"><div class="lac-minimenu-header">再生速度設定</div><div class="lac-minimenu-pin lac-button lac-pin"></div><div class="lac-minimenu-body"><div class="lac-playback-rate-minimenu-line"><div class="lac-slider lac-slider--playback-rate"><div class="lac-slider-wrap"><div class="lac-slider-background"><div class="lac-slider-background-inner"></div></div><div class="lac-slider-base"></div><div class="lac-slider-pointer" style="left: 33.333333%;"></div></div></div><select><option value="2">2.00</option><option value="1.5">1.50</option><option value="1">1.00</option><option value="0.5">0.50</option></select></div></div><div class="lac-minimenu-footer"></div></div></div></div><div class="lac-row"><div class="lac-play lac-button liveact-player__element--invisible"></div><div class="lac-slider lac-slider--seek lac-seekbar liveact-player__element--invisible"><div class="lac-slider-wrap lac-seekbar-wrap"><div class="lac-slider-background lac-seekbar-background"><div class="lac-slider-background-inner lac-seekbar-background-inner"></div></div><div class="lac-slider-base lac-seekbar-base"></div><div class="lac-slider-pointer lac-seekbar-pointer" style="left: 0%;"></div><div class="lac-seekbar-loading" style="background: linear-gradient(90deg, rgb(70, 70, 70) 0%, rgb(70, 70, 70) 100%);"></div><div class="lac-seekbar-current" style="width: 0%;"></div><div class="lac-seekbar-prohibited" style="background: linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 0%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 100%, rgb(0, 0, 0) 100%, rgb(0, 0, 0) 100%);"></div><div class="lac-seekbar-separator-list"></div><div class="lac-playback-range-arrow-list"><div class="lac-playback-range-arrow" style="left: 0%;"></div><div class="lac-playback-range-arrow" style="left: 100%;"></div></div></div></div><div class="lac-time liveact-player__element--invisible">0:00/0:03</div><div class="lac-volume lac-button liveact-player__element--invisible"></div><div class="lac-loop lac-button liveact-player__element--invisible"></div><div class="lac-swipe-ui-mode-toggle lac-button liveact-player__element--invisible"></div><div class="lac-gyro-sensor lac-button liveact-player__element--invisible"></div><div class="lac-swipe-ui-zoom-in lac-button liveact-player__element--invisible"></div><div class="lac-swipe-ui-zoom-out lac-button liveact-player__element--invisible"></div><div class="lac-fullscreen lac-button liveact-player__element--invisible"></div><div class="lac-chapter lac-button liveact-player__element--invisible"></div><div class="lac-playback-range lac-button liveact-player__element--invisible"></div><div class="lac-prev-frame lac-button liveact-player__element--invisible"></div><div class="lac-next-frame lac-button liveact-player__element--invisible"></div><div class="lac-playback-rate lac-button liveact-player__element--invisible" data-playback-rate="1.00"></div></div></div></div><div class="button-video"><p class="video-status"><i></i><span class="txt">0:20</span></p></div></div>
+
+		</div>
+		<a href="/video/raybeams/131633/">
+			<p class="lead">
+				25春夏のおすすめ品〈DANTON〉のワンショルダーバッグ！予約受付中です。
+			</p>
+		</a>
+	</div>
+	<div class="beams-list-image-item-author">
+		
+		<div class="beams-list-image-item-author-thumb">
+			<a href="/video/raybeams/131633/">
+				<img alt="望月 沙織" src="//cdn-cms.beams.co.jp/cdn/cms/staff/1158/profile_4bx1HN_s.jpg">
+			</a>
+		</div>
+		
+		<div class="beams-list-image-item-author-meta">
+			
+				<div class="name">
+					<a href="/video/raybeams/131633/">
+						望月 沙織
+					</a>
+				</div>
+			
+			
+				
+				<div class="belong">
+					<a href="/video/?label=0061">Ray BEAMS</a>
+				</div>
+				
+			
+		</div>
+	</div>
+</li>
+
+</ul>
+
+	</div>
+	<div class="item-detail-video-container-more" style="display: none;">
+		<div class="item-detail-video-container-more-inner">
+			さらに表示
+		</div>
+	</div>
+</div>
+
+</div>
+				<div id="blog_block" class="ready">
+<div class="listed-items-blog">
+	<div class="item-detail-left-headline">ブログ</div>
+	<div class="item-detail-blog-container toggle">
+		
+<ul class="beams-list-image">
+	<li class="beams-list-image-item has-author">
+		<a href="/blog/raybeams/170287/">
+			<div class="beams-list-image-item-img">
+				<img alt="【TOP10】先週の人気アイテムランキング｜Ray BEAMS" src="//cdn-cms.beams.co.jp/cdn/cms/blog/170287/body_XoHhUs_s.jpg">
+			</div>
+		</a>
+		<div class="info">
+			<a href="/blog/raybeams/170287/">
+				<p class="title">【TOP10】先週の人気アイテムランキング｜Ray BEAMS</p>
+				<p class="text">先週リアルに売れていたアイテムをCheck！気になるアイテムは画像をタップ♪～最下部に全アイテムまとめて掲載しています～※ブログ内に記載の価格（税込）は、記事公開時のものであり変更する可能性がございます。〈通常販売〉【8/7再値下げ】【別注】FRED PERRY / Reluxed Pique T-shirt（手洗い可能）￥8,470（税込）【WEB限定】DANTON / ローヌ 14￥12,10</p>
+			</a>
+			<a href="/blog/raybeams/170287/">
+				<div class="date">2025.08.25</div>
+			</a>
+			<div class="beams-list-image-item-author">
+				
+				<div class="beams-list-image-item-author-thumb">
+					<a href="/blog/raybeams/170287/">
+						<img alt="chieri" src="//cdn-cms.beams.co.jp/cdn/cms/staff/1969/profile_V2cxAZ_s.jpg">
+					</a>
+				</div>
+				
+				<div class="beams-list-image-item-author-meta">
+				
+				<a href="/blog/raybeams/170287/">
+					<div class="name">chieri</div>
+				</a>
+				
+				
+						
+						<a href="/blog_label/raybeams/">
+							<div class="belong">
+								Ray BEAMS ブログ
+							</div>
+						</a>
+						
+				
+				</div>
+			</div>
+		</div>
+</li>
+
+<li class="beams-list-image-item has-author">
+		<a href="/blog/raybeams/168349/">
+			<div class="beams-list-image-item-img">
+				<img alt="【TOP10】先週の人気アイテムランキング｜Ray BEAMS" src="//cdn-cms.beams.co.jp/cdn/cms/blog/168349/body_uuE7z7_s.jpg">
+			</div>
+		</a>
+		<div class="info">
+			<a href="/blog/raybeams/168349/">
+				<p class="title">【TOP10】先週の人気アイテムランキング｜Ray BEAMS</p>
+				<p class="text">先週リアルに売れていたアイテムをCheck！気になるアイテムは画像をタップ♪～最下部に全アイテムまとめて掲載しています～※ブログ内に記載の価格（税込）は、記事公開時のものであり変更する可能性がございます。〈通常販売〉【7/3新規値下げ】NIKE / エア マックス KOKO￥9,471（税込）PUMA / スピードキャット バレエ SD スニーカー￥12,100（税込）【7/3新規値下げ】FRED</p>
+			</a>
+			<a href="/blog/raybeams/168349/">
+				<div class="date">2025.07.09</div>
+			</a>
+			<div class="beams-list-image-item-author">
+				
+				<div class="beams-list-image-item-author-thumb">
+					<a href="/blog/raybeams/168349/">
+						<img alt="chieri" src="//cdn-cms.beams.co.jp/cdn/cms/staff/1969/profile_V2cxAZ_s.jpg">
+					</a>
+				</div>
+				
+				<div class="beams-list-image-item-author-meta">
+				
+				<a href="/blog/raybeams/168349/">
+					<div class="name">chieri</div>
+				</a>
+				
+				
+						
+						<a href="/blog_label/raybeams/">
+							<div class="belong">
+								Ray BEAMS ブログ
+							</div>
+						</a>
+						
+				
+				</div>
+			</div>
+		</div>
+</li>
+
+<li class="beams-list-image-item has-author" style="display: none;">
+		<a href="/blog/raybeams/167965/">
+			<div class="beams-list-image-item-img">
+				<img alt="【TOP10】先週の人気アイテムランキング｜Ray BEAMS" src="//cdn-cms.beams.co.jp/cdn/cms/blog/167965/body_GfMlQV_s.jpg">
+			</div>
+		</a>
+		<div class="info">
+			<a href="/blog/raybeams/167965/">
+				<p class="title">【TOP10】先週の人気アイテムランキング｜Ray BEAMS</p>
+				<p class="text">先週リアルに売れていたアイテムをCheck！気になるアイテムは画像をタップ♪～最下部に全アイテムまとめて掲載しています～※ブログ内に記載の価格（税込）は、記事公開時のものであり変更する可能性がございます。〈通常販売〉【別注】FRED PERRY / Reluxed Pique T-shirt（手洗い可能）￥12,100（税込）FRED PERRY / The Twin Tipped Fred Pe</p>
+			</a>
+			<a href="/blog/raybeams/167965/">
+				<div class="date">2025.07.01</div>
+			</a>
+			<div class="beams-list-image-item-author">
+				
+				<div class="beams-list-image-item-author-thumb">
+					<a href="/blog/raybeams/167965/">
+						<img alt="chieri" src="//cdn-cms.beams.co.jp/cdn/cms/staff/1969/profile_V2cxAZ_s.jpg">
+					</a>
+				</div>
+				
+				<div class="beams-list-image-item-author-meta">
+				
+				<a href="/blog/raybeams/167965/">
+					<div class="name">chieri</div>
+				</a>
+				
+				
+						
+						<a href="/blog_label/raybeams/">
+							<div class="belong">
+								Ray BEAMS ブログ
+							</div>
+						</a>
+						
+				
+				</div>
+			</div>
+		</div>
+</li>
+
+<li class="beams-list-image-item has-author" style="display: none;">
+		<a href="/blog/oia/160550/">
+			<div class="beams-list-image-item-img">
+				<img alt="【DANTON】しずく型が可愛い♡" src="//cdn-cms.beams.co.jp/cdn/cms/blog/160550/body_nG57nO_s.jpg">
+			</div>
+		</a>
+		<div class="info">
+			<a href="/blog/oia/160550/">
+				<p class="title">【DANTON】しずく型が可愛い♡</p>
+				<p class="text">ビームス 大分、宮岡です！今年初のブログとなります！みなさま、遅くなりましたが、あけましておめでとうございます◎2024年は宮岡、年女でしたが色んな事があった一年で、あっという間でした＊今年も色んな出来事があるかと思いますが、全力で楽しみたいと思います♪さて、本日は可愛いBAGのご紹介です♪みんな大好き【DANTON】より、しずく型の可愛いBAGです♪♡61612083024【WEB限定】DANT</p>
+			</a>
+			<a href="/blog/oia/160550/">
+				<div class="date">2025.01.10</div>
+			</a>
+			<div class="beams-list-image-item-author">
+				
+				<div class="beams-list-image-item-author-thumb">
+					<a href="/blog/oia/160550/">
+						<img alt="宮岡　標" src="//cdn-cms.beams.co.jp/cdn/cms/staff/294/profile_Z84fJp_s.jpg">
+					</a>
+				</div>
+				
+				<div class="beams-list-image-item-author-meta">
+				
+				<a href="/blog/oia/160550/">
+					<div class="name">宮岡　標</div>
+				</a>
+				
+				
+						
+						<a href="/blog_shop/oia/">
+							<div class="belong">
+										 ビームス 大分 ブログ
+							</div>
+						</a>
+						
+				
+				</div>
+			</div>
+		</div>
+</li>
+
+
+</ul>
+
+	</div>
+	<div class="item-detail-blog-container-more">
+		<div class="item-detail-blog-container-more-inner">
+			さらに表示
+		</div>
+	</div>
+</div>
+
+</div>
+				</div>
+				<div class="item-detail-tab-content itemreview">
+					<div id="revico_block">
+						<div class="item-review-summary">
+							<div class="revico-star-zone-review"><div data-revico-goods="616120830241988" data-revico-layout="star-mulch-comment" style="display:none;"></div><div class="revico-comment-outer-head" data-review-count="7"><!-- <p class="revico-blue">上部HTMLエリア</p> --></div><div class="revico-star" data-review-count="7" style="">
+    <div class="revico-widget">
+        <div class="revico-star-simple">
+<!--
+            <div class="revico-star-simple-wrapper">
+-->
+            <div class="starability-result-wrapper">
+                <div class="revico-star-block">
+                    <div class="revico-star-block--rate">
+                        <div class="starability-result" data-rating="4.5"></div>
+                    </div>
+                    <span class="revico-star-block--title">4.6</span>
+<!--
+                    <span class="revico-star-block--total">（7）</span>
+                    <button type="button" class="revico-read-more-review">レビューを見る</button>
+-->
+                </div>
+            </div>
+            <div class="revico-star-block--total">レビュー件数：<span>7</span>件</div>
+        </div>
+    </div>
+</div><div class="revico-comment-outer-foot" data-review-count="7"><!-- <p class="revico-blue">下部HTMLエリア</p> --></div><div class="revico-star-all revico-star-simple-design initailized" data-revico-hidden-id="jrs" data-revico-product-attr="data-revico-goods" data-revico-tenantid="ecf9afc4-a56f-49dd-a8da-63663a18486c" style="display:none;"></div></div>
+							<div id="revico-review-zone"><div class="revico-review-multicomment revico-multicomment" data-revico-hidden-id="jrs" data-revico-tenantid="ecf9afc4-a56f-49dd-a8da-63663a18486c" style="display:none;" data-revico-tenant-member-cd="revico-tenant-member-cd" data-revico-initial-pageindex="2" data-revico-more-pageindex="2" data-revico-layout="mulch-comment" data-initial-sort-type="rate"></div><div class="revico-comment-outer-head" data-layout-tag-name="mulch-comment" data-review-count="7"><div class="review_annotation top">
+掲載済みレビューの一覧ページです。<br role="presentation">
+<br role="presentation">
+■注意事項<br role="presentation">
+・同一商品の1カラー/1サイズにつき、1投稿が可能です。以前に投稿済みの商品を再度購入された場合はレビューを投稿いただくことはできません。<br role="presentation">
+・弊社の審査のお時間をいただくため、掲載までに日数をいただく場合がございます。<br role="presentation">
+・マイルは、審査後の付与となります。非掲載となった投稿は、マイル付与の対象外となります。掲載・非掲載の通知や、非掲載の場合の説明等は行っておりません。<br role="presentation">
+・お客様側での削除・再編集・再投稿はできません。<br role="presentation">
+<a href="https://support.beams.co.jp/guide/s/article/07-07" target="_blank" aria-label="> レビューガイドライン・投稿方法はこちら - 在新分頁中開啟">&gt; レビューガイドライン・投稿方法はこちら</a><a tabindex="0">
+</a></div><a tabindex="0">
+</a><div class="review-none-container"><a tabindex="0">
+<div class="review-none-title">承認されたレビューがありません。</div>
+</a><div class="review-none-description"><a tabindex="0">※レビューはマイページ内の</a><a href="https://www.beams.co.jp/club/purchase.aspx">購入明細</a>・<a href="https://www.beams.co.jp/club/history.aspx">オンライン購入履歴</a>の<br role="presentation">「レビューを書く」ボタンから投稿できます</div>
+</div></div><div class="revico-multicomment-top revico-common-background-style" data-layout-tag-name="mulch-comment" data-review-count="7"><div class="revico-multicomment-inner"><div class="revico-comment-main revico-widget"><div class="revico-logo"></div><div class="revico-comment-header">
+                                <div class="revico-comment-header-wrapper">
+                                    <div class="revico-comment-filter revico-common-button-style revico-common-filter-icon-style"><span>絞り込み</span></div>
+                                    <div class="revico-comment-sort revico-common-button-style revico-common-sort-icon-style"><span>表示：評価が高い順</span></div>
+                                    <ul class="revico-comment-sort-select revico-common-sort-select-style" style="display: none;">
+                                        <li data-sort="date">新しい順</li>
+                                        <li data-sort="helpful">参考になった順</li>
+                                        <li data-sort="like">Like!が多い順</li>
+                                        <li data-sort="rate">評価が高い順</li>
+                                    </ul>
+                                </div>
+                               </div><div class="revico-review-comment-row-wrapper" data-product-first-view="true" style=""><div class="revico-review-comment-row" data-pickup-review="false">
+  <div class="revico-review-comment-detail">
+
+    <!-- 日付 -->
+    <div class="revico-review-comment-detail--star-date">2025.9.1</div>
+
+    <!-- 商品情報 -->
+    <div class="revico-review-comment-detail--product" data-all-product-review="false">
+      <a href="https://www.beams.co.jp/item/raybeams/bag/61612083024/">
+        <div class="revico-review-comment-detail--product-name">
+          <div class="revico-review-comment-detail--product-name-image">
+            <img src="https://cdn.beams.co.jp/img/goods/61612083024/O/61612083024_C_3.jpg">
+          </div>
+          <p>【WEB限定】DANTON / ローヌ 14</p>
+          <span>
+            詳細を見る
+            <img src="https://show.revico.jp/img/product_link.png">
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <!-- タイトル -->
+    <div class="revico-review-comment-detail--title">
+      <div class="revico-review-comment-detail--title-review-title">探していた❗</div>
+    </div>
+
+    <!-- レート -->
+    <div class="revico-review-comment-detail--star">
+      <div class="revico-review-comment-detail--star-rate">
+        <p class="revico-starability-result" data-star-rating="5"></p>
+      </div>
+    </div>
+
+    <!-- 評価ポイント -->
+    <div class="revico-review-comment-detail--addition">
+      <div>
+        <ul class="revico-review-comment-detail--addition-variation" data-variation-1="ONE SIZE" data-variation-2="BLACK">
+          <li>
+            <span class="revico-review-comment-detail--addition-variation-1">購⼊サイズ：ONE SIZE</span>
+            <span class="revico-review-comment-detail--addition-variation-2">購⼊カラー：BLACK</span>
+          </li>
+        </ul>
+
+        <ul class="revico-review-comment-detail--addition-evaluationanswer">
+          
+        </ul>
+      </div>
+      <div class="revico-review-comment-detail--addition-image" data-image-count="0">
+        <div class="revico-picture-slide-back"><img src="https://show.revico.jp/img/slide_back.png"></div>
+        <ul class="revico-picture-slide-box revico-horizontal_scroll">
+          
+        </ul>
+        <div class="revico-picture-slide-next"><img src="https://show.revico.jp/img/slide_next.png"></div>
+      </div>
+    </div>
+
+    <!-- スタッフレコメンド -->
+    <div class="revico-review-comment-detail--staff-recommend" data-staff-recommend-count="0">
+      <div class="revico-review-comment-detail--staff-recommend--title">スタッフがおすすめする合わせ買い</div>
+      <ul class="revico-review-comment-detail--staff-recommend--box">
+        
+      </ul>
+    </div>
+
+    <!-- コメント -->
+    <div class="revico-review-comment-detail--comment">
+      <div class="revico-review-comment-detail--comment--content">リュック型で探していたので、希望とピッタリ合いました<br role="presentation">大きすぎず、小さすぎず、容量もちょうどいいので<br role="presentation">満足です😉</div>
+      <div class="revico-review-comment-detail--comment--more" style="display: none;"><span>続きを読む</span></div>
+    </div>
+
+    <!-- レビュアー -->
+    <div class="revico-review-comment-detail--addition-reviewer">
+      <!-- <div class="revico-review-comment-detail--addition-reviewer-image">
+        <img src="https://show.revico.jp/img/anonymous_icon.gif" />
+        <div class="revico-review-comment-detail--addition-label" data-reviewer-label="購入確認済み"></div>
+      </div> -->
+      <div class="revico-review-comment-detail--addition-reviewer-profile">
+        <p class="revico-review-comment-detail--addition-reviewer-profile--name">no name</p>
+        <ul class="revico-review-comment-detail--addition-reviewer-profile--attribute">
+          <li data-revico-reviewer-evaluationanswer-id="e96a22ed-ace3-4003-b1e9-e0cb1944583c"><span class="revico-review-comment-head--reviewer-evaluationanswer-title">年代:</span><span class="revico-review-comment-head--reviewer-evaluationanswer-choice">60代</span></li><li data-revico-reviewer-evaluationanswer-id="d157a7a0-5a5d-44a0-900c-6426db0c569d"><span class="revico-review-comment-head--reviewer-evaluationanswer-title">性別:</span><span class="revico-review-comment-head--reviewer-evaluationanswer-choice">女性</span></li><li data-revico-reviewer-evaluationanswer-id="30dcecc6-8e49-4887-b231-419af1006212"><span class="revico-review-comment-head--reviewer-evaluationanswer-title">身長:</span><span class="revico-review-comment-head--reviewer-evaluationanswer-choice">161～165cm</span></li><li data-revico-reviewer-evaluationanswer-id="261d583f-6f69-4aae-8512-999bd005792b"><span class="revico-review-comment-head--reviewer-evaluationanswer-title">体型:</span><span class="revico-review-comment-head--reviewer-evaluationanswer-choice">普通</span></li>
+        </ul>
+        <div class="revico-review-comment-detail--addition-staff-profile"></div>
+      </div>
+    </div>
+
+    <!-- ボタン -->
+    <div class="revico-review-comment-detail--action">
+      <div class="revico-review-comment-detail--action-helpful">
+        <div class="revico-review-comment-detail--action-helpful-click">
+          参考になった
+          <button type="button" class="revico-review-comment-detail--action-helpful-click-count">0</button>
+        </div>
+        <p style="display: none">Thanks!</p>
+      </div>
+
+      <!--  
+      <div class="revico-review-comment-detail--action-sns"><a href="https://x.com/intent/tweet?url=https%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F%3Frevico&text=no%20name%E3%81%95%E3%82%93%E3%81%AB%E3%82%88%E3%82%8B%E3%80%8C%E3%80%90WEB%E9%99%90%E5%AE%9A%E3%80%91DANTON%20%2F%20%E3%83%AD%E3%83%BC%E3%83%8C%2014%E3%80%8D%E3%81%AE%E3%83%AC%E3%83%93%E3%83%A5%E3%83%BC%0A%E8%A9%95%E4%BE%A1%3A%20%E2%98%85%E2%98%85%E2%98%85%E2%98%85%E2%98%85%0A%E3%80%8C%E3%83%AA%E3%83%A5%E3%83%83%E3%82%AF%E5%9E%8B%E3%81%A7%E6%8E%A2%E3%81%97%E3%81%A6%E3%81%84%E3%81%9F%E3%81%AE%E3%81%A7%E3%80%81%E5%B8%8C%E6%9C%9B%E3%81%A8%E3%83%94%E3%83%83%E3%82%BF%E3%83%AA%E5%90%88%E3%81%84%E3%81%BE%E3%81%97%E3%81%9F%0A%E5%A4%A7%E3%81%8D%E2%80%A6%E3%80%8D%0A&hashtags=ReviCo" target="_blank"><img class="revico-review-comment-detail--action-sns--twitter" src="https://show.revico.jp/img/twi.png" alt=""></a> <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F%3Frevico" target="_blank"><img class="revico-review-comment-detail--action-sns--facebook" src="https://show.revico.jp/img/fb.png" alt=""></a> <a href="https://line.me/R/msg/text/?no%20name%E3%81%95%E3%82%93%E3%81%AB%E3%82%88%E3%82%8B%E3%80%8C%E3%80%90WEB%E9%99%90%E5%AE%9A%E3%80%91DANTON%20%2F%20%E3%83%AD%E3%83%BC%E3%83%8C%2014%E3%80%8D%E3%81%AE%E3%83%AC%E3%83%93%E3%83%A5%E3%83%BC%0A%E8%A9%95%E4%BE%A1%3A%20%E2%98%85%E2%98%85%E2%98%85%E2%98%85%E2%98%85%0A%E3%80%8C%E3%83%AA%E3%83%A5%E3%83%83%E3%82%AF%E5%9E%8B%E3%81%A7%E6%8E%A2%E3%81%97%E3%81%A6%E3%81%84%E3%81%9F%E3%81%AE%E3%81%A7%E3%80%81%E5%B8%8C%E6%9C%9B%E3%81%A8%E3%83%94%E3%83%83%E3%82%BF%E3%83%AA%E5%90%88%E3%81%84%E3%81%BE%E3%81%97%E3%81%9F%0A%E5%A4%A7%E3%81%8D%E2%80%A6%E3%80%8D%0A%E8%A9%B3%E7%B4%B0%E3%81%AF%E3%81%93%E3%81%A1%E3%82%89%E3%81%A7%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%EF%BC%81%0Ahttps%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F%3Frevico%0A" target="_blank"><img class="revico-review-comment-detail--action-sns--line" src="https://show.revico.jp/img/line.png" alt=""></a></div>
+      <div class="revico-review-comment-detail--action-like">
+        <div class="revico-review-comment-detail--action-like-click">
+          Like!
+          <span class="revico-review-comment-detail--action-like-click-count">0</span>
+        </div>
+        <p style="display: none">Thanks!</p>
+      </div>
+      -->
+    </div>
+
+    <!-- ReviewReply -->
+    <div class="revico-review-comment-detail--reply" data-review-reply="false">
+      <div class="revico-review-comment-detail--reply-comment-wrapper">
+        <div class="revico-review-comment-detail--reply-comment">
+          <p class="revico-review-comment-detail--reply-comment--title">
+            店舗からの回答
+            <span class="revico-review-comment-detail--reply-comment--date"></span>
+          </p>
+          <p class="revico-review-comment-detail--reply-comment--content"></p>
+        </div>
+        <div class="revico-review-comment-detail--reply-fukidashi"></div>
+      </div>
+      <div class="revico-review-comment-detail--reply-icon">
+        <img src="https://show.revico.jp/img/shop_icon.png">
+      </div>
+    </div>
+  </div>
+</div></div><div class="revico-review-comment-row-wrapper" data-product-first-view="false" style=""><div class="revico-review-comment-row" data-pickup-review="false">
+  <div class="revico-review-comment-detail">
+
+    <!-- 日付 -->
+    <div class="revico-review-comment-detail--star-date">2025.8.28</div>
+
+    <!-- 商品情報 -->
+    <div class="revico-review-comment-detail--product" data-all-product-review="false">
+      <a href="https://www.beams.co.jp/item/raybeams/bag/61612083024/">
+        <div class="revico-review-comment-detail--product-name">
+          <div class="revico-review-comment-detail--product-name-image">
+            <img src="https://cdn.beams.co.jp/img/goods/61612083024/O/61612083024_C_3.jpg">
+          </div>
+          <p>【WEB限定】DANTON / ローヌ 14</p>
+          <span>
+            詳細を見る
+            <img src="https://show.revico.jp/img/product_link.png">
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <!-- タイトル -->
+    <div class="revico-review-comment-detail--title">
+      <div class="revico-review-comment-detail--title-review-title">どんなファッションにもフィット！</div>
+    </div>
+
+    <!-- レート -->
+    <div class="revico-review-comment-detail--star">
+      <div class="revico-review-comment-detail--star-rate">
+        <p class="revico-starability-result" data-star-rating="5"></p>
+      </div>
+    </div>
+
+    <!-- 評価ポイント -->
+    <div class="revico-review-comment-detail--addition">
+      <div>
+        <ul class="revico-review-comment-detail--addition-variation" data-variation-1="ONE SIZE" data-variation-2="BLACK">
+          <li>
+            <span class="revico-review-comment-detail--addition-variation-1">購⼊サイズ：ONE SIZE</span>
+            <span class="revico-review-comment-detail--addition-variation-2">購⼊カラー：BLACK</span>
+          </li>
+        </ul>
+
+        <ul class="revico-review-comment-detail--addition-evaluationanswer">
+          
+        </ul>
+      </div>
+      <div class="revico-review-comment-detail--addition-image" data-image-count="0">
+        <div class="revico-picture-slide-back"><img src="https://show.revico.jp/img/slide_back.png"></div>
+        <ul class="revico-picture-slide-box revico-horizontal_scroll">
+          
+        </ul>
+        <div class="revico-picture-slide-next"><img src="https://show.revico.jp/img/slide_next.png"></div>
+      </div>
+    </div>
+
+    <!-- スタッフレコメンド -->
+    <div class="revico-review-comment-detail--staff-recommend" data-staff-recommend-count="0">
+      <div class="revico-review-comment-detail--staff-recommend--title">スタッフがおすすめする合わせ買い</div>
+      <ul class="revico-review-comment-detail--staff-recommend--box">
+        
+      </ul>
+    </div>
+
+    <!-- コメント -->
+    <div class="revico-review-comment-detail--comment">
+      <div class="revico-review-comment-detail--comment--content">色、形、使いやすさ、どれをとっても満点です<br role="presentation">女子らしいファッションでもボーイッシュなファッションでもフィットするので使い勝手が良いです</div>
+      <div class="revico-review-comment-detail--comment--more" style="display: none;"><span>続きを読む</span></div>
+    </div>
+
+    <!-- レビュアー -->
+    <div class="revico-review-comment-detail--addition-reviewer">
+      <!-- <div class="revico-review-comment-detail--addition-reviewer-image">
+        <img src="https://show.revico.jp/img/anonymous_icon.gif" />
+        <div class="revico-review-comment-detail--addition-label" data-reviewer-label="購入確認済み"></div>
+      </div> -->
+      <div class="revico-review-comment-detail--addition-reviewer-profile">
+        <p class="revico-review-comment-detail--addition-reviewer-profile--name">ハリッサ65</p>
+        <ul class="revico-review-comment-detail--addition-reviewer-profile--attribute">
+          <li data-revico-reviewer-evaluationanswer-id="e96a22ed-ace3-4003-b1e9-e0cb1944583c"><span class="revico-review-comment-head--reviewer-evaluationanswer-title">年代:</span><span class="revico-review-comment-head--reviewer-evaluationanswer-choice">60代</span></li><li data-revico-reviewer-evaluationanswer-id="d157a7a0-5a5d-44a0-900c-6426db0c569d"><span class="revico-review-comment-head--reviewer-evaluationanswer-title">性別:</span><span class="revico-review-comment-head--reviewer-evaluationanswer-choice">女性</span></li><li data-revico-reviewer-evaluationanswer-id="30dcecc6-8e49-4887-b231-419af1006212"><span class="revico-review-comment-head--reviewer-evaluationanswer-title">身長:</span><span class="revico-review-comment-head--reviewer-evaluationanswer-choice">161～165cm</span></li><li data-revico-reviewer-evaluationanswer-id="261d583f-6f69-4aae-8512-999bd005792b"><span class="revico-review-comment-head--reviewer-evaluationanswer-title">体型:</span><span class="revico-review-comment-head--reviewer-evaluationanswer-choice">ふくよか</span></li>
+        </ul>
+        <div class="revico-review-comment-detail--addition-staff-profile"></div>
+      </div>
+    </div>
+
+    <!-- ボタン -->
+    <div class="revico-review-comment-detail--action">
+      <div class="revico-review-comment-detail--action-helpful">
+        <div class="revico-review-comment-detail--action-helpful-click">
+          参考になった
+          <button type="button" class="revico-review-comment-detail--action-helpful-click-count">1</button>
+        </div>
+        <p style="display: none">Thanks!</p>
+      </div>
+
+      <!--  
+      <div class="revico-review-comment-detail--action-sns"><a href="https://x.com/intent/tweet?url=https%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F%3Frevico&text=%E3%83%8F%E3%83%AA%E3%83%83%E3%82%B565%E3%81%95%E3%82%93%E3%81%AB%E3%82%88%E3%82%8B%E3%80%8C%E3%80%90WEB%E9%99%90%E5%AE%9A%E3%80%91DANTON%20%2F%20%E3%83%AD%E3%83%BC%E3%83%8C%2014%E3%80%8D%E3%81%AE%E3%83%AC%E3%83%93%E3%83%A5%E3%83%BC%0A%E8%A9%95%E4%BE%A1%3A%20%E2%98%85%E2%98%85%E2%98%85%E2%98%85%E2%98%85%0A%E3%80%8C%E8%89%B2%E3%80%81%E5%BD%A2%E3%80%81%E4%BD%BF%E3%81%84%E3%82%84%E3%81%99%E3%81%95%E3%80%81%E3%81%A9%E3%82%8C%E3%82%92%E3%81%A8%E3%81%A3%E3%81%A6%E3%82%82%E6%BA%80%E7%82%B9%E3%81%A7%E3%81%99%0A%E5%A5%B3%E5%AD%90%E3%82%89%E3%81%97%E3%81%84%E3%83%95%E3%82%A1%E2%80%A6%E3%80%8D%0A&hashtags=ReviCo" target="_blank"><img class="revico-review-comment-detail--action-sns--twitter" src="https://show.revico.jp/img/twi.png" alt=""></a> <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F%3Frevico" target="_blank"><img class="revico-review-comment-detail--action-sns--facebook" src="https://show.revico.jp/img/fb.png" alt=""></a> <a href="https://line.me/R/msg/text/?%E3%83%8F%E3%83%AA%E3%83%83%E3%82%B565%E3%81%95%E3%82%93%E3%81%AB%E3%82%88%E3%82%8B%E3%80%8C%E3%80%90WEB%E9%99%90%E5%AE%9A%E3%80%91DANTON%20%2F%20%E3%83%AD%E3%83%BC%E3%83%8C%2014%E3%80%8D%E3%81%AE%E3%83%AC%E3%83%93%E3%83%A5%E3%83%BC%0A%E8%A9%95%E4%BE%A1%3A%20%E2%98%85%E2%98%85%E2%98%85%E2%98%85%E2%98%85%0A%E3%80%8C%E8%89%B2%E3%80%81%E5%BD%A2%E3%80%81%E4%BD%BF%E3%81%84%E3%82%84%E3%81%99%E3%81%95%E3%80%81%E3%81%A9%E3%82%8C%E3%82%92%E3%81%A8%E3%81%A3%E3%81%A6%E3%82%82%E6%BA%80%E7%82%B9%E3%81%A7%E3%81%99%0A%E5%A5%B3%E5%AD%90%E3%82%89%E3%81%97%E3%81%84%E3%83%95%E3%82%A1%E2%80%A6%E3%80%8D%0A%E8%A9%B3%E7%B4%B0%E3%81%AF%E3%81%93%E3%81%A1%E3%82%89%E3%81%A7%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%EF%BC%81%0Ahttps%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F%3Frevico%0A" target="_blank"><img class="revico-review-comment-detail--action-sns--line" src="https://show.revico.jp/img/line.png" alt=""></a></div>
+      <div class="revico-review-comment-detail--action-like">
+        <div class="revico-review-comment-detail--action-like-click">
+          Like!
+          <span class="revico-review-comment-detail--action-like-click-count">0</span>
+        </div>
+        <p style="display: none">Thanks!</p>
+      </div>
+      -->
+    </div>
+
+    <!-- ReviewReply -->
+    <div class="revico-review-comment-detail--reply" data-review-reply="false">
+      <div class="revico-review-comment-detail--reply-comment-wrapper">
+        <div class="revico-review-comment-detail--reply-comment">
+          <p class="revico-review-comment-detail--reply-comment--title">
+            店舗からの回答
+            <span class="revico-review-comment-detail--reply-comment--date"></span>
+          </p>
+          <p class="revico-review-comment-detail--reply-comment--content"></p>
+        </div>
+        <div class="revico-review-comment-detail--reply-fukidashi"></div>
+      </div>
+      <div class="revico-review-comment-detail--reply-icon">
+        <img src="https://show.revico.jp/img/shop_icon.png">
+      </div>
+    </div>
+  </div>
+</div></div><div class="revico-comment-footer"><div class="revico-comment-footer--more"><button type="button" class="revico-common-button-style"><span>もっと見る</span></button></div><div class="revico-comment-footer--paging-buttons">
+                                    <button type="button" class="revico-comment-footer--filter revico-common-button-style revico-common-filter-icon-style"><span>絞り込み</span></button>
+                                    <button type="button" class="revico-comment-footer--sort revico-common-button-style revico-common-sort-icon-style"><span>表示：評価が高い順</span></button>
+                                    <ul class="revico-comment-footer--sort-select revico-common-sort-select-style" style="display: none;">
+                                        <li data-sort="date">新しい順</li>
+                                        <li data-sort="helpful">参考になった順</li>
+                                        <li data-sort="like">Like!が多い順</li>
+                                        <li data-sort="rate">評価が高い順</li>
+                                    </ul>
+                                </div><div class="revico-comment-footer--writebutton-wrapper"><button type="button" class="revico-comment-footer--writebutton revico-common-button-style"><span>レビューを書く</span></button></div></div></div></div><script>(function() { if (typeof revico_multicomment_complete === "function") { revico_multicomment_complete(); } })();</script></div><div class="revico-comment-outer-foot" data-layout-tag-name="mulch-comment" data-review-count="7"><div class="review_annotation bottom
+">
+※レビューの評価には
+<a href="https://www.beams.co.jp/club/menu.aspx">ログイン</a>
+が必要です<br role="presentation">
+※レビューはマイページ内の<a href="https://www.beams.co.jp/club/purchase.aspx">購入明細</a>・<a href="https://www.beams.co.jp/club/history.aspx">購入オンライン購入履歴</a>の「レビューを書く」ボタンから投稿できます
+</div></div><script charset="utf-8" src="https://show.revico.jp/providejs/star.js" async=""></script><script charset="utf-8" src="https://show.revico.jp/providejs/multicomment.js" async=""></script><div id="revico-richsnippet" data-revico-hidden-id="jrs" data-revico-tenant-id="ecf9afc4-a56f-49dd-a8da-63663a18486c" class="initailized"></div><script charset="utf-8" src="https://show.revico.jp/providejs/standalone_richsnippet.js" async=""></script></div>
+						</div>
+					</div>
+				</div>
+
+				
+					
+	<div class="listed-items-4columns-small">
+		<div class="item-detail-left-headline">関連するアイテム</div>
+		
+		
+<ul class="beams-list-image">
+	<li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61612082024/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61612082024/S2/61612082024_C_4.jpg" alt="DANTON / CORDURA CANVAS 2WAY TOTE BAG〈PONT NEUF〉" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		DANTON / CORDURA CANVAS 2WAY TOTE BAG〈PONT NEUF〉
+	" style="max-height: 40px !important; overflow: hidden !important;">
+		DANTON / CORDURA CANVAS 2WAY TO...</div>
+
+	<div class="price">
+		¥10,450
+	</div>
+
+	</a>
+</li><li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61612085024/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61612085024/S2/61612085024_C_2.jpg" alt="DANTON / CANVAS MARCHE BAG〈MONTORGUEIL〉" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		DANTON / CANVAS MARCHE BAG〈MONTORGUEIL〉
+	" style="max-height: 40px !important; overflow: hidden !important;">
+		DANTON / CANVAS MARCHE BAG〈M...</div>
+
+	<div class="price">
+		¥8,250
+	</div>
+
+	</a>
+</li><li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61612110024/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61612110024/S2/61612110024_C_1.jpg" alt="DANTON / POLYESTER TWILL BACKPACK" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		DANTON / POLYESTER TWILL BACKPACK
+	" style="max-height: 40px !important; overflow: hidden !important;">
+		DANTON / POLYESTER TWILL B...</div>
+
+	<div class="price">
+		¥14,850
+	</div>
+
+	</a>
+</li><li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61611183519/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61611183519/S2/61611183519_C_3.jpg" alt="toleur / ポリエステル 2way トートバッグ" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		toleur / ポリエステル 2way トートバッグ
+	" style="height: auto !important; max-height: none !important; overflow: auto !important;">
+		toleur / ポリエステル 2way トートバッグ
+	</div>
+
+	<div class="price">
+		¥8,690
+	</div>
+
+	</a>
+</li>
+</ul><ul class="beams-list-image">
+	<li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61612086024/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61612086024/S2/61612086024_C_2.jpg" alt="【WEB限定】DANTON / POLYESTER TWILL BACKPACK〈MONT FARON 27〉" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		【WEB限定】DANTON / POLYESTER TWILL BACKPACK〈MONT FARON 27〉
+	" style="max-height: 40px !important; overflow: hidden !important;">
+		【WEB限定】DANTON / POLYESTER TWILL...</div>
+
+	<div class="price">
+		¥17,600
+	</div>
+
+	</a>
+</li><li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61612170962/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61612170962/S2/61612170962_C_1.jpg" alt="【別注】Casselini / リボン ヘルメット バッグ" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		【別注】Casselini / リボン ヘルメット バッグ
+	" style="height: auto !important; max-height: none !important; overflow: auto !important;">
+		【別注】Casselini / リボン ヘルメット バッグ
+	</div>
+
+	<div class="price">
+		¥10,010
+	</div>
+
+	</a>
+</li><li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61612187519/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61612187519/S2/61612187519_C_1.jpg" alt="【別注】toleur / ナイロン キルト バッグ" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		【別注】toleur / ナイロン キルト バッグ
+	" style="height: auto !important; max-height: none !important; overflow: auto !important;">
+		【別注】toleur / ナイロン キルト バッグ
+	</div>
+
+	<div class="price">
+		¥6,083
+	</div>
+
+	</a>
+</li><li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61612231703/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61612231703/S2/61612231703_C_2.jpg" alt="【ポップアップ開催】HUNTER / イントレピッド パファーミニクロスボディ" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		【ポップアップ開催】HUNTER / イントレピッド パファーミニクロスボディ
+	" style="max-height: 40px !important; overflow: hidden !important;">
+		【ポップアップ開催】HUNTER / イントレピ...</div>
+
+	<div class="price">
+		¥11,000
+	</div>
+
+	</a>
+</li>
+</ul><ul class="beams-list-image">
+	<li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61612243331/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61612243331/S2/61612243331_C_1.jpg" alt="ビッグ マルチ トート" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		ビッグ マルチ トート
+	" style="height: auto !important; max-height: none !important; overflow: auto !important;">
+		ビッグ マルチ トート
+	</div>
+
+	<div class="price">
+		¥12,100
+	</div>
+
+	</a>
+</li><li class="beams-list-image-item">
+	<a href="/item/raybeams/bag/61612293056/?mid=311">
+	<div class="beams-list-image-item-img">
+		<img src="//cdn.beams.co.jp/img/goods/61612293056/S2/61612293056_C_1.jpg" alt="【別注】beej / 刺繍 トート バッグ" loading="eager" decoding="sync">
+	</div>
+	<div class="product-name max-line-2 multiline-clamping multiline-clamped" initial-text="
+		【別注】beej / 刺繍 トート バッグ
+	" style="height: auto !important; max-height: none !important; overflow: auto !important;">
+		【別注】beej / 刺繍 トート バッグ
+	</div>
+
+	<div class="price">
+		¥6,930
+	</div>
+
+	</a>
+</li>
+</ul>
+
+		
+	</div>
+
+				
+
+			</div>
+			<div class="item-detail-information">
+				<div class="item-seal-container">
+					<ul class="item-seal">
+						<li class="item-seal-list"><span class="preorder">PRE ORDER</span></li>
+						
+						
+
+						
+						
+						
+						
+						
+						
+					</ul>
+				</div>
+
+				
+
+				
+
+				<div class="item-label">
+					<a href="/raybeams">Ray BEAMS</a>
+				</div>
+				<div class="item-title">【WEB限定】DANTON / ローヌ 14</div>
+
+				
+					<div class="item-price">
+						
+						<span class="item-yen">￥</span>12,100<span class="item-tax">（税込）</span>
+					</div>
+				
+
+				<div class="item-point">
+					
+						770ポイント付与
+					
+				</div>
+                <div class="item-postage">送料：330円</div>
+		<div class="item-review-summary">
+			<div class="revico-star-zone"><div data-revico-goods="616120830241988" data-revico-layout="star" style="display:none;"></div><div class="revico-comment-outer-head" data-review-count="7"><!-- <p class="revico-blue">上部HTMLエリア</p> --></div><div class="revico-star" data-review-count="7" style="">
+    <div class="revico-widget">
+        <div class="revico-star-simple">
+            <div class="revico-star-simple-wrapper">
+                <div class="revico-star-block">
+                    <div class="revico-star-block--rate">
+                        <div class="starability-result" data-rating="4.5"></div>
+                    </div>
+                    <span class="revico-star-block--title">4.6</span>
+                    <span class="revico-star-block--total">（7）</span>
+                    <button type="button" class="revico-read-more-review">レビューを見る</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><div class="revico-comment-outer-foot" data-review-count="7"><!-- <p class="revico-blue">下部HTMLエリア</p> --></div><div class="revico-star-all revico-star-simple-design initailized" data-revico-hidden-id="jrs" data-revico-product-attr="data-revico-goods" data-revico-tenantid="ecf9afc4-a56f-49dd-a8da-63663a18486c" style="display:none;"></div></div>
+		</div>
+
+				
+				<div class="item-product-info">
+				<span>返品：可能</span>
+				
+				<a href="https://support.beams.co.jp/s/article/05-01" target="_blank" aria-label="»詳しくはこちら - 在新分頁中開啟">»詳しくはこちら</a>
+				<br role="presentation">
+				
+				
+				</div>
+				
+
+				
+
+				
+
+				
+
+				<div class="item-reserve">
+	<div class="title">このアイテムは予約商品です。</div>
+	
+	<div class="code">お届け予定：2026年03月上旬
+		<p class="reserve_caption_">※工場の生産の都合上、納期が変更になる場合がございます。</p>
+	</div>
+	
+</div>
+
+				
+
+				
+
+				
+
+				
+					<div class="item-stock-container goods_" data-color="19" id="goods_box1">
+	<a class="item-color" tabindex="0">
+		<div class="item-thumb">
+			<img alt="item thumbnail" src="//cdn.beams.co.jp/img/goods/61612083024/S1/61612083024_C_3.jpg" loading="eager" decoding="sync">
+		</div>
+		<h4 class="item-color">
+			BLACK
+		</h4>
+	</a>
+	<div class="item-sku">
+		<div class="button-wrapper-row">
+	<div class="item-size">
+		ONE SIZE／予約可能
+	</div>
+
+	<div class="button-wrapper-1 goods_" id="goods_box2">
+		<form method="POST" action="/cart/cart.aspx" class="ajax-cart-form">
+			
+<button class="ui-submit-button button-reserve btn_cart_" data-action="/cart/cart.aspx" data-goods="61612083024" data-skucd="616120830241988" data-color-cd="" onclick="javascript:void(0);return false;" type="button">
+	予約する
+</button>
+
+
+	<input type="hidden" name="skucd" value="616120830241988">
+	<input type="hidden" name="crsirefo_hidden" value="a53f3b9a92809c956588a97609cb12d7fb0b9fcda48e4be845a1571030115894">
+
+
+		</form>
+	</div>
+	
+		<div class="button-wrapper-2">
+			<a data-remodal-target="item-stocks-modal" class="ui-submit-button button-sichaku" data-goods="61612083024" data-color-cd="19" data-size-cd="88" tabindex="0">
+				在庫
+			</a>
+		</div>
+	
+
+	<div class="button-favorite-holder button-wrapper-3">
+		<div class="pupup-attention">
+			<div class="inner"></div>
+		</div>
+		<a id="anc_favorite" class="button-favorite ajax-favorite-button btn_bookmark_" href="https://www.beams.co.jp/club/bookmark.aspx?goods=616120830241988&amp;crsirefo_hidden=688c02b27cb6cf33256d3c7ad8aa4eed8a25ed8d34c6e6f7a74c890d311aefbd">
+			<span class="text">お気に入り</span>
+		</a>
+	</div>
+
+</div>
+
+	<div class="button-wrapper-row preorder-text-block">
+		
+		<div class="text-block">
+			<span class="bold">お届け予定日</span>
+			<span class="text">: 2026年03月上旬</span>
+		</div>
+	</div>
+
+
+	</div>
+</div>
+				
+			<div id="vs-placeholder-inpage"><div id="inpage-placeholder-wrapper" style="display: none;"><div id="inpage-placeholder"><div id="inpage-placeholder-img-text"><div id="inpage-placeholder-image-wrapper" style="margin-right: -7px;"><div id="inpage-placeholder-image-background" style="background-image: url(&quot;https://res.cloudinary.com/virtusize/image/upload/q_auto,w_auto,h_250,c_limit/2ff90bf02eb9360778ce9d3da018ffad01f98fd9.jpg&quot;); background-size: cover; height: 100%; border-radius: 50%;"></div></div><div id="inpage-placeholder-avatar-wrapper" style="background: rgb(49, 153, 206);"><div id="inpage-placeholder-avatar-background"><svg id="inpage-placeholder-avatar"><svg viewBox="0 0 24 24" color="inherit" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 3.55a1 1 0 112 0 1 1 0 01-2 0zm1-2.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM11 6.25l-.252-.002c-.241-.002-.465-.004-.657.014a2.66 2.66 0 00-.9.256 2.618 2.618 0 00-.44.253c-.046.03-.082.054-.136.086-.64.383-1.244.734-1.822 1.07-1.152.668-2.198 1.276-3.21 1.95-.527.352-.852.84-.934 1.388-.08.534.083 1.045.376 1.436.594.792 1.772 1.154 2.868.44l2.357-1.348V20.5c0 1.018.742 2.25 2.25 2.25.658 0 1.16-.284 1.498-.575.34.292.841.58 1.502.58 1.508 0 2.25-1.233 2.25-2.25v-8.708l2.357 1.347c1.096.714 2.274.353 2.868-.44.293-.39.456-.902.376-1.436-.082-.548-.407-1.036-.935-1.388-1.011-.674-2.057-1.282-3.21-1.95a162.3 162.3 0 01-1.821-1.07c-.054-.032-.09-.055-.135-.086l-.09-.058a2.624 2.624 0 00-.352-.194 2.66 2.66 0 00-.9-.257c-.191-.018-.415-.016-.656-.014l-.25.002H13l-.997-.004H11zM9.75 10.5H9h.75a.75.75 0 00-1.122-.651l-3.5 2a.753.753 0 00-.044.027c-.222.148-.4.16-.522.137a.556.556 0 01-.337-.213.425.425 0 01-.093-.314c.012-.077.062-.214.284-.362.974-.65 1.954-1.218 3.078-1.87.585-.34 1.209-.702 1.89-1.11.086-.051.168-.106.225-.143l.045-.03a1.13 1.13 0 01.158-.088c.214-.097.312-.118.42-.129.11-.01.222-.009.417-.007l.351.002h1l.997.004H13l.35-.002c.196-.002.308-.003.418.008.108.01.206.031.42.128.06.027.102.052.158.088l.045.03c.056.037.139.092.224.143.682.408 1.306.77 1.891 1.11 1.124.652 2.104 1.221 3.078 1.87.222.149.272.286.284.363a.426.426 0 01-.093.314.557.557 0 01-.337.213c-.123.023-.3.01-.522-.138a.765.765 0 00-.044-.027l-3.5-2a.75.75 0 00-1.122.651H15h-.75v10a.814.814 0 01-.19.522c-.109.124-.278.228-.56.228-.23 0-.425-.112-.594-.281a1.532 1.532 0 01-.156-.185V14a.75.75 0 10-1.5 0v6.787a1.52 1.52 0 01-.155.183c-.169.168-.364.28-.595.28-.282 0-.451-.104-.56-.229a.814.814 0 01-.19-.52v-10z" fill="#2937A3" style="fill: rgb(49, 153, 206);"></path></svg></svg></div></div><span id="inpage-placeholder-text">簡単サイズチェック</span></div><div id="inpage-placeholder-button"><span>試着する</span><svg id="inpage-placeholder-arrow"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.197 7.46971C11.4899 7.7626 11.4899 8.23748 11.197 8.53037L6.53033 13.197C6.23744 13.4899 5.76256 13.4899 5.46967 13.197C5.17678 12.9041 5.17678 12.4293 5.46967 12.1364L9.60601 8.00004L5.46967 3.8637C5.17678 3.57081 5.17678 3.09594 5.46967 2.80304C5.76256 2.51015 6.23744 2.51015 6.53033 2.80304L11.197 7.46971Z" fill="white"></path></svg></svg></div></div><div id="inpage-placeholder-footer"><svg id="inpage-placeholder-logo"><svg viewBox="0 0 78 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.9881 1.2H19.489L21.8175 7.656L24.135 1.2H25.6027L22.3913 9.66H21.1995L17.9881 1.2ZM27.0042 1.2H28.3616V9.6H27.0042V1.2ZM33.7691 5.364C34.2547 5.364 34.6409 5.23801 34.9278 4.986C35.2148 4.734 35.3582 4.39201 35.3582 3.96V3.936C35.3582 3.48 35.2184 3.134 34.9389 2.898C34.6593 2.662 34.2657 2.544 33.7581 2.544H31.7827V5.364H33.7691ZM30.4253 1.2H33.8684C34.354 1.2 34.7844 1.274 35.1596 1.422C35.5348 1.57 35.8475 1.776 36.0976 2.04C36.3036 2.272 36.4618 2.53999 36.5722 2.844C36.6825 3.148 36.7377 3.48399 36.7377 3.852V3.876C36.7377 4.22 36.6917 4.53 36.5998 4.806C36.5078 5.082 36.3809 5.326 36.219 5.538C36.0572 5.75 35.864 5.93 35.6397 6.078C35.4153 6.226 35.167 6.34 34.8947 6.42L36.9805 9.6H35.3803L33.4822 6.672H31.7827V9.6H30.4253V1.2ZM40.3022 2.568H37.8523V1.2H44.1205V2.568H41.6706V9.6H40.3022V2.568ZM48.7224 9.732C48.2221 9.732 47.7697 9.654 47.365 9.498C46.9604 9.342 46.6146 9.108 46.3277 8.796C46.0407 8.484 45.82 8.098 45.6655 7.638C45.511 7.17799 45.4338 6.644 45.4338 6.036V1.2H46.7912V5.976C46.7912 6.76 46.964 7.35599 47.3098 7.764C47.6556 8.172 48.1338 8.376 48.7445 8.376C49.3477 8.376 49.8223 8.18 50.1681 7.788C50.5139 7.39599 50.6867 6.812 50.6867 6.036V1.2H52.0441V5.964C52.0441 6.588 51.965 7.13599 51.8069 7.608C51.6487 8.08 51.4261 8.474 51.1392 8.79C50.8523 9.106 50.5047 9.342 50.0963 9.498C49.688 9.654 49.23 9.732 48.7224 9.732ZM56.6129 9.72001C56.017 9.72001 55.4468 9.61001 54.9024 9.39001C54.358 9.17 53.854 8.83201 53.3905 8.37601L54.2071 7.32001C54.5824 7.67201 54.9612 7.942 55.3438 8.13001C55.7264 8.31801 56.1604 8.41201 56.646 8.41201C57.0654 8.41201 57.3983 8.31601 57.6447 8.12401C57.8912 7.932 58.0144 7.67601 58.0144 7.35601V7.33201C58.0144 7.18001 57.9905 7.04601 57.9427 6.93001C57.8949 6.814 57.8066 6.70401 57.6778 6.60001C57.5491 6.496 57.3725 6.40001 57.1481 6.31201C56.9237 6.22401 56.6313 6.13601 56.2708 6.04801C55.8588 5.94401 55.4928 5.82601 55.1728 5.69401C54.8527 5.56201 54.5842 5.40201 54.3672 5.21401C54.1501 5.026 53.9846 4.79601 53.8705 4.52401C53.7565 4.252 53.6995 3.92401 53.6995 3.54001V3.51601C53.6995 3.156 53.7657 2.82601 53.8981 2.52601C54.0306 2.226 54.2127 1.97001 54.4444 1.75801C54.6762 1.546 54.9539 1.38001 55.2776 1.26001C55.6013 1.14001 55.9544 1.08001 56.337 1.08001C56.9035 1.08001 57.413 1.17 57.8655 1.35001C58.3179 1.53001 58.7428 1.792 59.1401 2.13601L58.4117 3.25201C58.0586 2.972 57.7091 2.75801 57.3633 2.61001C57.0175 2.46201 56.6681 2.38801 56.3149 2.38801C55.9177 2.38801 55.6087 2.484 55.388 2.67601C55.1672 2.86801 55.0569 3.104 55.0569 3.38401V3.40801C55.0569 3.56801 55.0826 3.71001 55.1341 3.83401C55.1856 3.95801 55.2794 4.07 55.4155 4.17001C55.5517 4.27001 55.7393 4.36401 55.9784 4.45201C56.2175 4.54001 56.5209 4.63201 56.8888 4.72801C57.2934 4.84001 57.6521 4.964 57.9648 5.10001C58.2775 5.23601 58.5368 5.40201 58.7428 5.59801C58.9488 5.79401 59.1051 6.022 59.2118 6.28201C59.3185 6.54201 59.3718 6.844 59.3718 7.18801V7.21201C59.3718 7.60401 59.3038 7.956 59.1677 8.26801C59.0316 8.58001 58.8421 8.844 58.5993 9.06001C58.3565 9.27601 58.0659 9.44 57.7275 9.552C57.3891 9.66401 57.0176 9.72001 56.6129 9.72001ZM61.0492 1.2H62.4066V9.6H61.0492V1.2ZM64.1944 8.508L68.7521 2.508H64.3378V1.2H70.5178V2.292L65.9601 8.292H70.5178V9.6H64.1944V8.508ZM72.2173 1.2H77.9448V2.52H73.5747V4.704H77.4482V6.024H73.5747V8.28H78V9.6H72.2173V1.2Z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M2.04013 0.359676H0.634962C3.00095 4.03456 5.36069 7.69997 7.72603 11.3738C10.0919 7.69818 12.4514 4.03224 14.8169 0.356995H13.4116C11.5194 3.31861 9.62565 6.2829 7.72619 9.25577C5.82558 6.28236 3.93121 3.31843 2.04013 0.359676ZM4.41959 0.000357531C5.51894 1.74869 6.61944 3.49898 7.72603 5.25911C8.83096 3.50041 9.92999 1.75155 11.0305 0H15.4499C12.8723 4.00471 10.3022 7.99762 7.72603 12C5.1492 7.9978 2.57797 4.00435 0 0.000357531H4.41959Z" fill="currentColor"></path></svg></svg><div id="inpage-placeholder-privacy-policy">プライバシーポリシー</div></div></div><div id="vs-inpage" style="display: block;" data-wovn-shadow-host=""></div></div><div id="vs-kid" style="display: none;"></div>
+			<div class="item-fav-searchstore-container">
+				
+				<script type="text/javascript">
+					var add_crsirefo = "688c02b27cb6cf33256d3c7ad8aa4eed8a25ed8d34c6e6f7a74c890d311aefbd";
+					var bookmark_target = "1";
+				</script>
+				
+				
+				<div class="item-fav-searchstore__button-wrapper">
+					<a class="anc_ShopStock btn-base btn-default button-searchstore" data-goods="61612083024" data-goods-sku-cd="" data-remodal-target="item-stocks-modal" tabindex="0"><span class="icon-searchstore"></span>店舗在庫・取り置き可能ショップを調べる</a>
+					<div class="popupInfomation">アイテムの取り置き・取り寄せをして試着や購入が可能です</div>
+				</div>
+				
+			</div>
+			
+			<div class="item-layaway-explanation-container">
+				<div class="item-layaway-explanation">
+					※在庫状況によって商品の手配にお時間がかかる場合があります
+				</div>
+				<a class="item-layaway-explanation-link" href="https://support.beams.co.jp/guide/s/article/10-01" rel="noopener noreferrer" target="_blank" aria-label="
+					取り置き（取り寄せ）について
+				 - 在新分頁中開啟">
+					取り置き（取り寄せ）について
+				</a>
+				<a class="item-layaway-explanation-link" href="https://support.beams.co.jp/guide/s/article/11-1" rel="noopener noreferrer" target="_blank" aria-label="
+					オンラインで使える店舗の便利なサービス
+				 - 在新分頁中開啟">
+					オンラインで使える店舗の便利なサービス
+				</a>
+			</div>
+			
+
+				
+
+				
+
+				
+
+				
+
+				
+
+				<div class="item-description">
+					<div class="item-description-headline">アイテム説明</div>
+					<div class="item-description-content">
+
+						
+							<div class="item-description-title">
+								身軽に動きたい日にぴったり！
+							</div>
+						
+
+						
+							<div class="item-description-text">
+								<span style="font-weight:bold;">■デザイン</span><br role="presentation">体に心地よくフィットする立体カッティングが魅力の〈DANTON（ダントン）〉ワンショルダーバッグ。フロントにはロゴのプリントが施され、スタイリッシュなアクセントを添えます。錐型（すいがた）のユニークなデザインながら、マチをしっかり設けているため、見た目以上の収納力があります。<br role="presentation"><br role="presentation"><span style="font-weight: bold;">■コーディネート</span><br role="presentation">アクティブなシーンからデイリーユースまで、幅広い用途におすすめのサイズ感です。Tシャツやスウェット、ライトアウターなど、いつものカジュアルスタイルにぐっとこなれ感を演出します。フェスや旅行など、身軽に動きたいシーンにも大活躍します。<br role="presentation"><br role="presentation"><span style="font-weight: bold;">■ディテール</span><br role="presentation">
+メインポケット内にはメッシュポケットが1つ、フロントには便利なジップポケットが1つ、さらにベルト部分にはミニポケットが1つ配備されており、小物の整理も非常に便利です。<br role="presentation"><br role="presentation"><span style="font-weight:bold;">■サイズ</span><br role="presentation">14Lの大容量を備え、外出時の必需品はもちろん、ペットボトルなども収納できる使い勝手の良いサイズ感です。<br role="presentation"><br role="presentation"><span style="font-weight:bold;">■素材</span><br role="presentation">500デニールのコーデュラナイロンを使用。さらっと軽い素材感ながらも、コーデュラ本来の強度を兼ね備えた、耐久性に優れた素材です。<br role="presentation"><br role="presentation"><span style="font-weight:bold;">■メーカー番号</span><br role="presentation">RHONE<br role="presentation"><br role="presentation">※光の当たり具合やパソコンなどの閲覧環境によって実際の色味と異なって見える場合がございます。予めご了承ください。<br role="presentation">※商品の色味は商品単体で撮影した画像をご参照ください。<br role="presentation"><br role="presentation">【予約販売に関して】
+<br role="presentation">※「お届け予定」は、生産や出荷の都合により変更となる場合がございます。
+<br role="presentation">※「お届け予定」の「上旬」は月初～15日頃、「下旬」は16日頃～月末とさせていただきます。
+<br role="presentation">※予約商品の「発送時期」は、「お届け予定」や「店頭販売日」と前後する場合がございます。
+<br role="presentation">※予約注文は、在庫を事前に確保するためのものであり、通常注文より早くお届けすることを確約するものではございません。
+<br role="presentation">※アイテムサイズは商品サンプルを採寸しているため、実際の商品と多少の誤差が生じる場合がございます。
+<br role="presentation">※画像の商品はサンプルのため、実際の商品と「仕様」「色合い」が異なる場合がございます。
+<br role="presentation">※予約販売の商品は、一部店舗で在庫がある場合がございます。
+<br role="presentation"><br role="presentation"><a href="https://www.beams.co.jp/tag/top_Ray_YOYAKU/"><img src="https://cdn.beams.co.jp/img/tag/1/top_Ray_YOYAKUpic.jpg" style="width:100%;height:auto" loading="eager" decoding="sync"><span style="color:#0000CD; text-decoration:underline; font-weight:bold;">★☆★待ちきれない！春夏の新作アイテム予約受付中★☆★</span></a>
+<br role="presentation"><br role="presentation"><span style="font-weight:bold;">■予約商品をご購入いただくと、さらに購入額の5%のアクションマイルが貯まります。詳しくは<a href="https://www.beams.co.jp/news/3670/" target="_blank" style="color: blue; font-weight: bold; text-decoration: underline;" aria-label="こちら - 在新分頁中開啟">こちら</a></span><a href="https://www.beams.co.jp/news/3670/" target="_blank" aria-label="公式オンラインショップ限定！予約商品購入マイルSTART - 在新分頁中開啟"><img src="https://cdn.beams.co.jp/img/tag/1/yoyakumairu.jpg" alt="公式オンラインショップ限定！予約商品購入マイルSTART" style="width:100%; height:auto; display: block;" loading="eager" decoding="sync"></a>
+							</div>
+						
+
+						
+
+						
+							<div class="brand-name">
+								<a href="/brand/000467">DANTON</a>
+							</div>
+						
+
+						<div class="brand-info">
+
+							
+								<div class="text">1935年創立のフランスのワークウェアメーカー。キッチンウェアやワークウェア、ユニフォームなどを手掛けるフランスの老舗ブランド。ワークならではのシンプルかつ、丈夫なウェアは、フランスらしいシンプルで洗練されたデザインやディテールを併せ持ちます。</div>
+							
+
+							<div class="caption">店舗へのお問い合わせの際は下記品番をお伝え下さい。</div>
+							<div class="stock-number">商品番号：61-61-2083-024</div>
+							<div class="contact">
+								<a href="https://www.beams.co.jp/okredirect/okredirect.aspx?category_id=112&amp;goods=61612083024" target="_blank" aria-label="» お問い合わせ - 在新分頁中開啟">» お問い合わせ</a>
+							</div>
+						</div>
+					</div>
+
+					<div id="vs-placeholder-smart-table"><div id="vs-smart-table" style="display: block;" data-wovn-shadow-host=""></div></div>
+					<div class="item-description-headline">アイテム詳細</div>
+					<table class="item-detail-bottom">
+						<tbody><tr>
+							<td>レーベル</td>
+							<td>：</td>
+							<td><a href="/raybeams">Ray BEAMS</a></td>
+						</tr>
+						
+							<tr>
+								<td>性別</td>
+								<td>：</td>
+								<td>
+									<a href="/search/?sex=W&amp;search=true">WOMEN</a>
+								</td>
+							</tr>
+						
+						
+							<tr>
+								<td>カテゴリ</td>
+								<td>：</td>
+								<td>
+									
+
+									<a href="/category/bag">バッグ</a>
+
+									
+										＞
+										<a href="/category/bag_12">その他バッグ</a>
+									
+								</td>
+							</tr>
+						
+
+						
+							<tr>
+								<td>サイズ</td>
+								<td>：</td>
+								<td>ONE SIZE</td>
+							</tr>
+						
+
+						
+							<tr>
+								<td>素材</td>
+								<td>：</td>
+								<td>ナイロン100％ <br role="presentation"><a href="https://support.beams.co.jp/guide/s/article/04-05" target="_blank" aria-label="» 洗濯表示・お手入れについて - 在新分頁中開啟">» 洗濯表示・お手入れについて</a></td>
+							</tr>
+						
+
+						
+							<tr>
+								<td>原産国</td>
+								<td>：</td>
+								<td>ベトナム製</td>
+							</tr>
+						
+
+						<tr>
+							<td>商品番号</td>
+							<td>：</td>
+							<td>61-61-2083-024</td>
+						</tr>
+
+						
+							<tr>
+								<td>返品</td>
+								<td>：</td>
+								<td id="spec_class1_name">可能</td>
+							</tr>
+						
+
+						
+
+						
+							<tr>
+								<td colspan="3">
+									<span class="bold">ギフトラッピング</span>
+									<span class="sep">:</span>
+									<span>不可　</span>
+									
+								</td>
+							</tr>
+						
+
+					</tbody></table>
+
+					
+						<div class="item-description-headline">アイテムサイズ</div>
+						
+<table class="item-size-bottom">
+<tbody>
+
+<tr>
+	<td>ONE SIZE</td>
+	<td>：</td>
+	<td>幅 31.5／高さ 47.5／マチ 13／重量(g) 300</td>
+</tr>
+</tbody>
+</table>
+
+						
+							<div id="pastpurchasesize_block">
+
+
+</div>
+						
+						<div class="link-to-size">
+							<a href="javascript:void(0);" class="anc_SizeGuide" data-category="3432">» 採寸ガイド・身長別着丈ガイド</a>
+						</div>
+					
+
+					<div class="sns-box">
+						<div class="twitter">
+							<iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" title="X Post Button" src="https://platform.twitter.com/widgets/tweet_button.2f70fb173b9000da126c79afe2098f02.ja.html#dnt=false&amp;id=twitter-widget-0&amp;lang=ja&amp;original_referer=https%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F&amp;size=m&amp;text=Ray%20BEAMS%EF%BC%88%E3%83%AC%E3%82%A4%20%E3%83%93%E3%83%BC%E3%83%A0%E3%82%B9%EF%BC%89%E3%80%90WEB%E9%99%90%E5%AE%9A%E3%80%91DANTON%20%2F%20%E3%83%AD%E3%83%BC%E3%83%8C%2014%EF%BC%88%E3%83%90%E3%83%83%E3%82%B0%20%E3%81%9D%E3%81%AE%E4%BB%96%E3%83%90%E3%83%83%E3%82%B0%EF%BC%89%E9%80%9A%E8%B2%A9%EF%BD%9CBEAMS&amp;time=1766724404777&amp;type=share&amp;url=https%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F" style="position: static; visibility: visible; width: 77px; height: 20px;"></iframe>
+							<script>
+								!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+							</script>
+						</div>
+						<div class="facebook">
+							<div class="fb-share-button fb_iframe_widget" data-href="https://www.beams.co.jp/item/raybeams/bag/61612083024/" data-layout="button" data-size="small" data-mobile-iframe="true" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=414883048568439&amp;container_width=0&amp;href=https%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F&amp;layout=button&amp;locale=ja_JP&amp;mobile_iframe=true&amp;sdk=joey&amp;size=small"><span style="vertical-align: bottom; width: 91px; height: 20px;"><iframe name="ff13cc87ca368bab1" width="1000px" height="1000px" data-testid="fb:share_button Facebook Social Plugin" title="fb:share_button Facebook Social Plugin" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" allow="encrypted-media" src="https://www.facebook.com/v2.3/plugins/share_button.php?app_id=414883048568439&amp;channel=https%3A%2F%2Fstaticxx.facebook.com%2Fx%2Fconnect%2Fxd_arbiter%2F%3Fversion%3D46%23cb%3Dff424bf56952fabd5%26domain%3Dwww.beams.co.jp%26is_canvas%3Dfalse%26origin%3Dhttps%253A%252F%252Fwww.beams.co.jp%252Ff42ebe175d9ed997e%26relation%3Dparent.parent&amp;container_width=0&amp;href=https%3A%2F%2Fwww.beams.co.jp%2Fitem%2Fraybeams%2Fbag%2F61612083024%2F&amp;layout=button&amp;locale=ja_JP&amp;mobile_iframe=true&amp;sdk=joey&amp;size=small" style="border: medium; visibility: visible; width: 91px; height: 20px;" class=""></iframe></span></div>
+						</div>
+					</div>
+
+					<div class="button-flex-holder">
+						
+							<a class="btn-base btn-default button-follow btn_follow_" href="https://www.beams.co.jp/club/bookmark_label.aspx?label=0061&amp;crsirefo_hidden=688c02b27cb6cf33256d3c7ad8aa4eed8a25ed8d34c6e6f7a74c890d311aefbd">
+								<span class="text">Ray BEAMSをフォロー</span>
+							</a>
+						
+					</div>
+				</div>
+			</div>
+
+			
+
+			
+
+		</div>
+	</div>
+</div>

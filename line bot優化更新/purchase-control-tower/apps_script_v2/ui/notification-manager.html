@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #C9915D;
+            --pop-blue: #4A90E2;
+            --pop-red: #FF6B6B;
+            --pop-yellow: #FFE66D;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            
+            background-color: var(--primary-color);
+            background-image: radial-gradient(#fff 20%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            color: #000;
+            margin-bottom: 30px;
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0 #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+            font-weight: 900;
+            font-size: 28px;
+            color: #000;
+            -webkit-text-stroke: 0.5px #000;
+        }
+
+        .header p {
+            margin-bottom: 0;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .btn-primary {
+            background: var(--pop-blue);
+            border: 3px solid #000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-primary:hover {
+            background: #357ABD;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #000;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-secondary:hover {
+            background: #fff;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: #000;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+            margin-bottom: 25px;
+            overflow: hidden;
+            padding: 25px;
+        }
+
+        .pending-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 4px solid var(--pop-yellow);
+            box-shadow: 5px 5px 0 #000;
+            transition: all 0.1s;
+        }
+
+        .pending-card:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+        }
+
+        .pending-card.ready {
+            border-color: #4CAF50;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .order-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 2px solid #000;
+        }
+
+        .info-row {
+            margin: 8px 0;
+            color: #000;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #000;
+            width: 120px;
+            display: inline-block;
+        }
+
+        .message-preview {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 3px solid #000;
+            color: #000;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 3px solid #000;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #000;
+            background: white;
+            border-radius: 15px;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+            font-weight: bold;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #000;
+            background: white;
+            border-radius: 15px;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-bell me-2"></i>通知管理</h1>
+                <p>查看待發送通知、預覽訊息內容、確認發送</p>
+            </div>
+            <a href="<?= appUrl ?>" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>回主選單
+            </a>
+        </div>
+        
+        <div class="mb-4 d-flex gap-2">
+            <button onclick="loadPendingNotifications()" class="btn btn-primary">
+                <i class="fas fa-sync-alt me-2"></i>重新載入
+            </button>
+            <button onclick="batchConfirm()" class="btn btn-success text-white">
+                <i class="fas fa-check-double me-2"></i>批次確認所有待發送
+            </button>
+        </div>
+        
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="mt-2">載入中...</div>
+        </div>
+        
+        <div id="pendingContainer"></div>
+        
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <h3>目前沒有待發送的通知</h3>
+            <p>所有通知都已處理完畢</p>
+        </div>
+    </div>
+    
+    <script>
+        let pendingNotifications = [];
+        
+        function loadPendingNotifications() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('pendingContainer').innerHTML = '';
+            document.getElementById('emptyState').style.display = 'none';
+            
+            google.script.run
+                .withSuccessHandler(handlePendingSuccess)
+                .withFailureHandler(handleError)
+                .apiGetPendingNotifications();
+        }
+        
+        function handlePendingSuccess(result) {
+            document.getElementById('loading').style.display = 'none';
+            
+            if (!result.success) {
+                alert('載入失敗：' + result.error);
+                return;
+            }
+            
+            pendingNotifications = result.data;
+            
+            if (pendingNotifications.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+            
+            renderPendingNotifications();
+        }
+        
+        function renderPendingNotifications() {
+            const container = document.getElementById('pendingContainer');
+            container.innerHTML = '';
+            
+            pendingNotifications.forEach((item, index) => {
+                const card = createNotificationCard(item, index);
+                container.appendChild(card);
+            });
+        }
+        
+        function createNotificationCard(item, index) {
+            const div = document.createElement('div');
+            div.className = 'pending-card';
+            div.id = `card_${index}`;
+            
+            const messagePreview = generateMessagePreview(item);
+            
+            div.innerHTML = `
+                <div class="card-header-row">
+                    <span class="order-badge"><i class="fas fa-hashtag me-1"></i>${item.esOrderNo}</span>
+                    <span class="text-muted small">列 ${item.rowIndex}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">商品：</span>${item.productName || '-'}
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">狀態：</span>
+                    <span class="badge bg-info text-dark">${item.purchaseStatus || '-'}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">追蹤碼：</span>${item.trackingJPtoTW || '無'}
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">LINE User ID：</span>
+                    ${item.lineUserId ? 
+                        `<span class="text-success"><i class="fab fa-line me-1"></i>${item.lineUserId.substring(0, 20)}...</span>` : 
+                        '<span class="text-danger"><i class="fas fa-times-circle me-1"></i>未找到</span>'}
+                </div>
+                
+                <div class="info-row mt-3 p-2 bg-light rounded d-flex align-items-center">
+                    <span class="info-label"><i class="fas fa-truck me-1"></i>物流公司：</span>
+                    <select id="courier_${index}" class="form-select form-select-sm d-inline-block w-auto me-2">
+                        <option value="">-- 請選擇 --</option>
+                        <option value="SF" ${item.courier === 'SF' ? 'selected' : ''}>順豐速運</option>
+                        <option value="SCORE" ${item.courier === 'SCORE' ? 'selected' : ''}>Score 物流</option>
+                    </select>
+                    <button onclick="updateCourier(${index})" class="btn btn-sm btn-outline-primary">
+                        更新
+                    </button>
+                </div>
+                
+                <div class="mt-3 fw-bold text-dark"><i class="fas fa-comment-alt me-2"></i>訊息預覽：</div>
+                <div class="message-preview">${messagePreview}</div>
+                
+                <div class="actions">
+                    <button onclick="confirmSingle(${index})" class="btn btn-success text-white" ${!item.lineUserId ? 'disabled' : ''}>
+                        <i class="fas fa-paper-plane me-2"></i>確認發送
+                    </button>
+                    <button onclick="skipNotification(${index})" class="btn btn-secondary text-dark bg-light border-secondary">
+                        <i class="fas fa-forward me-2"></i>跳過
+                    </button>
+                </div>
+            `;
+            
+            return div;
+        }
+        
+        function generateMessagePreview(item) {
+            if (!item.trackingJPtoTW) {
+                return '⚠️ 無追蹤碼，無法生成訊息';
+            }
+            
+            // 根據物流公司生成對應的查詢 URL
+            let trackingUrl = '';
+            let courierName = '物流公司';
+            
+            const courier = item.courier || document.getElementById(`courier_${pendingNotifications.indexOf(item)}`)?.value;
+            
+            if (courier === 'SF') {
+                trackingUrl = `https://htm.sf-express.com/hk/tc/dynamic_function/waybill/#search/bill-number/${item.trackingJPtoTW}`;
+                courierName = '順豐速運';
+            } else if (courier === 'SCORE') {
+                trackingUrl = `https://declogistics.com.tw/h/DataDetail?key=amqeg&cont=${item.trackingJPtoTW}`;
+                courierName = 'Score 物流';
+            } else {
+                trackingUrl = `https://example.com/tracking?tracking=${item.trackingJPtoTW}&order=${item.esOrderNo}`;
+                courierName = '請選擇物流公司';
+            }
+            
+            let message = `🚢 您的訂單 #${item.esOrderNo} 中的商品已從日本寄出\n\n`;
+            message += `📦 物流公司：${courierName}\n`;
+            message += `📦 追蹤碼：${item.trackingJPtoTW}\n\n`;
+            message += `🔍 點此查看物流狀態：\n${trackingUrl}\n\n`;
+            message += `感謝您的耐心等候！`;
+            
+            return message;
+        }
+        
+        function updateCourier(index) {
+            const item = pendingNotifications[index];
+            const courierSelect = document.getElementById(`courier_${index}`);
+            const selectedCourier = courierSelect.value;
+            
+            if (!selectedCourier) {
+                alert('請選擇物流公司');
+                return;
+            }
+            
+            // 更新 Queue 表中的物流公司欄位
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        alert('✅ 物流公司已更新');
+                        item.courier = selectedCourier;
+                        // 重新渲染訊息預覽
+                        updateMessagePreview(index);
+                    } else {
+                        alert('更新失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiUpdateCourier(item.rowIndex, selectedCourier);
+        }
+        
+        function updateMessagePreview(index) {
+            const item = pendingNotifications[index];
+            const card = document.getElementById(`card_${index}`);
+            if (!card) return;
+            
+            const messagePreview = generateMessagePreview(item);
+            const previewDiv = card.querySelector('.message-preview');
+            if (previewDiv) {
+                previewDiv.textContent = messagePreview;
+            }
+        }
+        
+        function confirmSingle(index) {
+            const item = pendingNotifications[index];
+            
+            if (!confirm(`確定要發送通知給訂單 ${item.esOrderNo} 嗎？`)) {
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        alert(`✅ 通知發送成功！`);
+                        removeCard(index);
+                    } else {
+                        alert('發送失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiConfirmNotification(item.rowIndex);
+        }
+        
+        function skipNotification(index) {
+            if (!confirm('確定要跳過此通知嗎？（將取消 ReadyToNotify 標記）')) {
+                return;
+            }
+            
+            const item = pendingNotifications[index];
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        alert('已跳過');
+                        removeCard(index);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiSkipNotification(item.rowIndex);
+        }
+        
+        function batchConfirm() {
+            const validItems = pendingNotifications.filter(item => item.lineUserId);
+            
+            if (validItems.length === 0) {
+                alert('沒有可發送的通知（所有項目都缺少 LINE User ID）');
+                return;
+            }
+            
+            if (!confirm(`確定要批次發送 ${validItems.length} 個通知嗎？`)) {
+                return;
+            }
+            
+            const rowIndices = validItems.map(item => item.rowIndex);
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        alert(`✅ 批次發送完成！\n\n成功：${result.successCount}\n失敗：${result.failedCount}`);
+                        loadPendingNotifications();
+                    } else {
+                        alert('批次發送失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiBatchConfirmNotifications(rowIndices);
+        }
+        
+        function removeCard(index) {
+            const card = document.getElementById(`card_${index}`);
+            if (card) {
+                card.style.opacity = '0';
+                card.style.transition = 'opacity 0.3s';
+                setTimeout(() => {
+                    card.remove();
+                    // 注意：這裡不刪除 array 項目以免 index 錯亂，或者需要重新渲染
+                    // 簡單做法：重新載入，或者標記為已處理
+                    // 為了保持 index 正確，我們不 splice，而是重新載入或忽略
+                    // 但為了 UI 反應快，我們隱藏它。若要嚴謹應重新渲染。
+                    // 這裡選擇重新渲染以避免 index 問題
+                    pendingNotifications.splice(index, 1); // 這樣會導致後續 index 錯位，如果用戶不刷新頁面繼續操作其他卡片
+                    // 更好的方式是重新渲染整個列表
+                    renderPendingNotifications();
+                }, 300);
+            }
+        }
+        
+        function handleError(error) {
+            console.error(error);
+            alert('發生錯誤：' + error.message);
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        window.onload = function() {
+            loadPendingNotifications();
+        };
+    </script>
+</body>
+</html>

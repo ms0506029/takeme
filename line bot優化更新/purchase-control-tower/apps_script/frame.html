@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>採購控制塔 PRO（Safari 版）</title>
+    <style>
+      html, body { height: 100%; margin: 0; }
+      #inner { width: 100%; height: 100%; border: 0; }
+      #msg { position: fixed; top: 8px; right: 8px; background: #fff7cc; border: 1px solid #ffd24d; padding: 6px 10px; border-radius: 6px; display:none; }
+    </style>
+  </head>
+  <body>
+    <div id="msg">載入中…</div>
+    <iframe id="inner" title="ui"></iframe>
+    <script>
+      (function(){
+        // 由伺服端注入正式 /exec 連結，避免在 googleusercontent sandbox 中取不到正確 base URL
+        var execBase = '<?= ScriptApp.getService().getUrl(); ?>';
+        var url = execBase + (execBase.indexOf('?')>=0 ? '&' : '?') + 'action=ui';
+        var ifr = document.getElementById('inner');
+        ifr.onload = function(){ document.getElementById('msg').style.display='none'; };
+        document.getElementById('msg').style.display='block';
+        ifr.src = url; // 使用 src 直接載入
+      })();
+    </script>
+  </body>
+  </html>

@@ -98,6 +98,32 @@ export const Users: CollectionConfig = {
         update: adminOnlyFieldAccess,
       },
     },
+    // 會員編號（用於生成條碼）
+    {
+      name: 'memberNumber',
+      type: 'text',
+      label: '會員編號',
+      unique: true,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: '系統自動生成的 13 位會員編號',
+      },
+      hooks: {
+        beforeChange: [
+          ({ value, operation }) => {
+            // 只在創建時生成，且尚未有值
+            if (operation === 'create' && !value) {
+              // 生成 13 位數字：時間戳後 10 位 + 3 位隨機數
+              const timestamp = Date.now().toString().slice(-10)
+              const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
+              return timestamp + random
+            }
+            return value
+          },
+        ],
+      },
+    },
     // 電話號碼（用於 LINE 綁定等）
     {
       name: 'phone',

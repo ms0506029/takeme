@@ -1,0 +1,396 @@
+<style>
+    :root {
+        --primary-color: #C9915D;
+        --primary-hover: #B5824A;
+        --primary-light: #D4A776;
+        --sidebar-bg: #2c3e50;
+        --sidebar-text: #ecf0f1;
+        --card-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f6fa;
+        color: #2c3e50;
+    }
+
+    /* 登入畫面 */
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    }
+
+    .login-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .login-logo {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .login-logo h1 {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-logo p {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(201, 145, 93, 0.25);
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(201, 145, 93, 0.3);
+    }
+
+    /* 主要後台介面 */
+    .admin-container {
+        display: none;
+    }
+
+    .sidebar {
+        background: white;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        height: 100vh;
+        position: fixed;
+        width: 280px;
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #dee2e6;
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .sidebar-header h4 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .sidebar-menu {
+        padding: 1rem 0;
+    }
+
+    .sidebar-menu .nav-link {
+        color: #2c3e50;
+        padding: 1rem 1.5rem;
+        border: none;
+        transition: all 0.3s ease;
+        border-radius: 0;
+        position: relative;
+    }
+
+    .sidebar-menu .nav-link:hover,
+    .sidebar-menu .nav-link.active {
+        background: var(--primary-light);
+        color: var(--primary-hover);
+        transform: translateX(5px);
+    }
+
+    .sidebar-menu .nav-link i {
+        width: 20px;
+        margin-right: 10px;
+    }
+
+    .main-content {
+        margin-left: 280px;
+        padding: 2rem;
+        min-height: 100vh;
+    }
+
+    .top-navbar {
+        background: white;
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+        border-radius: 15px;
+        box-shadow: var(--card-shadow);
+    }
+
+    .welcome-text {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logout-btn {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+
+    /* 統計卡片 */
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stats-icon {
+        font-size: 2rem;
+        color: var(--primary-light);
+        float: right;
+        margin-top: -10px;
+    }
+
+    /* 內容區域 */
+    .content-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 2rem;
+    }
+
+    .content-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #dee2e6;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .content-body {
+        padding: 1.5rem;
+    }
+
+    /* 過濾器 */
+    .filter-section {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .filter-group {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    /* 訂單表格 */
+    .orders-table {
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .orders-table th {
+        background: var(--primary-color);
+        color: white;
+        padding: 1rem;
+        font-weight: 600;
+        border: none;
+    }
+
+    .orders-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+
+    .orders-table tr:hover {
+        background: #f8f9fa;
+    }
+
+    /* 狀態標籤 */
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-unpaid { background: #ffeaa7; color: #636e72; }
+    .status-paid { background: #00b894; color: white; }
+    .status-outofstock { background: #e17055; color: white; }
+    .status-shipping { background: #74b9ff; color: white; }
+    .status-shipped { background: #00b894; color: white; }
+
+    /* 動作按鈕 */
+    .action-btn {
+        padding: 0.4rem 0.8rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        margin: 0 2px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-edit { background: #17a2b8; color: white; }
+    .btn-delete { background: #dc3545; color: white; }
+    .btn-notify { background: #ffc107; color: #2c3e50; }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* 批量操作 */
+    .bulk-actions {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: var(--card-shadow);
+    }
+
+    /* 載入動畫 */
+    .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Toast 通知 */
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+
+    .toast-notification {
+        background: white;
+        border-left: 4px solid var(--primary-color);
+        padding: 1rem;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+    }
+
+    .toast-notification.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .toast-success { border-left-color: #28a745; }
+    .toast-error { border-left-color: #dc3545; }
+    .toast-warning { border-left-color: #ffc107; }
+
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+        .sidebar {
+            transform: translateX(-100%);
+        }
+        
+        .sidebar.show {
+            transform: translateX(0);
+        }
+        
+        .main-content {
+            margin-left: 0;
+            padding: 1rem;
+        }
+        
+        .filter-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .orders-table {
+            font-size: 0.8rem;
+        }
+    }
+</style>

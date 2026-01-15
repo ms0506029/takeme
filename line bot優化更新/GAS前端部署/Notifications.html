@@ -1,0 +1,117 @@
+<!-- 通知管理頁面 -->
+<div id="notificationsContent" class="page-content" style="display: none;">
+    <!-- 標籤頁 -->
+    <ul class="nav nav-tabs mb-3" id="notifyTabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#oosPanel">
+                <i class="fas fa-exclamation-triangle me-2"></i>⚠️ 缺貨待通知
+                <span class="badge bg-danger ms-2" id="oosBadge">0</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#shippingPanel">
+                <i class="fas fa-shipping-fast me-2"></i>📦 物流待發送
+                <span class="badge bg-primary ms-2" id="shippingBadge">0</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- 缺貨通知面板 -->
+        <div class="tab-pane fade show active" id="oosPanel">
+            <div class="content-card">
+                <div class="content-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>待發送缺貨通知</h5>
+                    <button class="btn btn-light btn-sm" onclick="loadPendingOOS()">
+                        <i class="fas fa-sync-alt me-1"></i>重新整理
+                    </button>
+                </div>
+                <div class="content-body">
+                    <!-- 批量操作 -->
+                    <div class="bulk-actions mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="selectAllOOS" 
+                                       onchange="toggleSelectAllOOS()">
+                                <label class="form-check-label" for="selectAllOOS">全選</label>
+                            </div>
+                            <div>
+                                <button class="btn btn-danger btn-sm" onclick="sendSelectedOOS()">
+                                    <i class="fas fa-paper-plane me-1"></i>發送所選
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 缺貨商品表格 -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th width="50px">選擇</th>
+                                    <th>商品名稱</th>
+                                    <th>訂單編號</th>
+                                    <th>顧客</th>
+                                    <th>LINE 狀態</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="oosTableBody">
+                                <tr><td colspan="6" class="text-center text-muted">載入中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 物流通知面板 -->
+        <div class="tab-pane fade" id="shippingPanel">
+            <div class="content-card">
+                <div class="content-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-shipping-fast me-2"></i>待發送物流通知</h5>
+                    <button class="btn btn-light btn-sm" onclick="loadPendingShipping()">
+                        <i class="fas fa-sync-alt me-1"></i>重新整理
+                    </button>
+                </div>
+                <div class="content-body">
+                    <!-- 批量操作 -->
+                    <div class="bulk-actions mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="selectAllShipping" 
+                                       onchange="toggleSelectAllShipping()">
+                                <label class="form-check-label" for="selectAllShipping">全選</label>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary btn-sm" onclick="sendSelectedShipping()">
+                                    <i class="fas fa-paper-plane me-1"></i>發送所選
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 物流商品表格 -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th width="50px">選擇</th>
+                                    <th>商品名稱</th>
+                                    <th>訂單編號</th>
+                                    <th>箱號</th>
+                                    <th>追蹤號碼</th>
+                                    <th>顧客</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shippingTableBody">
+                                <tr><td colspan="7" class="text-center text-muted">載入中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

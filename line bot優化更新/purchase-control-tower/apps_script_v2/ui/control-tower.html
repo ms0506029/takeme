@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>採購控制塔 - 統一管理介面</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #C9915D;
+            --pop-blue: #4A90E2;
+            --pop-red: #FF6B6B;
+            --pop-yellow: #FFE66D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            
+            /* Retro Pop 背景 */
+            background-color: var(--primary-color);
+            background-image: radial-gradient(#fff 20%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            color: #000;
+            margin-bottom: 30px;
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0 #000;
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+            font-weight: 900;
+            color: #000;
+            -webkit-text-stroke: 0.5px #000;
+        }
+
+        .btn-primary {
+            background: var(--pop-blue);
+            border: 3px solid #000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-primary:hover {
+            background: #357ABD;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            border: 3px solid #000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: white;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .content-header {
+            padding: 20px;
+            background: #000;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .content-body {
+            padding: 25px;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            border: 4px solid #000;
+            box-shadow: 5px 5px 0 #000;
+            transition: all 0.1s;
+            height: 100%;
+        }
+
+        .stats-card:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-label {
+            color: #000;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .stats-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            float: right;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead {
+            background: #000;
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background: #FFF8E7;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #000;
+            background: white;
+            border-radius: 15px;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+            font-weight: bold;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 2px solid #000;
+        }
+
+        .status-pending { background: #ffeaa7; color: #000; }
+        .status-done { background: #00b894; color: white; }
+        .status-oos { background: #e17055; color: white; }
+        .status-preorder { background: #74b9ff; color: white; }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 3px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 標題 -->
+        <div class="header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-box me-2"></i> 採購控制塔 - 統一管理介面</h1>
+                    <p class="mb-0">訂單匯入 | 批次管理 | ECOUNT 匯出 | 採購追蹤</p>
+                </div>
+
+                <div class="col-md-4 text-end">
+                    <a href="<?= appUrl ?>" class="btn btn-secondary" target="_top">
+                        <i class="fas fa-home me-2"></i>回主選單
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 統計儀表板 -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <i class="fas fa-shopping-cart stats-icon"></i>
+                    <div class="stats-number" id="statPending">0</div>
+                    <div class="stats-label">待購</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <i class="fas fa-check-circle stats-icon"></i>
+                    <div class="stats-number" id="statDone">0</div>
+                    <div class="stats-label">已購</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <i class="fas fa-exclamation-circle stats-icon"></i>
+                    <div class="stats-number" id="statOOS">0</div>
+                    <div class="stats-label">缺貨</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <i class="fas fa-file-export stats-icon"></i>
+                    <div class="stats-number" id="statToWrite">0</div>
+                    <div class="stats-label">待回寫ERP</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 訂單匯入 -->
+        <div class="content-card">
+            <div class="content-header">
+                <i class="fas fa-upload me-2"></i>訂單匯入
+            </div>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">從 Drive 匯入（檔案 ID）</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="driveFileId" placeholder="貼上 Drive 檔案 ID">
+                            <button class="btn btn-primary" onclick="importFromDrive()">
+                                <i class="fas fa-cloud-download-alt me-2"></i>匯入
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">本機上傳</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="uploadFile" accept=".xlsx,.xls">
+                            <button class="btn btn-primary" onclick="importFromUpload()">
+                                <i class="fas fa-upload me-2"></i>上傳
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="importMessage" class="mt-3"></div>
+            </div>
+        </div>
+
+        <!-- 待處理清單 -->
+        <div class="content-card" id="orderView">
+            <div class="content-header">
+                <i class="fas fa-list me-2"></i>待處理清單（可勾選）
+            </div>
+            <div class="content-body">
+                <div class="filter-section">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label">供應商</label>
+                            <select class="form-select" id="supplier">
+                                <option value="freak-j">Freaks store-傑</option>
+                                <option value="zozo-j">ZOZOTOWN-傑</option>
+                                <option value="zozo-h">ZOZOTOWN-胡</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">匯率</label>
+                            <input type="number" class="form-control" id="rate" placeholder="0.21" step="0.01">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">運費 JPY</label>
+                            <input type="number" class="form-control" id="shipping" placeholder="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">日本訂單號</label>
+                            <input type="text" class="form-control" id="jpOrder" placeholder="選填">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50px">
+                                    <input type="checkbox" id="selectAll" class="form-check-input">
+                                </th>
+                                <th>訂單</th>
+                                <th>SKU</th>
+                                <th>品名</th>
+                                <th>顏色</th>
+                                <th>尺寸</th>
+                                <th>數量</th>
+                                <th>單價JPY</th>
+                                <th>狀態</th>
+                            </tr>
+                        </thead>
+                        <tbody id="candidatesTable">
+                            <tr>
+                                <td colspan="9" class="text-center">載入中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3">
+                    <button class="btn btn-primary me-2" onclick="markPurchasedAndBatch()">
+                        <i class="fas fa-check me-2"></i>標記已購（建批次）
+                    </button>
+                    <button class="btn btn-danger me-2" onclick="markOOS()">
+                        <i class="fas fa-times me-2"></i>標記缺貨
+                    </button>
+                    <button class="btn btn-secondary me-2" onclick="downloadSelectedCSV()">
+                        <i class="fas fa-download me-2"></i>下載選取 CSV
+                    </button>
+                    <button class="btn btn-warning" onclick="toggleView()">
+                        <i class="fas fa-exchange-alt me-2"></i><span id="viewToggleText">切換到品項統整視圖</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 品項統整視圖（採購彙整） -->
+        <div class="content-card" id="summaryView" style="display: none;">
+            <div class="content-header">
+                <i class="fas fa-layer-group me-2"></i>品項統整視圖
+            </div>
+            <div class="content-body">
+                <div class="mb-3">
+                    <button class="btn btn-primary me-2" onclick="loadProcurementSummary()">
+                        <i class="fas fa-sync-alt me-2"></i>載入統整資料
+                    </button>
+                    <button class="btn btn-success me-2" onclick="toggleDiscountPanel()">
+                        <i class="fas fa-calculator me-2"></i>折扣分攤工具
+                    </button>
+                    <button class="btn btn-warning" onclick="toggleView()">
+                        <i class="fas fa-exchange-alt me-2"></i>切換回訂單視圖
+                    </button>
+                </div>
+
+                <!-- 折扣分攤面板 -->
+                <div class="alert alert-light border" id="discountPanel" style="display: none;">
+                    <h5 class="alert-heading"><i class="fas fa-calculator me-2"></i>折扣分攤計算</h5>
+                    <p class="mb-3">選取要分攤折扣的品項（勾選後），輸入實付金額，系統會自動依比例計算每個商品的實際單價</p>
+                    
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label">實付金額（日圓）：</label>
+                            <input type="number" id="actualPaid" class="form-control" placeholder="例如：25000">
+                        </div>
+                        <div class="col-md-4">
+                            <button onclick="calculateDiscount()" class="btn btn-primary">
+                                <i class="fas fa-calculator me-2"></i>計算折扣分攤
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="discountResult" class="mt-3"></div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50px">
+                                    <input type="checkbox" id="selectAllSummary" class="form-check-input">
+                                </th>
+                                <th>商品名稱</th>
+                                <th>SKU</th>
+                                <th>顏色</th>
+                                <th>尺寸</th>
+                                <th>總數量</th>
+                                <th>訂單數</th>
+                                <th width="120px">單價 JPY</th>
+                                <th width="80px">預購月</th>
+                                <th width="80px">預購旬</th>
+                                <th width="250px">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTable">
+                            <tr>
+                                <td colspan="11" class="text-center">請點擊「載入統整資料」按鈕</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 缺貨管理區塊 (已移除，移至首頁) -->
+        <!-- 預購管理區塊 (已移除，移至首頁) -->
+
+        <!-- 批次清單 -->
+        <div class="content-card">
+            <div class="content-header">
+                <i class="fas fa-boxes me-2"></i>批次管理
+            </div>
+            <div class="content-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>批次ID</th>
+                                <th>供應商</th>
+                                <th>匯率</th>
+                                <th>運費</th>
+                                <th>日本訂單號</th>
+                                <th>筆數</th>
+                                <th>建立時間</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="batchesTable">
+                            <tr>
+                                <td colspan="8" class="text-center">載入中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 分頁控制 -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div id="batchPaginationInfo" class="text-muted small">
+                        顯示第 1 頁
+                    </div>
+                    <nav aria-label="Batch pagination">
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item" id="batchPrevPage">
+                                <button class="page-link" onclick="changeBatchPage(-1)">上一頁</button>
+                            </li>
+                            <li class="page-item" id="batchNextPage">
+                                <button class="page-link" onclick="changeBatchPage(1)">下一頁</button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- ECOUNT 匯出 -->
+        <div class="content-card">
+            <div class="content-header">
+                <i class="fas fa-file-export me-2"></i>ECOUNT 匯出功能
+            </div>
+            <div class="content-body">
+                <button class="btn btn-primary me-2" onclick="exportMemoCSV()">
+                    <i class="fas fa-file-csv me-2"></i>匯出摘要 CSV
+                </button>
+                <button class="btn btn-primary" onclick="exportStatusCSV()">
+                    <i class="fas fa-file-csv me-2"></i>匯出狀態 CSV
+                </button>
+                <div id="exportMessage" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批次明細 Modal -->
+    <div class="modal fade" id="batchDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="batchDetailsTitle">批次明細</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="batchDetailsLoading" class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">載入中...</p>
+                    </div>
+                    <div id="batchDetailsContent" style="display: none;">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>品名</th>
+                                        <th>顏色</th>
+                                        <th>尺寸</th>
+                                        <th>數量</th>
+                                        <th>ES訂單號</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="batchDetailsTableBody">
+                                    <!-- 內容由 JS 填充 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 頁面載入時初始化
+        window.addEventListener('load', function() {
+            // 檢查 URL 參數並恢復視圖狀態
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewParam = urlParams.get('view');
+            if (viewParam === 'summary') {
+                applyViewState('summary');
+            }
+            
+            refreshStatistics();
+            refreshCandidates();
+
+            refreshBatches();
+        });
+
+        // 刷新統計
+        function refreshStatistics() {
+            callAPI('getStatistics', {}, function(data) {
+                document.getElementById('statPending').textContent = data.pending || 0;
+                document.getElementById('statDone').textContent = data.done || 0;
+                document.getElementById('statOOS').textContent = data.oos || 0;
+                document.getElementById('statToWrite').textContent = data.toWrite || 0;
+            });
+        }
+
+        // 刷新待處理清單
+        function refreshCandidates() {
+            callAPI('getCandidatesList', {}, function(data) {
+                const tbody = document.getElementById('candidatesTable');
+                const table = tbody.parentElement; // 獲取 table 元素
+                const thead = table.querySelector('thead');
+                
+                // 更新表頭（如果尚未更新）
+                if (thead && !thead.innerHTML.includes('預購資訊')) {
+                    const headerRow = thead.rows[0];
+                    // 插入在「單價JPY」之後
+                    const priceIndex = Array.from(headerRow.cells).findIndex(cell => cell.textContent.includes('單價 JPY'));
+                    if (priceIndex !== -1) {
+                        const th = document.createElement('th');
+                        th.textContent = '預購資訊';
+                        // 使用 insertBefore 插入到單價之後的欄位（即 priceIndex + 1）
+                        if (priceIndex + 1 < headerRow.cells.length) {
+                            headerRow.insertBefore(th, headerRow.cells[priceIndex + 1]);
+                        } else {
+                            headerRow.appendChild(th);
+                        }
+                    }
+                }
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" class="text-center">無資料</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(item => {
+                    // 判斷是否已勾選
+                    const isSelected = item.selected === '是' || item.selected === true;
+                    
+                    // 預購狀態顯示
+                    let preorderBadge = '';
+                    if (item.purchaseStatus === '預購' && item.preorderMonth && item.preorderXun) {
+                        preorderBadge = `<span class="badge bg-warning text-dark ms-2">${item.preorderMonth}-${item.preorderXun}</span>`;
+                    }
+                    
+                    return `
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="form-check-input item-checkbox" value="${item.rowIndex}" ${isSelected ? 'checked' : ''}>
+                            ${isSelected ? '<i class="fas fa-check-circle text-success ms-1" title="已選"></i>' : ''}
+                        </td>
+                        <td>${item.esOrderNo}</td>
+                        <td>${item.sku}</td>
+                        <td>${item.productName}</td>
+                        <td>${item.color || ''}</td>
+                        <td>${item.size || ''}</td>
+                        <td>${item.qtyOrdered}</td>
+                        <td><input type="number" class="form-control form-control-sm price-input" data-row="${item.rowIndex}" value="${item.actualPurchasePrice || ''}" style="width:100px"></td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <input type="text" class="form-control form-control-sm" id="preMonth_${item.rowIndex}" value="${item.preorderMonth || ''}" placeholder="YYYY-MM" style="width: 100px;">
+                                <select class="form-select form-select-sm" id="preXun_${item.rowIndex}" style="width: 80px;">
+                                    <option value="" ${!item.preorderXun ? 'selected' : ''}>旬</option>
+                                    <option value="上" ${item.preorderXun === '上' ? 'selected' : ''}>上</option>
+                                    <option value="中" ${item.preorderXun === '中' ? 'selected' : ''}>中</option>
+                                    <option value="下" ${item.preorderXun === '下' ? 'selected' : ''}>下</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-${getStatusClass(item.purchaseStatus)}">${item.purchaseStatus || '待購'}</span>
+                            ${preorderBadge}
+                        </td>
+                    </tr>
+                `;
+                }).join('');
+
+                // 加入總計列（使用 span id 方便更新）
+                tbody.innerHTML += `
+                    <tr class="table-light fw-bold" style="position: sticky; bottom: 0; z-index: 10;">
+                        <td colspan="7" class="text-end">
+                            商品總計：<span id="itemsTotal">0</span> + 
+                            運費：<span id="shippingCostDisplay">0</span> = 
+                            總金額 (JPY)：
+                        </td>
+                        <td colspan="3" class="text-start text-danger fs-5">¥<span id="finalTotal">0</span></td>
+                    </tr>
+                `;
+
+                setupCheckboxes();
+                
+                // 初始化總金額
+                updateTotalSum();
+            });
+            
+            // 設置勾選框監聽器 (定義在這裡確保能正確綁定)
+            function setupCheckboxes() {
+                console.log('setupCheckboxes called');
+                const checkboxes = document.querySelectorAll('.item-checkbox');
+                console.log(`Found ${checkboxes.length} checkboxes`);
+                
+                checkboxes.forEach(cb => {
+                    cb.addEventListener('change', updateTotalSum);
+                });
+                
+                // 監聽單價輸入
+                const priceInputs = document.querySelectorAll('.price-input');
+                console.log(`Found ${priceInputs.length} price inputs`);
+                
+                priceInputs.forEach(input => {
+                    input.addEventListener('input', updateTotalSum);
+                });
+                
+                // 監聽運費輸入
+                const shippingInput = document.getElementById('shipping');
+                console.log('Shipping input:', shippingInput);
+                
+                if (shippingInput) {
+                    shippingInput.addEventListener('input', updateTotalSum);
+                }
+            }
+        }
+
+        // 設置勾選框監聽器 (保留舊定義以防其他地方呼叫)
+        function setupCheckboxes() {
+            console.log('setupCheckboxes called (global)');
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', updateTotalSum);
+            });
+            
+            // 監聽單價輸入
+            const priceInputs = document.querySelectorAll('.price-input');
+            priceInputs.forEach(input => {
+                input.addEventListener('input', updateTotalSum);
+            });
+            
+            // 監聽運費輸入
+            const shippingInput = document.getElementById('shipping');
+            if (shippingInput) {
+                shippingInput.addEventListener('input', updateTotalSum);
+            }
+        }
+
+        // 更新總金額
+        function updateTotalSum() {
+            console.log('updateTotalSum triggered');
+            const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+            let itemsTotal = 0;
+
+            checkboxes.forEach(cb => {
+                const row = cb.closest('tr');
+                const priceInput = row.querySelector('.price-input');
+                // 數量在第 7 欄 (index 6)，但要確認結構
+                // 0: checkbox, 1: Order, 2: SKU, 3: Name, 4: Color, 5: Size, 6: Qty, 7: Price
+                const qtyCell = row.cells[6]; 
+                
+                let priceStr = priceInput ? priceInput.value : '0';
+                priceStr = priceStr.replace(/,/g, '');
+                const price = parseFloat(priceStr) || 0;
+                
+                const qty = parseInt(qtyCell ? qtyCell.textContent : 0) || 0;
+                
+                console.log(`Row ${row.rowIndex}: Price=${price}, Qty=${qty}`);
+                itemsTotal += price * qty;
+            });
+
+            // 取得運費
+            const shippingInput = document.getElementById('shipping');
+            let shippingStr = shippingInput ? shippingInput.value : '0';
+            shippingStr = shippingStr.replace(/,/g, '');
+            const shippingCost = parseFloat(shippingStr) || 0;
+            
+            console.log(`Items Total: ${itemsTotal}, Shipping: ${shippingCost}`);
+            
+            const finalTotal = itemsTotal + shippingCost;
+
+            // 更新顯示
+            const elItemsTotal = document.getElementById('itemsTotal');
+            const elShippingDisplay = document.getElementById('shippingCostDisplay');
+            const elFinalTotal = document.getElementById('finalTotal');
+
+            if (elItemsTotal) elItemsTotal.textContent = itemsTotal.toLocaleString();
+            if (elShippingDisplay) elShippingDisplay.textContent = shippingCost.toLocaleString();
+            if (elFinalTotal) elFinalTotal.textContent = finalTotal.toLocaleString();
+        }
+
+        let currentBatchPage = 1;
+        const batchPageSize = 20;
+
+        function refreshBatches() {
+            const tbody = document.getElementById('batchesTable');
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center">載入中...</td></tr>';
+
+            callAPI('getBatchesPaginated', { page: currentBatchPage, pageSize: batchPageSize }, function(data) {
+                // data 已經是 { items, totalCount, totalPages, currentPage } 物件
+                const items = data.items || [];
+                
+                if (items.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="text-center">無批次</td></tr>';
+                    updateBatchPagination(data.totalCount || 0, data.totalPages || 0);
+                    return;
+                }
+
+                tbody.innerHTML = items.map(batch => `
+                    <tr>
+                        <td>${batch.id}</td>
+                        <td>${batch.supplier}</td>
+                        <td>${batch.rate || ''}</td>
+                        <td>${batch.shipping || ''}</td>
+                        <td>
+                            ${batch.jpOrder || ''}
+                            <button class="btn btn-sm btn-outline-secondary ms-1" onclick="editBatchJPOrderNo('${batch.id}', '${batch.jpOrder || ''}')" title="編輯日本訂單號">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                        <td>${batch.count}</td>
+                        <td>${batch.created}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info text-white me-1" onclick="viewBatchDetails('${batch.id}')" title="查看明細">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-primary download-btn" id="btn-download-${batch.id}" onclick="downloadBatchPO('${batch.id}')" title="下載 Excel">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                updateBatchPagination(data.totalCount, data.totalPages);
+            });
+        }
+
+        function updateBatchPagination(totalCount, totalPages) {
+            const info = document.getElementById('batchPaginationInfo');
+            const prevBtn = document.getElementById('batchPrevPage');
+            const nextBtn = document.getElementById('batchNextPage');
+            
+            info.textContent = `第 ${currentBatchPage} 頁 / 共 ${totalPages} 頁 (總計 ${totalCount} 筆)`;
+            
+            if (currentBatchPage <= 1) {
+                prevBtn.classList.add('disabled');
+            } else {
+                prevBtn.classList.remove('disabled');
+            }
+            
+            if (currentBatchPage >= totalPages) {
+                nextBtn.classList.add('disabled');
+            } else {
+                nextBtn.classList.remove('disabled');
+            }
+        }
+
+        function changeBatchPage(delta) {
+            currentBatchPage += delta;
+            if (currentBatchPage < 1) currentBatchPage = 1;
+            refreshBatches();
+        }
+
+        function downloadBatchPO(batchId) {
+            const btn = document.getElementById(`btn-download-${batchId}`);
+            const originalContent = btn.innerHTML;
+            
+            // 變更按鈕狀態為「下載中...」
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 下載中...';
+            btn.disabled = true;
+            
+            callAPI('downloadBatchPO', { batchId: batchId }, function(data) {
+                if (data.file) {
+                    window.open(data.file.url, '_blank');
+                    
+                    // 下載成功後，變更按鈕樣式為「已下載」
+                    btn.innerHTML = '<i class="fas fa-check"></i> 已下載';
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-success');
+                    btn.disabled = false;
+                }
+            }, function(error) {
+                alert('下載失敗: ' + error);
+                // 失敗時恢復原狀
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            });
+        }
+
+        function editBatchJPOrderNo(batchId, currentVal) {
+            const newVal = prompt('請輸入新的日本訂單號：', currentVal);
+            if (newVal === null) return; // 取消
+            
+            const trimmedVal = newVal.trim();
+            if (trimmedVal === currentVal) return; // 無變更
+
+            callAPI('updateBatchJPOrderNo', { batchId: batchId, jpOrderNo: trimmedVal }, function(data) {
+                if (data.success) {
+                    // alert('更新成功'); // 為了流暢體驗，可以省略成功提示，直接刷新
+                    refreshBatches();
+                } else {
+                    alert('更新失敗: ' + (data.error || '未知錯誤'));
+                }
+            }, function(error) {
+                alert('系統錯誤: ' + error);
+            });
+        }
+
+        function viewBatchDetails(batchId) {
+            const modal = new bootstrap.Modal(document.getElementById('batchDetailsModal'));
+            document.getElementById('batchDetailsTitle').textContent = `批次明細 - ${batchId}`;
+            document.getElementById('batchDetailsLoading').style.display = 'block';
+            document.getElementById('batchDetailsContent').style.display = 'none';
+            document.getElementById('batchDetailsTableBody').innerHTML = '';
+            
+            modal.show();
+            
+            callAPI('getBatchDetails', { batchId: batchId }, function(data) {
+                document.getElementById('batchDetailsLoading').style.display = 'none';
+                document.getElementById('batchDetailsContent').style.display = 'block';
+                
+                if (!data.items || data.items.length === 0) {
+                    document.getElementById('batchDetailsTableBody').innerHTML = '<tr><td colspan="6" class="text-center">無資料</td></tr>';
+                    return;
+                }
+                
+                const tbody = document.getElementById('batchDetailsTableBody');
+                tbody.innerHTML = data.items.map(item => {
+                    const d = item.data;
+                    return `
+                        <tr>
+                            <td>${d.sku}</td>
+                            <td>${d.productName}</td>
+                            <td>${d.color || ''}</td>
+                            <td>${d.size || ''}</td>
+                            <td>${d.qtyOrdered}</td>
+                            <td>${d.esOrderNo}</td>
+                        </tr>
+                    `;
+                }).join('');
+                
+            }, function(error) {
+                document.getElementById('batchDetailsLoading').style.display = 'none';
+                alert('載入失敗: ' + error);
+            });
+        }
+
+
+
+        // ========== 通用函數 ==========
+
+        // 設置勾選框
+        function setupCheckboxes() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    checkboxes.forEach(cb => cb.checked = this.checked);
+                });
+            }
+        }
+
+        // 取得選取的列（包含待購清單和缺貨清單）
+        function getSelectedRows() {
+            const checkboxes = document.querySelectorAll('.item-checkbox:checked, .oos-checkbox:checked');
+            return Array.from(checkboxes).map(cb => parseInt(cb.value));
+        }
+
+        // 取得選取列的單價
+        function getSelectedPrices() {
+            const rows = getSelectedRows();
+            return rows.map(rowIndex => {
+                const input = document.querySelector(`.price-input[data-row="${rowIndex}"]`);
+                // 如果在缺貨清單中沒有單價輸入框，則預設為 0 或從資料中獲取（這裡簡化為 0）
+                return input ? parseFloat(input.value) || 0 : 0;
+            });
+        }
+
+        // 狀態樣式類別
+        function getStatusClass(status) {
+            const map = {
+                '待購': 'pending',
+                '已購': 'done',
+                '缺貨': 'oos',
+                '預購': 'preorder',
+                '鎖定-購買中': 'locked'
+            };
+            return map[status] || 'pending';
+        }
+
+        // === 訂單匯入功能 ===
+        function importFromDrive() {
+            const fileId = document.getElementById('driveFileId').value.trim();
+            if (!fileId) {
+                showMessage('importMessage', '請輸入 Drive 檔案 ID', 'danger');
+                return;
+            }
+
+            showMessage('importMessage', '匯入中...', 'info');
+            callAPI('importFromDrive', { fileId: fileId }, function(data) {
+                showMessage('importMessage', `成功匯入 ${data.inserted} 筆資料`, 'success');
+                refreshStatistics();
+                refreshCandidates();
+            }, function(error) {
+                showMessage('importMessage', '匯入失敗: ' + error, 'danger');
+            });
+        }
+
+        function importFromUpload() {
+            const fileInput = document.getElementById('uploadFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showMessage('importMessage', '請選擇檔案', 'danger');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result.split(',')[1];
+                showMessage('importMessage', '上傳中...', 'info');
+                
+                callAPI('importFromUpload', { 
+                    filename: file.name, 
+                    base64: base64 
+                }, function(data) {
+                    showMessage('importMessage', `成功匯入 ${data.inserted} 筆資料`, 'success');
+                    refreshStatistics();
+                    refreshCandidates();
+                    fileInput.value = '';
+                }, function(error) {
+                    showMessage('importMessage', '上傳失敗: ' + error, 'danger');
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 取得選取列的預購資訊
+        function getSelectedPreOrderInfo() {
+            const rows = getSelectedRows();
+            const months = [];
+            const xuns = [];
+            
+            rows.forEach(rowIndex => {
+                const monthInput = document.getElementById(`preMonth_${rowIndex}`);
+                const xunInput = document.getElementById(`preXun_${rowIndex}`);
+                
+                months.push(monthInput ? monthInput.value : '');
+                xuns.push(xunInput ? xunInput.value : '');
+            });
+            
+            return { months, xuns };
+        }
+
+        // === 標記功能 ===
+        function markPurchasedAndBatch() {
+            const rows = getSelectedRows();
+            if (rows.length === 0) {
+                alert('請先勾選品項（可從待購清單或缺貨清單中選取）');
+                return;
+            }
+
+            const supplier = document.getElementById('supplier').value;
+            const rate = document.getElementById('rate').value;
+            const shipping = document.getElementById('shipping').value;
+            const jpOrder = document.getElementById('jpOrder').value;
+            const prices = getSelectedPrices();
+            const preOrderInfo = getSelectedPreOrderInfo();
+
+            const batchData = {
+                supplier: supplier,
+                rate: rate,
+                shipping: shipping,
+                jpOrder: jpOrder,
+                prices: prices,
+                preMonths: preOrderInfo.months,
+                preXuns: preOrderInfo.xuns,
+                createBatch: true
+            };
+
+            callAPI('createBatchWithPurchase', { 
+                rowIndexes: rows, 
+                batchData: batchData 
+            }, function(data) {
+                alert(`成功建立批次 ${data.batchId}，已標記 ${data.updated} 筆為已購`);
+                refreshStatistics();
+                refreshCandidates();
+                refreshOOSList(); // 同時刷新缺貨清單
+                refreshBatches();
+            }, function(error) {
+                alert('操作失敗: ' + error);
+            });
+        }
+
+        function markOOS() {
+            const rows = getSelectedRows();
+            if (rows.length === 0) {
+                alert('請先勾選品項');
+                return;
+            }
+
+            if (!confirm(`確定要標記 ${rows.length} 筆為缺貨嗎？`)) {
+                return;
+            }
+
+            callAPI('markOOS', { rowIndexes: rows }, function(data) {
+                alert(`已標記 ${data.updated} 筆為缺貨`);
+                refreshStatistics();
+                refreshCandidates();
+            }, function(error) {
+                alert('操作失敗: ' + error);
+            });
+        }
+
+        // === 匯出功能 ===
+        function downloadSelectedCSV() {
+            const rows = getSelectedRows();
+            if (rows.length === 0) {
+                alert('請先勾選品項');
+                return;
+            }
+
+            const supplier = document.getElementById('supplier').value;
+            const shipping = document.getElementById('shipping').value;
+
+            callAPI('exportSelectedItemsCSV', {
+                rowIndexes: rows,
+                supplier: supplier,
+                shipping: shipping
+            }, function(data) {
+                window.open(data.file.url, '_blank');
+            }, function(error) {
+                alert('匯出失敗: ' + error);
+            });
+        }
+
+        function downloadBatchPO(batchId) {
+            callAPI('downloadBatchPO', { batchId: batchId }, function(data) {
+                if (data.file) {
+                    window.open(data.file.url, '_blank');
+                }
+            }, function(error) {
+                alert('下載失敗: ' + error);
+            });
+        }
+
+        function exportMemoCSV() {
+            showMessage('exportMessage', '產生中...', 'info');
+            callAPI('exportMemoCSV', {}, function(data) {
+                showMessage('exportMessage', `成功產生，已更新 ${data.updatedRows} 筆`, 'success');
+                if (data.file) {
+                    window.open(data.file.url, '_blank');
+                }
+                refreshStatistics();
+            }, function(error) {
+                showMessage('exportMessage', '匯出失敗: ' + error, 'danger');
+            });
+        }
+
+        function exportStatusCSV() {
+            showMessage('exportMessage', '產生中...', 'info');
+            callAPI('exportStatusCSV', {}, function(data) {
+                showMessage('exportMessage', '成功產生', 'success');
+                if (data.file) {
+                    window.open(data.file.url, '_blank');
+                }
+            }, function(error) {
+                showMessage('exportMessage', '匯出失敗: ' + error, 'danger');
+            });
+        }
+
+        // === API 呼叫函數 ===
+        // === API 呼叫函數 ===
+        function callAPI(action, data, successCallback, errorCallback) {
+            console.log(`[callAPI] 調用: ${action}`, data);
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    // 嘗試解析 JSON 字串
+                    if (typeof result === 'string') {
+                        try {
+                            result = JSON.parse(result);
+                        } catch (e) {
+                            console.error('[callAPI] JSON 解析失敗:', e);
+                        }
+                    }
+
+                    if (result && result.success) {
+                        if (successCallback) successCallback(result.data || result);
+                    } else {
+                        const errorMsg = result ? (result.error || '未知錯誤') : '伺服器無回應';
+                        if (errorCallback) {
+                            errorCallback(errorMsg);
+                        } else {
+                            console.error('API 錯誤:', errorMsg);
+                            alert('錯誤：' + errorMsg);
+                        }
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    console.error('API 連線失敗:', error);
+                    if (errorCallback) {
+                        errorCallback(error.message);
+                    } else {
+                        alert('連線失敗：' + error.message);
+                    }
+                })
+                .apiHandler({action: action, data: data});
+        }
+
+        // 顯示訊息
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const alertClass = type === 'success' ? 'alert-success' : 
+                             type === 'danger' ? 'alert-danger' : 'alert-info';
+            
+            element.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    element.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+
+        // ========== 品項統整視圖相關函數 ==========
+        
+        let summaryData = [];
+        let selectedSummaryItems = [];
+        let currentView = 'order'; // 'order' or 'summary'
+
+        // 切換視圖
+        function toggleView() {
+            // 直接使用 ID 選擇器
+            const orderView = document.getElementById('orderView');
+            const summaryView = document.getElementById('summaryView');
+            const toggleText = document.getElementById('viewToggleText');
+            
+            if (currentView === 'order') {
+                if (orderView) orderView.style.display = 'none';
+                if (summaryView) summaryView.style.display = 'block';
+                currentView = 'summary';
+                if (toggleText) toggleText.textContent = '切換回訂單視圖';
+                
+                // 更新 URL (使用 google.script.history 以支援頂層導航)
+                const params = { view: 'summary' };
+                google.script.history.push({ view: 'summary' }, params);
+            } else {
+                if (orderView) orderView.style.display = 'block';
+                if (summaryView) summaryView.style.display = 'none';
+                currentView = 'order';
+                if (toggleText) toggleText.textContent = '切換到品項統整視圖';
+                
+                // 更新 URL
+                const params = { view: 'order' };
+                google.script.history.push({ view: 'order' }, params);
+            }
+        }
+
+        // 監聽瀏覽器上一頁/下一頁
+        window.onpopstate = function(event) {
+            if (event.state && event.state.view) {
+                applyViewState(event.state.view);
+            } else {
+                applyViewState('order');
+            }
+        };
+
+        // 套用視圖狀態（不推入歷史）
+        function applyViewState(view) {
+            const orderView = document.getElementById('orderView');
+            const summaryView = document.getElementById('summaryView');
+            const toggleText = document.getElementById('viewToggleText');
+            
+            if (view === 'summary') {
+                if (orderView) orderView.style.display = 'none';
+                if (summaryView) summaryView.style.display = 'block';
+                currentView = 'summary';
+                if (toggleText) toggleText.textContent = '切換回訂單視圖';
+            } else {
+                if (orderView) orderView.style.display = 'block';
+                if (summaryView) summaryView.style.display = 'none';
+                currentView = 'order';
+                if (toggleText) toggleText.textContent = '切換到品項統整視圖';
+            }
+        }
+
+        // 載入採購彙整資料
+        function loadProcurementSummary() {
+            const tbody = document.getElementById('summaryTable');
+            tbody.innerHTML = '<tr><td colspan="9" class="text-center">載入中...</td></tr>';
+            
+            callAPI('getProcurementSummary', {}, function(data) {
+                summaryData = data;
+                renderSummary();
+            }, function(error) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center text-danger">載入失敗: ' + error + '</td></tr>';
+            });
+        }
+
+        // 渲染彙整表格
+        function renderSummary() {
+            const tbody = document.getElementById('summaryTable');
+            
+            if (!summaryData || summaryData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="text-center">暫無資料</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = summaryData.map((item, index) => `
+                <tr>
+                    <td><input type="checkbox" class="form-check-input summary-checkbox" data-index="${index}" onchange="handleSummaryCheckbox(${index})"></td>
+                    <td>${item.productName || '-'}</td>
+                    <td><small class="text-muted">${item.sku || '-'}</small></td>
+                    <td>${item.color || '-'}</td>
+                    <td>${item.size || '-'}</td>
+                    <td><strong>${item.totalQty}</strong></td>
+                    <td>${item.orderCount} 張</td>
+                    <td><input type="number" class="form-control form-control-sm" id="price_${index}" value="${item.actualPurchasePrice || ''}" placeholder="單價"></td>
+                    <td><input type="text" class="form-control form-control-sm" id="preMonth_${index}" value="" placeholder="月份" maxlength="6"></td>
+                    <td><input type="text" class="form-control form-control-sm" id="preXun_${index}" value="" placeholder="上/中/下"></td>
+                    <td>
+                        <button onclick="selectAllRowsByKey(${index})" class="btn btn-sm btn-primary me-1">
+                            <i class="fas fa-check-square me-1"></i>勾選
+                        </button>
+                        <button onclick="applyUnitPrice(${index})" class="btn btn-sm btn-success me-1">
+                            <i class="fas fa-yen-sign me-1"></i>單價
+                        </button>
+                        <button onclick="applyPreorderStatus(${index})" class="btn btn-sm btn-warning">
+                            <i class="fas fa-calendar me-1"></i>預購
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            setupSummaryCheckboxes();
+        }
+
+        // 設置彙整勾選框
+        function setupSummaryCheckboxes() {
+            const selectAll = document.getElementById('selectAllSummary');
+            const checkboxes = document.querySelectorAll('.summary-checkbox');
+            
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    checkboxes.forEach(cb => cb.checked = this.checked);
+                    selectedSummaryItems = this.checked ? summaryData.map((_, i) => i) : [];
+                });
+            }
+        }
+
+        // 處理彙整勾選框
+        function handleSummaryCheckbox(index) {
+            const checkbox = document.querySelector(`.summary-checkbox[data-index="${index}"]`);
+            if (checkbox.checked) {
+                if (!selectedSummaryItems.includes(index)) selectedSummaryItems.push(index);
+            } else {
+                selectedSummaryItems = selectedSummaryItems.filter(i => i !== index);
+            }
+        }
+
+        // 勾選所有相關 Queue 行
+        function selectAllRowsByKey(index) {
+            const item = summaryData[index];
+            if (!item) return;
+            
+            if (!confirm(`確定要勾選所有包含此品項的 Queue 行嗎？\n\n商品：${item.productName}\nSKU：${item.sku}\n總數量：${item.totalQty}`)) return;
+            
+            callAPI('selectRowsByKey', { key: item.key }, function(data) {
+                alert(`✅ 已勾選 ${data.affectedRows} 個 Queue 行`);
+                refreshCandidates();  // 刷新待處理清單以顯示勾選狀態
+            }, function(error) {
+                alert('操作失敗: ' + error);
+            });
+        }
+
+        // 套用單價
+        function applyUnitPrice(index) {
+            const item = summaryData[index];
+            const price = parseFloat(document.getElementById(`price_${index}`).value);
+            
+            if (!price || price <= 0) {
+                alert('請輸入有效的單價');
+                return;
+            }
+            
+            if (!confirm(`確定要將單價 ${price} 套用到所有相關 Queue 行嗎？\n\n商品：${item.productName}\n受影響行數：約 ${item.orderCount} 行`)) return;
+            
+            callAPI('applyUnitPriceToKey', { key: item.key, price: price }, function(data) {
+                alert(`✅ 已套用單價到 ${data.affectedRows} 個 Queue 行`);
+                item.actualPurchasePrice = price;
+                refreshCandidates();  // 刷新待處理清單以顯示單價
+            }, function(error) {
+                alert('操作失敗: ' + error);
+            });
+        }
+
+        // 套用預購狀態
+        function applyPreorderStatus(index) {
+            const item = summaryData[index];
+            const preMonth = document.getElementById(`preMonth_${index}`).value;
+            const preXun = document.getElementById(`preXun_${index}`).value;
+            
+            if (!preMonth || !preXun) {
+                alert('請輸入預購月份和旬（例如：202501、上）');
+                return;
+            }
+            
+            if (!confirm(`確定要將預購狀態套用到所有相關 Queue 行嗎？\n\n商品：${item.productName}\n月份：${preMonth}\n旬：${preXun}\n受影響行數：約 ${item.orderCount} 行`)) return;
+            
+            callAPI('applyPreorderStatusToKey', { key: item.key, preMonth: preMonth, preXun: preXun }, function(data) {
+                alert(`✅ 已套用預購狀態到 ${data.affectedRows} 個 Queue 行`);
+                refreshCandidates();  // 刷新待處理清單以顯示預購狀態
+            }, function(error) {
+                alert('操作失敗: ' + error);
+            });
+        }
+
+        // 切換折扣面板
+        function toggleDiscountPanel() {
+            const panel = document.getElementById('discountPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 計算折扣分攤
+        function calculateDiscount() {
+            const actualPaid = parseFloat(document.getElementById('actualPaid').value);
+            
+            if (!actualPaid || actualPaid <= 0) {
+                alert('請輸入有效的實付金額');
+                return;
+            }
+            
+            if (selectedSummaryItems.length === 0) {
+                alert('請先勾選要分攤折扣的品項');
+                return;
+            }
+            
+            const items = selectedSummaryItems.map(index => {
+                const item = summaryData[index];
+                const listPrice = parseFloat(document.getElementById(`price_${index}`).value) || item.actualPurchasePrice || 0;
+                return {
+                    key: item.key,
+                    productName: item.productName,
+                    totalQty: item.totalQty,
+                    listPrice: listPrice
+                };
+            });
+            
+            callAPI('calculateDiscount', { items: items, actualPaid: actualPaid }, function(result) {
+                showDiscountResult(result);
+            }, function(error) {
+                alert('計算失敗: ' + error);
+            });
+        }
+
+        // 顯示折扣結果
+        function showDiscountResult(result) {
+            const resultDiv = document.getElementById('discountResult');
+            
+            let html = '<div class="alert alert-success">';
+            html += '<h6 class="alert-heading">計算結果</h6>';
+            html += `<p class="mb-1">原價總額：<strong>¥${result.totalOriginal.toFixed(2)}</strong></p>`;
+            html += `<p class="mb-1">實付金額：<strong>¥${result.totalAfterDiscount.toFixed(2)}</strong></p>`;
+            html += `<p class="mb-0">折扣比例：<strong>${(result.discountRate * 100).toFixed(2)}%</strong></p>`;
+            html += '</div>';
+            
+            html += '<div class="table-responsive"><table class="table table-sm table-bordered"><thead><tr>';
+            html += '<th>商品</th><th>數量</th><th>原單價</th><th>實際單價</th>';
+            html += '</tr></thead><tbody>';
+            
+            result.items.forEach(item => {
+                html += `<tr>
+                    <td>${item.productName}</td>
+                    <td>${item.totalQty}</td>
+                    <td>¥${item.listPrice.toFixed(2)}</td>
+                    <td><strong class="text-success">¥${item.actualUnitPrice.toFixed(2)}</strong></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table></div>';
+            html += '<button onclick="applyDiscountResult()" class="btn btn-success mt-2"><i class="fas fa-check me-2"></i>確認套用到 Queue</button>';
+            
+            resultDiv.innerHTML = html;
+            window.discountResult = result;
+        }
+
+        // 套用折扣結果
+        function applyDiscountResult() {
+            if (!window.discountResult) return;
+            if (!confirm('確定要將計算結果套用到 Queue 表嗎？')) return;
+            
+            callAPI('applyDiscountToQueue', { items: window.discountResult.items }, function(data) {
+                alert(`✅ 已套用到 ${data.affectedRows} 個 Queue 行`);
+                loadProcurementSummary();
+                document.getElementById('discountPanel').style.display = 'none';
+                document.getElementById('discountResult').innerHTML = '';
+            }, function(error) {
+                alert('套用失敗: ' + error);
+            });
+        }
+
+        // ========== 輔助函數 ==========
+
+        function showMessage(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            
+            const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
+            el.innerHTML = `<div class="${alertClass}">${message}</div>`;
+            setTimeout(() => el.innerHTML = '', 5000);
+        }
+
+    </script>
+</body>
+</html>

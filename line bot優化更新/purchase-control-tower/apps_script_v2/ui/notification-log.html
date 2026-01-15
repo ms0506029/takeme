@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知紀錄查詢</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+        <style>
+        :root {
+            --primary-color: #C9915D;
+            --pop-blue: #4A90E2;
+            --pop-red: #FF6B6B;
+            --pop-yellow: #FFE66D;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: var(--primary-color);
+            background-image: radial-gradient(#fff 20%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            color: #000;
+            margin-bottom: 30px;
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0 #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+            font-weight: 900;
+            font-size: 28px;
+            color: #000;
+            -webkit-text-stroke: 0.5px #000;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .btn-primary {
+            background-color: var(--pop-blue);
+            border: 3px solid #000;
+            color: white;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-primary:hover {
+            background-color: #357ABD;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: white;
+        }
+
+        #loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            z-index: 9999;
+            border: 4px solid var(--pop-yellow);
+            box-shadow: 6px 6px 0 var(--pop-yellow);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-history me-2"></i>通知紀錄查詢</h1>
+                <p>查看 LINE 推播紀錄、追蹤通知狀態</p>
+            </div>
+            <a href="<?= appUrl ?>" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>回主選單
+            </a>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number text-primary" id="totalCount">-</div>
+                    <div class="stat-label">總通知數</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number text-success" id="successCount">-</div>
+                    <div class="stat-label">成功</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-number text-danger" id="failedCount">-</div>
+                    <div class="stat-label">失敗</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-card">
+            <h3><i class="fas fa-filter me-2"></i>篩選條件</h3>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label">訂單編號：</label>
+                    <input type="text" id="filterOrderNo" class="form-control" placeholder="例如：ES5336">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">狀態：</label>
+                    <select id="filterStatus" class="form-select">
+                        <option value="">全部</option>
+                        <option value="success">成功</option>
+                        <option value="failed">失敗</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">訊息類型：</label>
+                    <select id="filterMessageType" class="form-select">
+                        <option value="">全部</option>
+                        <option value="JP_TO_TW_SHIPPED">日本→台灣已出貨</option>
+                        <option value="TW_ARRIVED">已抵達台灣</option>
+                        <option value="TW_TO_CUSTOMER_SHIPPED">台灣已出貨</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">顯示筆數：</label>
+                    <select id="filterLimit" class="form-select">
+                        <option value="50">50 筆</option>
+                        <option value="100" selected>100 筆</option>
+                        <option value="200">200 筆</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button onclick="queryLogs()" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>查詢
+                </button>
+                <button onclick="refreshStats()" class="btn btn-outline-secondary">
+                    <i class="fas fa-sync-alt me-2"></i>更新統計
+                </button>
+            </div>
+        </div>
+        
+        <div id="logsContainer" class="content-card" style="display: none;">
+            <h3><i class="fas fa-list me-2"></i>查詢結果</h3>
+            <p id="logsSummary" class="text-muted mb-3"></p>
+            
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th width="180">時間</th>
+                            <th>訂單編號</th>
+                            <th>LINE User ID</th>
+                            <th>追蹤碼</th>
+                            <th>訊息類型</th>
+                            <th>訊息預覽</th>
+                            <th width="100">狀態</th>
+                            <th>錯誤訊息</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function queryLogs() {
+            const filters = {
+                orderNo: document.getElementById('filterOrderNo').value.trim(),
+                status: document.getElementById('filterStatus').value,
+                messageType: document.getElementById('filterMessageType').value
+            };
+            
+            const limit = parseInt(document.getElementById('filterLimit').value);
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        displayLogs(result.data);
+                    } else {
+                        alert('查詢失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiQueryNotificationLogs(filters, limit);
+        }
+        
+        function displayLogs(data) {
+            document.getElementById('logsContainer').style.display = 'block';
+            
+            const summary = document.getElementById('logsSummary');
+            summary.innerHTML = `共 <strong>${data.length}</strong> 筆紀錄`;
+            
+            const tbody = document.getElementById('logsBody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">沒有找到符合條件的紀錄</td></tr>';
+                return;
+            }
+            
+            data.forEach(log => {
+                const row = document.createElement('tr');
+                const statusBadge = log.status === 'success' 
+                    ? '<span class="badge bg-success">成功</span>' 
+                    : '<span class="badge bg-danger">失敗</span>';
+                
+                row.innerHTML = `
+                    <td><small class="text-muted">${formatTimestamp(log.timestamp)}</small></td>
+                    <td>${log.esOrderNo || '-'}</td>
+                    <td><small class="text-muted" title="${log.lineUserId}">${log.lineUserId ? log.lineUserId.substring(0, 10) + '...' : '-'}</small></td>
+                    <td>${log.trackingJPtoTW || '-'}</td>
+                    <td><small>${formatMessageType(log.messageType)}</small></td>
+                    <td class="message-preview" title="${log.messageContentShort}">${log.messageContentShort || '-'}</td>
+                    <td>${statusBadge}</td>
+                    <td><small class="text-danger">${log.errorMessage || '-'}</small></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function refreshStats() {
+            // 查詢全部資料來計算統計
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        updateStats(result.data);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiQueryNotificationLogs({}, 1000);
+        }
+        
+        function updateStats(data) {
+            const total = data.length;
+            const success = data.filter(log => log.status === 'success').length;
+            const failed = data.filter(log => log.status === 'failed').length;
+            
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('successCount').textContent = success;
+            document.getElementById('failedCount').textContent = failed;
+        }
+        
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            return date.toLocaleString('zh-TW');
+        }
+        
+        function formatMessageType(type) {
+            const types = {
+                'JP_TO_TW_SHIPPED': '🚢 日本→台灣',
+                'TW_ARRIVED': '✈️ 抵達台灣',
+                'TW_TO_CUSTOMER_SHIPPED': '📮 台灣出貨'
+            };
+            return types[type] || type;
+        }
+        
+        function handleError(error) {
+            console.error(error);
+            alert('發生錯誤：' + error.message);
+        }
+        
+        // 頁面載入時執行
+        window.onload = function() {
+            queryLogs();
+            refreshStats();
+        };
+    </script>
+</body>
+</html>

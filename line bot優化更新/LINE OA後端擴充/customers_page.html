@@ -1,0 +1,369 @@
+<!-- ==========================================
+     客戶管理頁面內容
+     用於替換 LINE OA 後端 HTML 中的 customersContent
+     ========================================== -->
+
+<div id="customersContent" class="page-content" style="display: none;">
+    <div class="content-card">
+        <div class="content-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-users me-2"></i>會員綁定管理</h5>
+            <button class="btn btn-light btn-sm" onclick="loadCustomerBindings()">
+                <i class="fas fa-sync-alt me-1"></i>重新整理
+            </button>
+        </div>
+        <div class="content-body">
+            <!-- 搜尋區 -->
+            <div class="filter-section mb-3">
+                <div class="row align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">搜尋</label>
+                        <input type="text" class="form-control" id="customerSearch" 
+                               placeholder="輸入 Email 或 LINE 名稱" 
+                               onkeyup="filterCustomers()">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">綁定狀態</label>
+                        <select class="form-select" id="bindingFilter" onchange="filterCustomers()">
+                            <option value="">全部</option>
+                            <option value="bound">已綁定</option>
+                            <option value="unbound">未綁定</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100" onclick="filterCustomers()">
+                            <i class="fas fa-search me-1"></i>搜尋
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 統計卡片 -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-number" id="totalBindings">0</div>
+                        <div class="stats-label">總會員數</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card" style="border-left-color: #00b894;">
+                        <div class="stats-number" id="boundCount">0</div>
+                        <div class="stats-label">已綁定 LINE</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card" style="border-left-color: #e17055;">
+                        <div class="stats-number" id="unboundCount">0</div>
+                        <div class="stats-label">未綁定</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 會員表格 -->
+            <div class="table-responsive">
+                <table class="table table-hover" id="customersTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>LINE 名稱</th>
+                            <th>Email</th>
+                            <th>顧客姓名</th>
+                            <th>訂單編號</th>
+                            <th>綁定狀態</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <tr><td colspan="6" class="text-center text-muted">載入中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 分頁 -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="text-muted">
+                    顯示 <span id="showingFrom">0</span> - <span id="showingTo">0</span> 
+                    共 <span id="totalRecords">0</span> 筆
+                </div>
+                <nav>
+                    <ul class="pagination pagination-sm mb-0" id="pagination">
+                        <!-- 分頁按鈕 -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 會員詳情 Modal -->
+<div class="modal fade" id="customerDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--primary-color); color: white;">
+                <h5 class="modal-title"><i class="fas fa-user me-2"></i>會員詳情</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- 會員資訊 -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">基本資訊</h6>
+                        <table class="table table-sm">
+                            <tr><th width="100">LINE 名稱</th><td id="detailLineName">-</td></tr>
+                            <tr><th>Email</th><td id="detailEmail">-</td></tr>
+                            <tr><th>顧客姓名</th><td id="detailCustomerName">-</td></tr>
+                            <tr><th>LINE User ID</th><td><code id="detailLineUserId">-</code></td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">快速操作</h6>
+                        <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="sendTestMessage()">
+                            <i class="fas fa-paper-plane me-1"></i>發送測試訊息
+                        </button>
+                        <button class="btn btn-outline-info btn-sm w-100" onclick="viewCustomerOrders()">
+                            <i class="fas fa-shopping-cart me-1"></i>查看訂單紀錄
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 訂單紀錄 -->
+                <h6 class="text-muted">相關訂單</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>訂單編號</th>
+                                <th>日期</th>
+                                <th>狀態</th>
+                                <th>金額</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerOrdersBody">
+                            <tr><td colspan="4" class="text-center text-muted">暫無訂單</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==========================================
+// 客戶管理 JavaScript
+// ==========================================
+
+let allCustomers = [];
+let filteredCustomers = [];
+let currentPage = 1;
+const pageSize = 20;
+let currentCustomer = null;
+
+// 載入會員綁定列表
+async function loadCustomerBindings() {
+    try {
+        document.getElementById('customersTableBody').innerHTML = 
+            '<tr><td colspan="6" class="text-center"><div class="spinner-border spinner-border-sm"></div> 載入中...</td></tr>';
+        
+        const response = await fetch(`${API_BASE}?action=getCustomerBindings`);
+        const result = await response.json();
+        
+        if (result.success) {
+            allCustomers = result.data;
+            filteredCustomers = [...allCustomers];
+            updateStats();
+            renderCustomersTable();
+        } else {
+            showToast('載入失敗: ' + result.error, 'error');
+        }
+    } catch (error) {
+        console.error('載入會員列表失敗:', error);
+        showToast('載入失敗', 'error');
+    }
+}
+
+// 更新統計
+function updateStats() {
+    const total = allCustomers.length;
+    const bound = allCustomers.filter(c => c.lineUserId).length;
+    const unbound = total - bound;
+    
+    document.getElementById('totalBindings').textContent = total;
+    document.getElementById('boundCount').textContent = bound;
+    document.getElementById('unboundCount').textContent = unbound;
+}
+
+// 篩選會員
+function filterCustomers() {
+    const search = document.getElementById('customerSearch').value.toLowerCase();
+    const bindingFilter = document.getElementById('bindingFilter').value;
+    
+    filteredCustomers = allCustomers.filter(c => {
+        // 搜尋過濾
+        const matchSearch = !search || 
+            (c.email && c.email.toLowerCase().includes(search)) ||
+            (c.lineDisplayName && c.lineDisplayName.toLowerCase().includes(search)) ||
+            (c.customerName && c.customerName.toLowerCase().includes(search));
+        
+        // 綁定狀態過濾
+        let matchBinding = true;
+        if (bindingFilter === 'bound') {
+            matchBinding = !!c.lineUserId;
+        } else if (bindingFilter === 'unbound') {
+            matchBinding = !c.lineUserId;
+        }
+        
+        return matchSearch && matchBinding;
+    });
+    
+    currentPage = 1;
+    renderCustomersTable();
+}
+
+// 渲染會員表格
+function renderCustomersTable() {
+    const tbody = document.getElementById('customersTableBody');
+    
+    if (filteredCustomers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">沒有找到符合條件的會員</td></tr>';
+        updatePagination();
+        return;
+    }
+    
+    // 分頁
+    const start = (currentPage - 1) * pageSize;
+    const end = Math.min(start + pageSize, filteredCustomers.length);
+    const pageData = filteredCustomers.slice(start, end);
+    
+    tbody.innerHTML = pageData.map(c => `
+        <tr>
+            <td>
+                ${c.lineDisplayName 
+                    ? `<span class="badge bg-success me-1"><i class="fab fa-line"></i></span>${c.lineDisplayName}` 
+                    : '<span class="text-muted">-</span>'}
+            </td>
+            <td>${c.email || '-'}</td>
+            <td>${c.customerName || '-'}</td>
+            <td><code>${c.esOrderNo || '-'}</code></td>
+            <td>
+                ${c.lineUserId 
+                    ? '<span class="badge bg-success">已綁定</span>' 
+                    : '<span class="badge bg-secondary">未綁定</span>'}
+            </td>
+            <td>
+                <button class="btn btn-sm btn-outline-info" onclick="showCustomerDetail('${c.esOrderNo}')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+    
+    // 更新分頁資訊
+    document.getElementById('showingFrom').textContent = start + 1;
+    document.getElementById('showingTo').textContent = end;
+    document.getElementById('totalRecords').textContent = filteredCustomers.length;
+    
+    updatePagination();
+}
+
+// 更新分頁
+function updatePagination() {
+    const totalPages = Math.ceil(filteredCustomers.length / pageSize);
+    const pagination = document.getElementById('pagination');
+    
+    if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
+    
+    let html = '';
+    
+    // 上一頁
+    html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">«</a>
+    </li>`;
+    
+    // 頁碼
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>
+            </li>`;
+        } else if (i === currentPage - 3 || i === currentPage + 3) {
+            html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+    }
+    
+    // 下一頁
+    html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="goToPage(${currentPage + 1})">»</a>
+    </li>`;
+    
+    pagination.innerHTML = html;
+}
+
+// 跳轉頁面
+function goToPage(page) {
+    const totalPages = Math.ceil(filteredCustomers.length / pageSize);
+    if (page < 1 || page > totalPages) return;
+    currentPage = page;
+    renderCustomersTable();
+}
+
+// 顯示會員詳情
+function showCustomerDetail(orderNo) {
+    currentCustomer = allCustomers.find(c => c.esOrderNo === orderNo);
+    if (!currentCustomer) return;
+    
+    document.getElementById('detailLineName').textContent = currentCustomer.lineDisplayName || '-';
+    document.getElementById('detailEmail').textContent = currentCustomer.email || '-';
+    document.getElementById('detailCustomerName').textContent = currentCustomer.customerName || '-';
+    document.getElementById('detailLineUserId').textContent = currentCustomer.lineUserId || '-';
+    
+    new bootstrap.Modal(document.getElementById('customerDetailModal')).show();
+}
+
+// 發送測試訊息
+async function sendTestMessage() {
+    if (!currentCustomer || !currentCustomer.lineUserId) {
+        showToast('此會員未綁定 LINE', 'error');
+        return;
+    }
+    
+    if (!confirm('確定要發送測試訊息嗎？')) return;
+    
+    try {
+        const params = new URLSearchParams({
+            action: 'sendSimpleLinePush',
+            userId: currentCustomer.lineUserId,
+            message: '這是一則測試訊息！您的 LINE 已成功綁定。'
+        });
+        
+        const response = await fetch(`${API_BASE}?${params}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast('測試訊息已發送', 'success');
+        } else {
+            showToast('發送失敗: ' + result.error, 'error');
+        }
+    } catch (error) {
+        showToast('發送失敗', 'error');
+    }
+}
+
+// 查看顧客訂單
+async function viewCustomerOrders() {
+    if (!currentCustomer) return;
+    
+    // TODO: 實作訂單查詢
+    showToast('功能開發中', 'warning');
+}
+
+// 初始化：切換到客戶管理時載入資料
+document.querySelector('[data-page="customers"]').addEventListener('click', function() {
+    loadCustomerBindings();
+});
+</script>

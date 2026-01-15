@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>採購控制塔＋倉儲物流整合系統</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* --- 核心變數設定 --- */
+    :root {
+      --primary-color: #C9915D; /* 經典銅金色 */
+      --pop-blue: #4A90E2;      /* 普普風配角：活力藍 */
+      --pop-red: #FF6B6B;       /* 普普風配角：熱情紅 */
+      --pop-yellow: #FFE66D;    /* 普普風配角：亮眼黃 */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+      
+      /* --- Retro Pop 背景核心 --- */
+      background-color: var(--primary-color); 
+      /* 圓點背景圖案 */
+      background-image: radial-gradient(#fff 20%, transparent 20%);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+      color: #000;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* --- 標題區塊 --- */
+    .header {
+      background: #fff;
+      padding: 40px;
+      margin-bottom: 40px;
+      border-radius: 20px;
+      
+      /* 經典的粗黑框與硬陰影 */
+      border: 4px solid #000;
+      box-shadow: 10px 10px 0 #000;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-weight: 900;
+      color: #000;
+      font-size: 32px;
+      margin-bottom: 10px;
+      /* 文字描邊效果，增加漫畫感 */
+      -webkit-text-stroke: 1px #000; 
+      letter-spacing: 1px;
+    }
+    
+    .header p {
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      background: #eee;
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 50px;
+      border: 2px solid #000;
+    }
+    
+    /* --- 導航網格佈局 --- */
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px; /* 增加間距讓陰影不重疊 */
+      padding: 10px;
+    }
+    
+    /* --- 卡片設計 --- */
+    .nav-card {
+      background: #fff;
+      padding: 30px;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      color: #000;
+      position: relative;
+      
+      /* 復古普普風特徵 */
+      border: 4px solid #000;
+      border-radius: 20px;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.8);
+      transition: all 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    /* Hover 互動效果 */
+    .nav-card:hover {
+      transform: translate(4px, 4px); /* 按下去的效果 */
+      box-shadow: 0 0 0 #000; /* 陰影消失 */
+      background: #FFF8E7;    /* 微微變黃 */
+    }
+    
+    /* --- Icon 設計 --- */
+    .nav-card-icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+      color: #fff;
+      width: 100%;
+      height: 80px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #000;
+      
+      /* 預設背景 */
+      background: #000;
+    }
+    
+    /* 自動輪替顏色 (奇數藍色，偶數紅色) */
+    .nav-card:nth-child(odd) .nav-card-icon {
+      background: var(--pop-blue);
+    }
+    .nav-card:nth-child(even) .nav-card-icon {
+      background: var(--pop-red);
+    }
+    
+    /* 若有「新功能」徽章，Icon 改用品牌色 */
+    .nav-card:has(.badge-new) .nav-card-icon {
+      background: var(--primary-color) !important;
+    }
+    
+    .nav-card-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #000;
+      margin-bottom: 10px;
+    }
+    
+    .nav-card-desc {
+      font-size: 15px;
+      color: #333;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+    
+    /* --- 徽章設計 --- */
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: auto; /* 推到底部 */
+      width: fit-content;
+      
+      /* 普普風徽章 */
+      border: 3px solid #000;
+      background: #fff;
+      color: #000;
+      border-radius: 50px;
+      box-shadow: 3px 3px 0 #000;
+    }
+    
+    .badge-new {
+      background: var(--pop-yellow);
+    }
+    
+    .badge-important {
+      background: var(--pop-red);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏢 採購控制塔＋倉儲物流整合系統</h1>
+      <p>日本代購業務全流程管理平台</p>
+    </div>
+    
+    <div class="nav-grid">
+      <a href="<?= appUrl ?>?page=detailed-order-query" class="nav-card" target="_top">
+        <div class="nav-card-icon">🔍</div>
+        <div class="nav-card-title">詳細訂單查詢</div>
+        <div class="nav-card-desc">
+          輸入單號查詢詳細資料、採購狀態、裝箱資訊
+        </div>
+        <span class="badge badge-new">新功能</span>
+      </a>
+
+      <a href="<?= appUrl ?>?page=notification-manager" class="nav-card" target="_top">
+        <div class="nav-card-icon">🔔</div>
+        <div class="nav-card-title">通知管理</div>
+        <div class="nav-card-desc">
+          查看待發送通知、預覽訊息內容、確認發送
+        </div>
+        <span class="badge badge-important">重要</span>
+      </a>
+      
+      <a href="<?= appUrl ?>?page=control-tower" class="nav-card" target="_top">
+        <div class="nav-card-icon">🏰</div>
+        <div class="nav-card-title">採購控制塔 - 統一管理</div>
+        <div class="nav-card-desc">
+          訂單匯入、批次管理、ECOUNT匯出、採購追蹤一站式管理
+        </div>
+        <span class="badge badge-new">全新功能</span>
+      </a>
+      
+
+      <a href="<?= appUrl ?>?page=batch-management" class="nav-card" target="_top">
+        <div class="nav-card-icon">📦</div>
+        <div class="nav-card-title">批次管理</div>
+        <div class="nav-card-desc">
+          建立採購批次、查看批次內容、匯出採購單（含訂單摘要）
+        </div>
+      </a>
+      
+      <a href="<?= appUrl ?>?page=batch-download" class="nav-card" target="_top">
+        <div class="nav-card-icon">📥</div>
+        <div class="nav-card-title">批量下載採購單</div>
+        <div class="nav-card-desc">
+          依時間範圍篩選批次，批量下載 ECOUNT 採購單 Excel
+        </div>
+        <span class="badge badge-new">新功能</span>
+      </a>
+      
+      <a href="<?= appUrl ?>?page=shipment-management" class="nav-card" target="_top">
+        <div class="nav-card-icon">🚢</div>
+        <div class="nav-card-title">箱號管理</div>
+        <div class="nav-card-desc">
+          建立箱號、管理箱內商品、追蹤物流狀態
+        </div>
+      </a>
+      
+      <a href="<?= appUrl ?>?page=japan-packing" class="nav-card" target="_top">
+        <div class="nav-card-icon">📦</div>
+        <div class="nav-card-title">日本裝箱管理</div>
+        <div class="nav-card-desc">
+          輸入日本訂單號、選擇商品裝箱、自動生成箱號、標記寄出
+        </div>
+        <span class="badge badge-new">新功能</span>
+      </a>
+      
+      <a href="<?= appUrl ?>?page=taiwan-picking" class="nav-card" target="_top">
+        <div class="nav-card-icon">📋</div>
+        <div class="nav-card-title">台灣揀貨查詢</div>
+        <div class="nav-card-desc">
+          輸入箱號查詢內容物、顯示明細、標記揀貨完成
+        </div>
+        <span class="badge badge-new">新功能</span>
+      </a>
+      
+      <a href="<?= appUrl ?>?page=picking-view" class="nav-card" target="_top">
+        <div class="nav-card-icon">✅</div>
+        <div class="nav-card-title">揀貨檢視</div>
+        <div class="nav-card-desc">
+          掃描條碼、確認品項、完成揀貨
+        </div>
+        <span class="badge badge-important">重要</span>
+      </a>
+      
+
+      <a href="<?= appUrl ?>?page=oos-management" class="nav-card" target="_top">
+        <div class="nav-card-icon">⚠️</div>
+        <div class="nav-card-title">缺貨通知管理</div>
+        <div class="nav-card-desc">
+          查看缺貨訂單、標記已通知、填寫備註
+        </div>
+      </a>
+
+      <a href="<?= appUrl ?>?page=preorder-management" class="nav-card" target="_top">
+        <div class="nav-card-icon">📅</div>
+        <div class="nav-card-title">預購通知管理</div>
+        <div class="nav-card-desc">
+          查看預購訂單、確認預購月份/旬、標記已通知
+        </div>
+      </a>
+      
+      <a href="<?= appUrl ?>?page=notification-log" class="nav-card" target="_top">
+        <div class="nav-card-icon">📱</div>
+        <div class="nav-card-title">通知紀錄查詢</div>
+        <div class="nav-card-desc">
+          查看 LINE 推播紀錄、追蹤通知狀態
+        </div>
+      </a>
+    </div>
+    
+  </div>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

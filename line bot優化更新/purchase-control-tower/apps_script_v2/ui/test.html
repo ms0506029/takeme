@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8">
+  <title>測試頁面</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .btn {
+      padding: 10px 20px;
+      background: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✅ 測試頁面載入成功！</h1>
+    <p>如果您能看到這個頁面，表示 Web App 部署正常。</p>
+    <p>當前時間：<span id="time"></span></p>
+    
+    <h2>診斷資訊</h2>
+    <ul>
+      <li>✅ HTML 檔案可以正常載入</li>
+      <li>✅ JavaScript 可以正常執行</li>
+      <li>✅ CSS 樣式可以正常套用</li>
+    </ul>
+    
+    <a href="<?= appUrl ?>" class="btn" target="_top">← 回主選單</a>
+    <button class="btn" onclick="testAPI()">測試 API 連線</button>
+    
+    <div id="result" style="margin-top: 20px;"></div>
+  </div>
+  
+  <script>
+    // 顯示時間
+    document.getElementById('time').textContent = new Date().toLocaleString('zh-TW');
+    
+    // 回主選單
+    function goHome() {
+      window.top.location.href = window.location.href.split('?')[0];
+    }
+    
+    // 測試 API
+    function testAPI() {
+      document.getElementById('result').innerHTML = '🔄 測試中...';
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          document.getElementById('result').innerHTML = `
+            <h3 style="color: green;">✅ API 連線成功！</h3>
+            <p>返回結果：${JSON.stringify(result)}</p>
+          `;
+        })
+        .withFailureHandler(function(error) {
+          document.getElementById('result').innerHTML = `
+            <h3 style="color: red;">❌ API 連線失敗</h3>
+            <p>錯誤訊息：${error.message}</p>
+          `;
+        })
+        .apiGetWebAppUrl();
+    }
+  </script>
+</body>
+</html>

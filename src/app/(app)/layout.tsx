@@ -107,7 +107,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           {/* 頂部公告列 */}
           <AnnouncementBar settings={siteSettings.announcementBar} />
 
-          <ScrapbookHeader />
+          <ScrapbookHeader siteName={siteSettings.siteName} />
           <main>{children}</main>
           <Footer />
         </Providers>

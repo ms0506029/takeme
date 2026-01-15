@@ -4,6 +4,8 @@ import { Heart, Search, ShoppingBag, User } from 'lucide-react'
 import Link from 'next/link'
 
 export interface ScrapbookHeaderProps {
+  /** 網站名稱 (從後台讀取) */
+  siteName?: string
   /** 公告條文字 */
   announcementText?: string
   /** 導航項目 */
@@ -24,6 +26,7 @@ export interface ScrapbookHeaderProps {
  * - Sticky + 毛玻璃效果
  */
 export function ScrapbookHeader({
+  siteName = 'Daytona Park',
   announcementText = 'FREE SHIPPING ON ORDERS OVER $100',
   navItems = [
     { label: 'MEN', href: '/shop/men' },
@@ -47,9 +50,10 @@ export function ScrapbookHeader({
 
       {/* 主 Header 列 - 毛玻璃效果 */}
       <div className="bg-scrapbook-bg-light/80 backdrop-blur-md border-b border-scrapbook-muted-light">
-        <div className="container flex items-center justify-between py-4">
+        {/* 主 Header 列內容 - 使用 relative + absolute 實現真正置中 */}
+        <div className="container relative flex items-center py-4">
           {/* 左側：搜尋框 */}
-          <div className="flex-1 max-w-xs">
+          <div className="w-64 max-w-xs">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-scrapbook-fg-light/50" />
               <input
@@ -60,17 +64,17 @@ export function ScrapbookHeader({
             </div>
           </div>
 
-          {/* 中央：Logo */}
-          <div className="flex-1 text-center">
+          {/* 中央：Logo - 使用 absolute 實現真正水平置中 */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <Link href="/" className="inline-block">
-              <h1 className="font-display text-2xl md:text-3xl font-bold text-scrapbook-primary tracking-wide">
-                Daytona Park
+              <h1 className="font-display text-2xl md:text-3xl font-bold text-scrapbook-primary tracking-wide whitespace-nowrap">
+                {siteName}
               </h1>
             </Link>
           </div>
 
           {/* 右側：圖示 */}
-          <div className="flex-1 flex items-center justify-end gap-4">
+          <div className="ml-auto flex items-center gap-4">
             <button
               aria-label="Wishlist"
               className="p-2 hover:text-scrapbook-primary transition-colors"

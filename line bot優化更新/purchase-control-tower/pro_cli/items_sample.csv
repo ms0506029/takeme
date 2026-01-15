@@ -1,0 +1,5 @@
+supplier_key,date,sku,name,spec,qty,unit_price,es_order_no,jp_order_no,jp_waybill
+freak-j,20251021,SKU-1001,針織上衣,奶茶/FREE,2,,ES-0001,,
+freak-j,20251021,SKU-1002,長裙,黑/M,1,,ES-0001,,
+zozo-h,20251021,SKU-2003,靴子,棕/24.5,1,,ES-0002,,
+

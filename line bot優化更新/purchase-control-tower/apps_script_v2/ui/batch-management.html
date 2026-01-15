@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批次管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #C9915D;
+            --pop-blue: #4A90E2;
+            --pop-red: #FF6B6B;
+            --pop-yellow: #FFE66D;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: var(--primary-color);
+            background-image: radial-gradient(#fff 20%, transparent 20%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            color: #000;
+            margin-bottom: 30px;
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0 #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+            font-weight: 900;
+            font-size: 28px;
+            color: #000;
+            -webkit-text-stroke: 0.5px #000;
+        }
+
+        .header p {
+            margin-bottom: 0;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .btn-primary {
+            background: var(--pop-blue);
+            border: 3px solid #000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-primary:hover {
+            background: #357ABD;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #000;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .btn-secondary:hover {
+            background: #fff;
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 #000;
+            color: #000;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 4px solid #000;
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .content-card h3 {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #000;
+            padding-bottom: 10px;
+        }
+
+        .table thead th {
+            background-color: #000;
+            color: #fff;
+            font-weight: 600;
+            border-bottom: 3px solid #000;
+        }
+
+        .export-result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 3px solid #000;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-boxes me-2"></i>批次管理</h1>
+                <p>建立採購批次、查看批次內容、匯出採購單</p>
+            </div>
+            <a href="<?= appUrl ?>" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>回主選單
+            </a>
+        </div>
+        
+        <div class="row">
+            <!-- 建立新批次 -->
+            <div class="col-md-6">
+                <div class="content-card">
+                    <h3><i class="fas fa-plus-circle me-2"></i>建立新批次</h3>
+                    <p class="text-muted mb-4">系統會將所有已勾選（SelectedForBatch = TRUE）且尚未分配批次的 Queue 行加入新批次</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">批次名稱（選填）：</label>
+                        <input type="text" id="batchName" class="form-control" placeholder="例如：2025-01-15 採購批次">
+                    </div>
+                    
+                    <button onclick="createBatch()" class="btn btn-primary w-100">
+                        <i class="fas fa-check me-2"></i>建立新批次
+                    </button>
+                </div>
+            </div>
+
+            <!-- 匯出批次 -->
+            <div class="col-md-6">
+                <div class="content-card">
+                    <h3><i class="fas fa-file-export me-2"></i>匯出批次（含訂單摘要）</h3>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">批次 ID：</label>
+                        <div class="input-group">
+                            <input type="text" id="exportBatchId" class="form-control" placeholder="例如：BATCH-1234567890">
+                            <button onclick="exportBatch()" class="btn btn-success text-white">
+                                <i class="fas fa-download me-2"></i>匯出 CSV
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="exportResult"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 查看批次內容 -->
+        <div class="content-card">
+            <h3><i class="fas fa-search me-2"></i>查看批次內容</h3>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" id="viewBatchId" class="form-control" placeholder="例如：BATCH-1234567890">
+                        <button onclick="viewBatch()" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>查看
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="batchContent" class="table-responsive"></div>
+        </div>
+    </div>
+    
+    <script>
+        function createBatch() {
+            const batchName = document.getElementById('batchName').value.trim();
+            
+            if (!confirm('確定要建立新批次嗎？\n系統會將所有已勾選的 Queue 行加入。')) {
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        alert(`✅ 批次建立成功！\n\n批次 ID：${result.batchId}\n包含品項數：${result.itemCount}`);
+                        document.getElementById('batchName').value = '';
+                    } else {
+                        alert('建立失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiCreateBatch(batchName);
+        }
+        
+        function viewBatch() {
+            const batchId = document.getElementById('viewBatchId').value.trim();
+            
+            if (!batchId) {
+                alert('請輸入批次 ID');
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        renderBatchContent(result.data);
+                    } else {
+                        alert('查詢失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiGetBatchItems(batchId);
+        }
+        
+        function renderBatchContent(items) {
+            const container = document.getElementById('batchContent');
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div class="alert alert-warning">此批次沒有品項</div>';
+                return;
+            }
+            
+            let html = '<table class="table table-hover"><thead><tr>';
+            html += '<th>訂單編號</th><th>商品名稱</th><th>SKU</th><th>顏色</th><th>尺寸</th><th>數量</th><th>單價</th>';
+            html += '</tr></thead><tbody>';
+            
+            items.forEach(item => {
+                const data = item.data;
+                html += `<tr>
+                    <td><span class="badge bg-secondary">${data.esOrderNo || '-'}</span></td>
+                    <td>${data.productName || '-'}</td>
+                    <td><small class="text-muted">${data.sku || '-'}</small></td>
+                    <td>${data.color || '-'}</td>
+                    <td>${data.size || '-'}</td>
+                    <td><strong>${data.qtyOrdered || 0}</strong></td>
+                    <td>${data.actualPurchasePrice || '-'}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            html += `<div class="mt-3 text-end text-muted">總計：<strong>${items.length}</strong> 個品項</div>`;
+            
+            container.innerHTML = html;
+        }
+        
+        function exportBatch() {
+            const batchId = document.getElementById('exportBatchId').value.trim();
+            
+            if (!batchId) {
+                alert('請輸入批次 ID');
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        displayExportResult(result.data, batchId);
+                    } else {
+                        alert('匯出失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiExportBatch(batchId);
+        }
+        
+        function displayExportResult(data, batchId) {
+            const container = document.getElementById('exportResult');
+            
+            // 轉換為 CSV
+            const csv = data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            
+            let html = '<div class="export-result">';
+            html += '<h4 class="text-success"><i class="fas fa-check-circle me-2"></i>匯出成功</h4>';
+            html += '<p>以下是匯出的資料（CSV 格式），您可以複製貼到 Excel：</p>';
+            html += `<textarea class="form-control mb-3" readonly style="height:200px;font-family:monospace;">${csv}</textarea>`;
+            html += `<button onclick="downloadCSV('${batchId}')" class="btn btn-success text-white">
+                <i class="fas fa-save me-2"></i>下載 CSV 檔案
+            </button>`;
+            html += '</div>';
+            
+            container.innerHTML = html;
+            
+            // 儲存資料供下載使用
+            window.exportData = csv;
+        }
+        
+        function downloadCSV(batchId) {
+            if (!window.exportData) return;
+            
+            const blob = new Blob(['\ufeff' + window.exportData], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `batch_${batchId}_${new Date().getTime()}.csv`;
+            link.click();
+        }
+        
+        function handleError(error) {
+            console.error(error);
+            alert('發生錯誤：' + error.message);
+        }
+    </script>
+</body>
+</html>

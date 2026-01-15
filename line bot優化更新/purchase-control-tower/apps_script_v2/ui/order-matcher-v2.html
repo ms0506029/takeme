@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單比對 v2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #C9915D;
+            --primary-hover: #B5824A;
+            --primary-light: #D4A776;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            background-color: #f5f6fa;
+            color: #2c3e50;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+            font-weight: 700;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin-bottom: 0;
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 145, 93, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+            padding: 25px;
+        }
+
+        .content-card h3 {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #666;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+        }
+
+        .allocation-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-search-plus me-2"></i>訂單比對 v2</h1>
+                <p>多訂單搜尋、到貨數量自動分配</p>
+            </div>
+            <a href="<?= appUrl ?>" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>回主選單
+            </a>
+        </div>
+        
+        <div class="content-card">
+            <h3><i class="fas fa-filter me-2"></i>搜尋未滿足的訂單</h3>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label">SKU：</label>
+                    <input type="text" id="searchSKU" class="form-control" placeholder="例如：PROD-001">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">顏色：</label>
+                    <input type="text" id="searchColor" class="form-control" placeholder="例如：白色">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">尺寸：</label>
+                    <input type="text" id="searchSize" class="form-control" placeholder="例如：M">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">商品名稱：</label>
+                    <input type="text" id="searchProductName" class="form-control" placeholder="關鍵字">
+                </div>
+            </div>
+            
+            <button onclick="searchOrders()" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i>搜尋
+            </button>
+        </div>
+        
+        <div id="resultsContainer" class="content-card" style="display: none;">
+            <h3><i class="fas fa-list-alt me-2"></i>搜尋結果</h3>
+            <p id="resultsSummary" class="text-muted mb-3"></p>
+            
+            <div class="table-responsive">
+                <table class="table table-hover" id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>訂單編號</th>
+                            <th>商品名稱</th>
+                            <th>SKU</th>
+                            <th>顏色</th>
+                            <th>尺寸</th>
+                            <th>訂購數</th>
+                            <th>已分配</th>
+                            <th>缺貨數</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody"></tbody>
+                </table>
+            </div>
+            
+            <div class="allocation-panel">
+                <h4 class="text-success mb-3"><i class="fas fa-magic me-2"></i>到貨分配工具</h4>
+                <p class="text-muted mb-3">輸入本次到貨數量，系統會依下單時間優先順序自動分配</p>
+                
+                <div class="row align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">本次到貨數量：</label>
+                        <input type="number" id="arrivedQty" class="form-control" placeholder="例如：10" min="1">
+                    </div>
+                    <div class="col-md-4">
+                        <button onclick="autoAllocate()" class="btn btn-success text-white">
+                            <i class="fas fa-check-circle me-2"></i>自動分配
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="allocationPreview" class="mt-4 p-3 bg-white rounded border" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let searchResults = [];
+        let allocationResult = null;
+        
+        function searchOrders() {
+            const criteria = {
+                sku: document.getElementById('searchSKU').value.trim(),
+                color: document.getElementById('searchColor').value.trim(),
+                size: document.getElementById('searchSize').value.trim(),
+                productName: document.getElementById('searchProductName').value.trim()
+            };
+            
+            if (!criteria.sku && !criteria.color && !criteria.size && !criteria.productName) {
+                alert('請至少輸入一個搜尋條件');
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        displayResults(result.data);
+                    } else {
+                        alert('搜尋失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiSearchUnfilledOrders(criteria);
+        }
+        
+        function displayResults(data) {
+            searchResults = data;
+            
+            document.getElementById('resultsContainer').style.display = 'block';
+            
+            const summary = document.getElementById('resultsSummary');
+            const totalRemaining = data.reduce((sum, item) => sum + item.remaining, 0);
+            summary.innerHTML = `找到 <strong>${data.length}</strong> 筆未滿足的訂單行，總缺貨數：<strong class="text-danger">${totalRemaining}</strong>`;
+            
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">沒有找到符合條件的訂單</td></tr>';
+                return;
+            }
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="badge bg-secondary">${item.esOrderNo}</span></td>
+                    <td>${item.productName || '-'}</td>
+                    <td><small class="text-muted">${item.sku}</small></td>
+                    <td>${item.color || '-'}</td>
+                    <td>${item.size || '-'}</td>
+                    <td>${item.qtyOrdered}</td>
+                    <td>${item.qtyAllocated}</td>
+                    <td><strong class="text-danger">${item.remaining}</strong></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function autoAllocate() {
+            const arrivedQty = parseInt(document.getElementById('arrivedQty').value);
+            
+            if (!arrivedQty || arrivedQty <= 0) {
+                alert('請輸入有效的到貨數量');
+                return;
+            }
+            
+            if (searchResults.length === 0) {
+                alert('請先搜尋訂單');
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        displayAllocationPreview(result);
+                    } else {
+                        alert('分配失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiAutoAllocate(searchResults, arrivedQty);
+        }
+        
+        function displayAllocationPreview(result) {
+            allocationResult = result;
+            
+            const preview = document.getElementById('allocationPreview');
+            preview.style.display = 'block';
+            
+            let html = '<h5 class="mb-3">📋 分配預覽</h5>';
+            html += `<div class="mb-3">
+                <span class="me-3">總到貨數：<strong>${document.getElementById('arrivedQty').value}</strong></span>
+                <span class="me-3">已分配：<strong>${result.allocations.length}</strong> 筆訂單</span>
+                <span>剩餘未分配：<strong class="${result.remainingQty > 0 ? 'text-danger' : 'text-success'}">${result.remainingQty}</strong></span>
+            </div>`;
+            
+            html += '<div class="table-responsive"><table class="table table-sm table-bordered"><thead><tr>';
+            html += '<th>訂單編號</th><th>商品</th><th>原已分配</th><th>本次分配</th><th>分配後</th>';
+            html += '</tr></thead><tbody>';
+            
+            result.allocations.forEach(item => {
+                html += `<tr>
+                    <td>${item.esOrderNo}</td>
+                    <td>${item.productName}</td>
+                    <td>${item.currentAllocated}</td>
+                    <td><strong class="text-success">+${item.allocateQty}</strong></td>
+                    <td>${item.newAllocated}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table></div>';
+            html += '<div class="mt-3">';
+            html += '<button onclick="commitAllocation()" class="btn btn-primary me-2"><i class="fas fa-save me-2"></i>確認寫入到 Queue</button>';
+            html += '<button onclick="cancelAllocation()" class="btn btn-secondary">取消</button>';
+            html += '</div>';
+            
+            preview.innerHTML = html;
+        }
+        
+        function commitAllocation() {
+            if (!allocationResult) return;
+            
+            if (!confirm(`確定要將分配結果寫入 Queue 表嗎？\n\n將影響 ${allocationResult.allocations.length} 筆訂單`)) {
+                return;
+            }
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        alert(`✅ 分配成功！已更新 ${result.affectedRows} 個 Queue 行`);
+                        document.getElementById('allocationPreview').style.display = 'none';
+                        searchOrders();  // 重新搜尋
+                    } else {
+                        alert('寫入失敗：' + result.error);
+                    }
+                })
+                .withFailureHandler(handleError)
+                .apiCommitAllocations(allocationResult.allocations);
+        }
+        
+        function cancelAllocation() {
+            document.getElementById('allocationPreview').style.display = 'none';
+            allocationResult = null;
+        }
+        
+        function handleError(error) {
+            console.error(error);
+            alert('發生錯誤：' + error.message);
+        }
+    </script>
+</body>
+</html>

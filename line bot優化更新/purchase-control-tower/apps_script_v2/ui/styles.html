@@ -1,0 +1,212 @@
+<style>
+  /* --- 核心變數設定 --- */
+  :root {
+    --primary-color: #C9915D; /* 經典銅金色 */
+    --pop-blue: #4A90E2;      /* 普普風配角：活力藍 */
+    --pop-red: #FF6B6B;       /* 普普風配角：熱情紅 */
+    --pop-yellow: #FFE66D;    /* 普普風配角：亮眼黃 */
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+    
+    /* --- Retro Pop 背景核心 --- */
+    background-color: var(--primary-color); 
+    /* 圓點背景圖案 */
+    background-image: radial-gradient(#fff 20%, transparent 20%);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    color: #000;
+  }
+  
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* --- 標題區塊 --- */
+  .header {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    
+    /* 粗黑框與硬陰影 */
+    border: 4px solid #000;
+    box-shadow: 8px 8px 0 #000;
+  }
+  
+  .header h1 {
+    color: #000;
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-weight: 900;
+    -webkit-text-stroke: 0.5px #000;
+  }
+  
+  .header p {
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .toolbar {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  /* --- 按鈕設計 --- */
+  .btn {
+    padding: 10px 20px;
+    border: 3px solid #000;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.1s;
+    text-decoration: none;
+    display: inline-block;
+    color: #000;
+    background: #fff;
+    box-shadow: 4px 4px 0 #000;
+  }
+  
+  .btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 #000;
+  }
+  
+  .btn-primary {
+    background: var(--pop-blue);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: #357ABD;
+    color: white;
+  }
+  
+  .btn-secondary {
+    background: #95a5a6;
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background: #7f8c8d;
+    color: white;
+  }
+  
+  .btn-success {
+    background: #4CAF50;
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background: #45a049;
+    color: white;
+  }
+  
+  /* --- 輸入框設計 --- */
+  .input-group {
+    margin: 15px 0;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #000;
+    font-size: 14px;
+  }
+  
+  .input-group input,
+  .input-group select,
+  .input-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 3px solid #000;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #fff;
+  }
+  
+  .input-group input:focus,
+  .input-group select:focus,
+  .input-group textarea:focus {
+    outline: none;
+    border-color: var(--pop-blue);
+    box-shadow: 3px 3px 0 var(--pop-blue);
+  }
+  
+  .input-group small {
+    display: block;
+    margin-top: 5px;
+    color: #000;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  /* --- 表格設計 --- */
+  .batch-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .batch-table th {
+    background: #000;
+    color: #fff;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 3px solid #000;
+    font-weight: bold;
+  }
+  
+  .batch-table td {
+    padding: 10px 12px;
+    border-bottom: 2px solid #000;
+    background: #fff;
+  }
+  
+  .batch-table tr:hover td {
+    background: #FFF8E7;
+  }
+  
+  /* --- Loading 狀態 --- */
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: #000;
+    background: white;
+    border-radius: 15px;
+    border: 4px solid #000;
+    box-shadow: 6px 6px 0 #000;
+    font-weight: bold;
+  }
+  
+  select {
+    cursor: pointer;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+</style>

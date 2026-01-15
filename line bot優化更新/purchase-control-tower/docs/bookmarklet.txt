@@ -1,0 +1,6 @@
+javascript:(()=>{const u=location.href.split('?')[0];
+const note=prompt('顏色/尺寸/數量(選填) 例: 奶茶/FREE/2'); if(note===null)return;
+fetch('https://script.google.com/macros/s/AKfycbypH6VK6EXq2-sqQhLBq2QKyeykHfx8Clzk0nj3A6AXboH_n4sXYYg202nfurQyXT2i/exec?action=markPurchased&url='+encodeURIComponent(u)+'&note='+encodeURIComponent(note),{mode:'no-cors'});
+alert('已送出：'+u);
+})();
+

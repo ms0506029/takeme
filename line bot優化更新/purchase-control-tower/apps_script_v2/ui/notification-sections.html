@@ -1,0 +1,277 @@
+<style>
+    .content-card {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+    .content-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        font-weight: bold;
+        color: #333;
+    }
+    .content-body {
+        padding: 20px;
+    }
+    .nav-tabs .nav-link {
+        color: #666;
+    }
+    .nav-tabs .nav-link.active {
+        color: #C9915D;
+        font-weight: bold;
+    }
+</style>
+
+<!-- 缺貨管理區塊 -->
+<div class="content-card mt-4">
+    <div class="content-header d-flex justify-content-between align-items-center">
+        <div><i class="fas fa-exclamation-circle me-2"></i>缺貨通知管理</div>
+        <button class="btn btn-sm btn-outline-secondary" onclick="refreshNotificationLists()">
+            <i class="fas fa-sync-alt"></i> 刷新
+        </button>
+    </div>
+    <div class="content-body">
+        <ul class="nav nav-tabs" id="oosTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="oos-unnotified-tab" data-bs-toggle="tab" data-bs-target="#oos-unnotified" type="button" role="tab">未通知</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="oos-notified-tab" data-bs-toggle="tab" data-bs-target="#oos-notified" type="button" role="tab">已通知</button>
+            </li>
+        </ul>
+        <div class="tab-content p-3 border border-top-0 rounded-bottom" id="oosTabContent">
+            <div class="tab-pane fade show active" id="oos-unnotified" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>訂單號</th>
+                                <th>商品</th>
+                                <th>SKU</th>
+                                <th>顏色/尺寸</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="oosUnnotifiedTable">
+                            <tr><td colspan="5" class="text-center">載入中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="oos-notified" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>訂單號</th>
+                                <th>商品</th>
+                                <th>通知時間</th>
+                                <th>備註</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="oosNotifiedTable">
+                            <tr><td colspan="5" class="text-center">載入中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 預購管理區塊 -->
+<div class="content-card mt-4">
+    <div class="content-header d-flex justify-content-between align-items-center">
+        <div><i class="fas fa-clock me-2"></i>預購通知管理</div>
+        <button class="btn btn-sm btn-outline-secondary" onclick="refreshNotificationLists()">
+            <i class="fas fa-sync-alt"></i> 刷新
+        </button>
+    </div>
+    <div class="content-body">
+        <ul class="nav nav-tabs" id="preTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pre-unnotified-tab" data-bs-toggle="tab" data-bs-target="#pre-unnotified" type="button" role="tab">未通知</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pre-notified-tab" data-bs-toggle="tab" data-bs-target="#pre-notified" type="button" role="tab">已通知</button>
+            </li>
+        </ul>
+        <div class="tab-content p-3 border border-top-0 rounded-bottom" id="preTabContent">
+            <div class="tab-pane fade show active" id="pre-unnotified" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>訂單號</th>
+                                <th>商品</th>
+                                <th>預購資訊</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preUnnotifiedTable">
+                            <tr><td colspan="4" class="text-center">載入中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pre-notified" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>訂單號</th>
+                                <th>商品</th>
+                                <th>預購資訊</th>
+                                <th>通知時間</th>
+                                <th>備註</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preNotifiedTable">
+                            <tr><td colspan="6" class="text-center">載入中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== 通知管理相關函數 ==========
+
+    function refreshNotificationLists() {
+        callAPI('getNotificationLists', {}, function(data) {
+            renderNotificationTables(data);
+        }, function(error) {
+            console.error('載入通知清單失敗:', error);
+        });
+    }
+
+    function renderNotificationTables(data) {
+        // 缺貨 - 未通知
+        const oosUnnotified = data.oos.filter(item => item.notifyStatus !== '已通知');
+        renderTable('oosUnnotifiedTable', oosUnnotified, item => `
+            <td>${item.esOrderNo}</td>
+            <td>${item.productName}</td>
+            <td>${item.sku}</td>
+            <td>${item.color} / ${item.size}</td>
+            <td>
+                <button class="btn btn-sm btn-success" onclick="updateNotifyStatus(${item.rowIndex}, '已通知')">
+                    <i class="fas fa-check"></i> 已通知
+                </button>
+            </td>
+        `);
+
+        // 缺貨 - 已通知
+        const oosNotified = data.oos.filter(item => item.notifyStatus === '已通知');
+        renderTable('oosNotifiedTable', oosNotified, item => `
+            <td>${item.esOrderNo}</td>
+            <td>${item.productName}</td>
+            <td>${formatDate(item.notifyAt)}</td>
+            <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.notifyNote || ''}" 
+                       onchange="updateNotifyNote(${item.rowIndex}, this.value)"
+                       placeholder="填寫備註...">
+            </td>
+            <td>
+                <button class="btn btn-sm btn-outline-secondary" onclick="updateNotifyStatus(${item.rowIndex}, '')">
+                    <i class="fas fa-undo"></i> 重置
+                </button>
+            </td>
+        `);
+
+        // 預購 - 未通知
+        const preUnnotified = data.preOrder.filter(item => item.notifyStatus !== '已通知');
+        renderTable('preUnnotifiedTable', preUnnotified, item => `
+            <td>${item.esOrderNo}</td>
+            <td>${item.productName}</td>
+            <td>${item.expectedShipMonth || ''} ${item.expectedShipTen || ''}</td>
+            <td>
+                <button class="btn btn-sm btn-success" onclick="updateNotifyStatus(${item.rowIndex}, '已通知')">
+                    <i class="fas fa-check"></i> 已通知
+                </button>
+            </td>
+        `);
+
+        // 預購 - 已通知
+        const preNotified = data.preOrder.filter(item => item.notifyStatus === '已通知');
+        renderTable('preNotifiedTable', preNotified, item => `
+            <td>${item.esOrderNo}</td>
+            <td>${item.productName}</td>
+            <td>${item.expectedShipMonth || ''} ${item.expectedShipTen || ''}</td>
+            <td>${formatDate(item.notifyAt)}</td>
+            <td>
+                <input type="text" class="form-control form-control-sm" 
+                       value="${item.notifyNote || ''}" 
+                       onchange="updateNotifyNote(${item.rowIndex}, this.value)"
+                       placeholder="填寫備註...">
+            </td>
+            <td>
+                <button class="btn btn-sm btn-outline-secondary" onclick="updateNotifyStatus(${item.rowIndex}, '')">
+                    <i class="fas fa-undo"></i> 重置
+                </button>
+            </td>
+        `);
+    }
+
+    function renderTable(elementId, items, rowRenderer) {
+        const tbody = document.getElementById(elementId);
+        if (!items || items.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">無資料</td></tr>';
+            return;
+        }
+        tbody.innerHTML = items.map(item => `<tr>${rowRenderer(item)}</tr>`).join('');
+    }
+
+    function updateNotifyStatus(rowIndex, status) {
+        callAPI('updateNotification', { rowIndexes: [rowIndex], status: status }, function() {
+            refreshNotificationLists();
+        });
+    }
+
+    function updateNotifyNote(rowIndex, note) {
+        callAPI('updateNotification', { rowIndexes: [rowIndex], note: note }, function() {
+            console.log('備註已更新');
+        });
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        return d.toLocaleString('zh-TW', { hour12: false });
+    }
+
+    // API 呼叫輔助函數 (如果 index.html 沒有定義的話)
+    function callAPI(action, data, successCallback, errorCallback) {
+        console.log(`[callAPI] 調用: ${action}`, data);
+        google.script.run
+            .withSuccessHandler(function(result) {
+                if (typeof result === 'string') {
+                    try { result = JSON.parse(result); } catch (e) { console.error(e); }
+                }
+                if (result && result.success) {
+                    if (successCallback) successCallback(result.data || result);
+                } else {
+                    const errorMsg = result ? (result.error || '未知錯誤') : '伺服器無回應';
+                    if (errorCallback) errorCallback(errorMsg);
+                    else alert('錯誤：' + errorMsg);
+                }
+            })
+            .withFailureHandler(function(error) {
+                if (errorCallback) errorCallback(error.message);
+                else alert('連線失敗：' + error.message);
+            })
+            .apiHandler({action: action, data: data});
+    }
+
+    // 頁面載入時初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        refreshNotificationLists();
+    });
+</script>

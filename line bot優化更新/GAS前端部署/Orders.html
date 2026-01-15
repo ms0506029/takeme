@@ -1,0 +1,80 @@
+<!-- 訂單管理頁面 -->
+<div id="ordersContent" class="page-content" style="display: none;">
+    <!-- 過濾器 -->
+    <div class="filter-section">
+        <div class="filter-group">
+            <div class="form-group me-3">
+                <label class="form-label">狀態篩選</label>
+                <select class="form-select" id="orderStatus" onchange="applyOrderFilters()">
+                    <option value="">全部狀態</option>
+                    <option value="pending">待購買/處理中</option>
+                    <option value="purchased">已購買</option>
+                    <option value="shipped">供應商已出貨</option>
+                    <option value="arrived">已到日本</option>
+                    <option value="boxed">已入箱</option>
+                    <option value="twshipped">已寄回台灣</option>
+                    <option value="delivered">已出貨</option>
+                    <option value="oos">缺貨</option>
+                </select>
+            </div>
+            <div class="form-group me-3">
+                <label class="form-label">日期範圍</label>
+                <input type="date" class="form-control" id="dateFrom" onchange="applyOrderFilters()">
+            </div>
+            <div class="form-group me-3">
+                <label class="form-label">至</label>
+                <input type="date" class="form-control" id="dateTo" onchange="applyOrderFilters()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">搜尋</label>
+                <input type="text" class="form-control" id="orderSearch" 
+                       placeholder="訂單編號或客戶名稱" onkeyup="debounceSearch()">
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量操作 -->
+    <div class="bulk-actions">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="selectAllOrders" 
+                           onchange="toggleSelectAllOrders()">
+                    <label class="form-check-label" for="selectAllOrders">全選</label>
+                </div>
+            </div>
+            <div class="col-md-8 text-end">
+                <button class="btn btn-sm btn-outline-primary" onclick="refreshOrders()">
+                    <i class="fas fa-sync-alt me-1"></i>重新整理
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 訂單表格 -->
+    <div class="content-card">
+        <div class="content-header">
+            <h5 class="mb-0"><i class="fas fa-list me-2"></i>訂單列表（含 Queue 狀態）</h5>
+        </div>
+        <div class="content-body p-0">
+            <div class="table-responsive">
+                <table class="orders-table table mb-0">
+                    <thead>
+                        <tr>
+                            <th width="50px"><input type="checkbox" class="form-check-input"></th>
+                            <th>訂單編號</th>
+                            <th>客戶姓名</th>
+                            <th>商品數</th>
+                            <th>整體狀態</th>
+                            <th>訂單日期</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <tr><td colspan="7" class="text-center text-muted">載入中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
