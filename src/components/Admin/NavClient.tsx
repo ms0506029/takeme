@@ -263,8 +263,8 @@ export const NavClient: React.FC = () => {
           <NavLink href="/admin/globals/footer">
             頁尾設定
           </NavLink>
-          <NavLink href="/admin/globals/site-settings">
-            全站設定
+          <NavLink href="/admin/globals/siteSettings">
+            網站設定
           </NavLink>
           <NavLink href="/admin/globals/tracking-scripts">
             追蹤代碼
