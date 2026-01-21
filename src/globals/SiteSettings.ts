@@ -267,6 +267,119 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
 
+    // ====== 購物車與運費設定 ======
+    {
+      type: 'collapsible',
+      label: '購物車與運費設定',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: 'cartSettings',
+          type: 'group',
+          label: '',
+          fields: [
+            // 免運門檻
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'freeShippingEnabled',
+                  type: 'checkbox',
+                  label: '啟用免運門檻',
+                  defaultValue: true,
+                  admin: {
+                    width: '30%',
+                  },
+                },
+                {
+                  name: 'freeShippingThreshold',
+                  type: 'number',
+                  label: '免運門檻 (TWD)',
+                  defaultValue: 3000,
+                  min: 0,
+                  admin: {
+                    width: '35%',
+                    condition: (data) => data?.cartSettings?.freeShippingEnabled,
+                    description: '消費滿此金額享免運',
+                  },
+                },
+                {
+                  name: 'defaultShippingFee',
+                  type: 'number',
+                  label: '基本運費 (TWD)',
+                  defaultValue: 60,
+                  min: 0,
+                  admin: {
+                    width: '35%',
+                    description: '未達免運門檻時的運費',
+                  },
+                },
+              ],
+            },
+            // 免運提示文字
+            {
+              name: 'freeShippingMessage',
+              type: 'text',
+              label: '即將免運提示',
+              defaultValue: '再買 {amount} 即可免運！',
+              admin: {
+                condition: (data) => data?.cartSettings?.freeShippingEnabled,
+                description: '使用 {amount} 代表剩餘金額',
+              },
+            },
+            {
+              name: 'freeShippingAchievedMessage',
+              type: 'text',
+              label: '已達免運提示',
+              defaultValue: '🎉 恭喜！您已符合免運資格',
+              admin: {
+                condition: (data) => data?.cartSettings?.freeShippingEnabled,
+              },
+            },
+            // 購物車空狀態
+            {
+              type: 'collapsible',
+              label: '購物車空狀態設定',
+              admin: {
+                initCollapsed: true,
+              },
+              fields: [
+                {
+                  name: 'emptyCartTitle',
+                  type: 'text',
+                  label: '空購物車標題',
+                  defaultValue: '購物車內沒有商品',
+                },
+                {
+                  name: 'emptyCartButtonText',
+                  type: 'text',
+                  label: '繼續購物按鈕文字',
+                  defaultValue: '繼續購物',
+                },
+                {
+                  name: 'showRecentlyViewed',
+                  type: 'checkbox',
+                  label: '顯示最近瀏覽商品',
+                  defaultValue: true,
+                },
+                {
+                  name: 'recentlyViewedTitle',
+                  type: 'text',
+                  label: '最近瀏覽區塊標題',
+                  defaultValue: '您最近瀏覽的商品',
+                  admin: {
+                    condition: (data) => data?.cartSettings?.showRecentlyViewed,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+
     // ====== 公告跑馬燈 ======
     {
       type: 'collapsible',
