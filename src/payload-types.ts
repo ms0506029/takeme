@@ -2943,6 +2943,26 @@ export interface SiteSetting {
      */
     ogImage?: (string | null) | Media;
   };
+  cartSettings?: {
+    freeShippingEnabled?: boolean | null;
+    /**
+     * 消費滿此金額享免運
+     */
+    freeShippingThreshold?: number | null;
+    /**
+     * 未達免運門檻時的運費
+     */
+    defaultShippingFee?: number | null;
+    /**
+     * 使用 {amount} 代表剩餘金額
+     */
+    freeShippingMessage?: string | null;
+    freeShippingAchievedMessage?: string | null;
+    emptyCartTitle?: string | null;
+    emptyCartButtonText?: string | null;
+    showRecentlyViewed?: boolean | null;
+    recentlyViewedTitle?: string | null;
+  };
   announcementBar?: {
     enabled?: boolean | null;
     text?: string | null;
@@ -3197,6 +3217,19 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         defaultTitle?: T;
         defaultDescription?: T;
         ogImage?: T;
+      };
+  cartSettings?:
+    | T
+    | {
+        freeShippingEnabled?: T;
+        freeShippingThreshold?: T;
+        defaultShippingFee?: T;
+        freeShippingMessage?: T;
+        freeShippingAchievedMessage?: T;
+        emptyCartTitle?: T;
+        emptyCartButtonText?: T;
+        showRecentlyViewed?: T;
+        recentlyViewedTitle?: T;
       };
   announcementBar?:
     | T

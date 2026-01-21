@@ -1,5 +1,4 @@
-import type { Category, Product, VariantOption, VariantType } from '@/payload-types'
-import type { Media } from '@/payload-types'
+import type { Category, Media, Product, VariantType } from '@/payload-types'
 import { RequiredDataFromCollectionSlug } from 'payload'
 
 type ProductArgs = {
@@ -8,6 +7,7 @@ type ProductArgs = {
   variantTypes: VariantType[]
   categories: Category[]
   relatedProducts: Product[]
+  vendor?: number | string
 }
 
 export const productHatData: (args: ProductArgs) => RequiredDataFromCollectionSlug<'products'> = ({
@@ -16,7 +16,9 @@ export const productHatData: (args: ProductArgs) => RequiredDataFromCollectionSl
   metaImage,
   variantTypes,
   categories,
+  vendor,
 }) => {
+
   return {
     meta: {
       title: 'Hat | Payload Ecommerce Template',
@@ -64,5 +66,7 @@ export const productHatData: (args: ProductArgs) => RequiredDataFromCollectionSl
     priceInUSDEnabled: true,
     priceInUSD: 2500,
     relatedProducts: relatedProducts,
+    vendor: vendor || undefined,
   }
 }
+

@@ -8,6 +8,7 @@ type ProductArgs = {
   variantTypes: VariantType[]
   categories: Category[]
   relatedProducts: Product[]
+  vendor?: number | string
 }
 
 export const productTshirtData: (
@@ -19,7 +20,9 @@ export const productTshirtData: (
   contentImage,
   variantTypes,
   categories,
+  vendor,
 }) => {
+
   return {
     enableVariants: true,
     variantTypes: variantTypes,
@@ -1172,8 +1175,10 @@ export const productTshirtData: (
     priceInUSDEnabled: true,
     priceInUSD: 4999,
     relatedProducts: relatedProducts,
+    vendor: vendor || undefined,
   }
 }
+
 
 type ProductVariantArgs = {
   product: Product

@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import type { Product, Variant } from '@/payload-types'
 
+import { useCartDrawer } from '@/components/Cart/CartDrawer'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import clsx from 'clsx'
 import { useSearchParams } from 'next/navigation'
@@ -14,6 +15,7 @@ type Props = {
 
 export function AddToCart({ product }: Props) {
   const { addItem, cart, isLoading } = useCart()
+  const { openCart } = useCartDrawer()
   const searchParams = useSearchParams()
 
   const variants = product.variants?.docs || []
@@ -45,10 +47,12 @@ export function AddToCart({ product }: Props) {
         product: product.id,
         variant: selectedVariant?.id ?? undefined,
       }).then(() => {
-        toast.success('Item added to cart.')
+        toast.success('商品已加入購物車')
+        // 加入成功後自動開啟 CartDrawer
+        openCart()
       })
     },
-    [addItem, product, selectedVariant],
+    [addItem, product, selectedVariant, openCart],
   )
 
   const disabled = useMemo<boolean>(() => {
@@ -96,7 +100,7 @@ export function AddToCart({ product }: Props) {
 
   return (
     <Button
-      aria-label="Add to cart"
+      aria-label="加入購物車"
       variant={'outline'}
       className={clsx({
         'hover:opacity-90': true,
@@ -105,7 +109,8 @@ export function AddToCart({ product }: Props) {
       onClick={addToCart}
       type="submit"
     >
-      Add To Cart
+      加入購物車
     </Button>
   )
 }
+

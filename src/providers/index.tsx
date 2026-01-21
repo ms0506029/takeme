@@ -3,9 +3,10 @@ import { EcommerceProvider } from '@payloadcms/plugin-ecommerce/client/react'
 import { stripeAdapterClient } from '@payloadcms/plugin-ecommerce/payments/stripe'
 import React from 'react'
 
+import { CartDrawerProvider } from '@/components/Cart/CartDrawer'
+import { SonnerProvider } from '@/providers/Sonner'
 import { HeaderThemeProvider } from './HeaderTheme'
 import { ThemeProvider } from './Theme'
-import { SonnerProvider } from '@/providers/Sonner'
 
 export const Providers: React.FC<{
   children: React.ReactNode
@@ -40,7 +41,10 @@ export const Providers: React.FC<{
               }),
             ]}
           >
-            {children}
+            {/* CartDrawerProvider 提供全域購物車抽屜控制 */}
+            <CartDrawerProvider>
+              {children}
+            </CartDrawerProvider>
           </EcommerceProvider>
         </HeaderThemeProvider>
       </AuthProvider>

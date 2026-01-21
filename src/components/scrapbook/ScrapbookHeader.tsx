@@ -1,7 +1,10 @@
 'use client'
 
+import { useCartDrawer } from '@/components/Cart/CartDrawer'
+import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import { Heart, Search, ShoppingBag, User } from 'lucide-react'
 import Link from 'next/link'
+import { useMemo } from 'react'
 
 export interface ScrapbookHeaderProps {
   /** 網站名稱 (從後台讀取) */
@@ -24,6 +27,11 @@ export interface ScrapbookHeaderProps {
  * - 主列：搜尋框（左）、Logo（中）、圖示（右）
  * - 導航列（置中）
  * - Sticky + 毛玻璃效果
+ * 
+ * Icon 功能：
+ * - ❤️ 愛心 → /account/wishlist
+ * - 👤 帳號 → /account
+ * - 🛒 購物車 → 開啟 CartDrawer
  */
 export function ScrapbookHeader({
   siteName = 'Daytona Park',
@@ -37,6 +45,15 @@ export function ScrapbookHeader({
   searchPlaceholder = 'What are you looking for?',
   showAnnouncement = true,
 }: ScrapbookHeaderProps) {
+  const { cart } = useCart()
+  const { openCart } = useCartDrawer()
+
+  // 計算購物車商品數量
+  const totalQuantity = useMemo(() => {
+    if (!cart || !cart.items || !cart.items.length) return 0
+    return cart.items.reduce((quantity, item) => (item.quantity || 0) + quantity, 0)
+  }, [cart])
+
   return (
     <header className="sticky top-0 z-50 w-full">
       {/* 公告條 */}
@@ -73,25 +90,39 @@ export function ScrapbookHeader({
             </Link>
           </div>
 
-          {/* 右側：圖示 */}
+          {/* 右側：圖示 - 功能已接上 */}
           <div className="ml-auto flex items-center gap-4">
-            <button
-              aria-label="Wishlist"
-              className="p-2 hover:text-scrapbook-primary transition-colors"
+            {/* ❤️ 愛心 → 願望清單 */}
+            <Link
+              href="/account/wishlist"
+              aria-label="願望清單"
+              className="p-2 hover:text-scrapbook-primary transition-colors cursor-pointer"
             >
               <Heart className="w-5 h-5" />
-            </button>
-            <button
-              aria-label="Account"
-              className="p-2 hover:text-scrapbook-primary transition-colors"
+            </Link>
+
+            {/* 👤 帳號 → 會員中心 */}
+            <Link
+              href="/account"
+              aria-label="會員中心"
+              className="p-2 hover:text-scrapbook-primary transition-colors cursor-pointer"
             >
               <User className="w-5 h-5" />
-            </button>
+            </Link>
+
+            {/* 🛒 購物車 → 開啟 CartDrawer + Badge */}
             <button
-              aria-label="Cart"
-              className="p-2 hover:text-scrapbook-primary transition-colors"
+              onClick={openCart}
+              aria-label="購物車"
+              className="relative p-2 hover:text-scrapbook-primary transition-colors cursor-pointer"
             >
               <ShoppingBag className="w-5 h-5" />
+              {/* 購物車 Badge - 紅點 + 數量 */}
+              {totalQuantity > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center px-1 text-[10px] font-bold text-white bg-scrapbook-accent rounded-full border-2 border-scrapbook-bg-light shadow-sm">
+                  {totalQuantity > 99 ? '99+' : totalQuantity}
+                </span>
+              )}
             </button>
           </div>
         </div>

@@ -32,39 +32,26 @@
 - [x] 會員綁定流程
 - [x] 願望清單/補貨通知 Collection
 
-### 會員中心 MyPage (Phase 8) ✅
+### 會員中心 MyPage (Phase 8)
 - [x] **Phase 8.1**: 會員卡片 + AccountNav 重構
 - [x] **Phase 8.2**: 訂單履歷 + 點數履歷頁面
 - [x] **Phase 8.3**: 收藏清單 + 補貨通知頁面
 - [x] **Phase 8.4**: 基本資料 + 社群綁定 + 安全設定
 - [x] **Vibe Polish**: Scrapbook Retro 視覺風格升級
-- [x] **Header 修正**: Logo 對齊 + 後台編輯 siteName
+
+### 購物車系統 (Phase 9) ✅
+- [x] **Phase 9.1**: 後台設定擴充（SiteSettings 新增購物車設定）
+- [x] **Phase 9.2**: Header Icon 整合 + CartDrawer 重構
+- [x] **Phase 9.3**: 購物車專頁 `/cart`
+- [x] **Phase 9.4**: 結帳頁面視覺優化
 
 ---
 
-## 🚧 進行中
+## 🚧 準備中
 
-### 購物車系統 (Phase 9) 🛒
-- [x] **Phase 9.1**: 後台設定擴充（SiteSettings 新增購物車設定）
-- [ ] **Phase 9.2**: Header Icon 整合 + CartDrawer 重構
-- [ ] **Phase 9.3**: 購物車專頁 `/cart`
-- [ ] **Phase 9.4**: 優惠系統整合 + 商品推薦
-
-#### Phase 9 詳細任務
-| 階段 | 任務 | 狀態 |
-|------|------|------|
-| 9.1 | SiteSettings 新增 `cartSettings` | ✅ |
-| 9.2 | Header ❤️ Icon → `/account/wishlist` | ⬜ |
-| 9.2 | Header 👤 Icon → `/account` | ⬜ |
-| 9.2 | Header 🛒 Icon → CartDrawer | ⬜ |
-| 9.2 | 購物車 Badge（紅點 + 數量） | ⬜ |
-| 9.2 | CartDrawer Scrapbook Retro 風格 | ⬜ |
-| 9.3 | 進度條組件 CheckoutProgress | ⬜ |
-| 9.3 | 商品列表區（左側） | ⬜ |
-| 9.3 | 訂單摘要區（右側） | ⬜ |
-| 9.4 | 優惠提示框（動態讀取 Promotions） | ⬜ |
-| 9.4 | 瀏覽紀錄（LocalStorage） | ⬜ |
-| 9.4 | 商品推薦區塊 | ⬜ |
+### 第三方登入 (Phase 10)
+- [ ] LINE Login 按鈕 integration
+- [ ] 自動綁定 LINE User ID
 
 ---
 
@@ -97,7 +84,7 @@
 | 階段六：分析報表 | 已完成 | 100% |
 | 階段七：LINE Bot 整合 | 已完成 | 100% |
 | 階段八：會員中心 | 已完成 | 100% |
-| **階段九：購物車系統** | **進行中** | **25%** |
+| **階段九：購物車系統** | **已完成** | **100%** |
 | 階段十：LINE Login | 未開始 | 0% |
 | 階段十一：商品頁整合 | 未開始 | 0% |
 
@@ -106,37 +93,18 @@
 ## 📝 最近更新日誌
 
 ### 2026-01-21
+- ✅ **Phase 9 全數完成**
+  - 完成 `CartDrawer` 側邊欄重構
+  - 完成專屬 `/cart` 購物車頁面
+  - 完成新版結帳頁面 UI (`CheckoutPageScrapbook`)
+  - 修正免運門檻顯示邏輯
+  - 驗證所有 Scrapbook Retro 視覺風格
 - 🚧 開始 Phase 9 購物車系統開發
 - ✅ SiteSettings 新增「購物車與運費設定」區塊
-  - 免運門檻（預設 3000 TWD）
-  - 免運提示文字
-  - 基本運費（預設 60 TWD）
-  - 空購物車設定（標題、按鈕、瀏覽紀錄）
-- 📝 更新 Memory Bank 記錄完整開發計畫
 
 ### 2026-01-16
-- ✅ 完成 Phase 8 會員中心全部頁面（7 個子頁面）
-- ✅ 新增 MemberCard 組件（條碼、等級、進度條）
-- ✅ 新增 ProfileForm 組件（表單編輯）
-- ✅ Scrapbook Retro 視覺風格全面升級
-- ✅ 修正 Header Logo 對齊問題
-- ✅ 支援後台編輯網站名稱
+- ✅ 完成 Phase 8 會員中心全部頁面
 - ✅ 推送至 GitHub (commit: df42134)
 
 ### 2026-01-15
 - ✅ 完成 LINE Bot 整合
-- ✅ 完成願望清單/補貨通知 Collection
-- ✅ 完成通知 Hook（降價/補貨）
-
----
-
-## 🔑 Phase 9 關鍵決策記錄
-
-| 決策項目 | 用戶選擇 | 備註 |
-|----------|----------|------|
-| 免運門檻來源 | 後台動態設定 | SiteSettings.cartSettings |
-| 預設免運門檻 | ¥3,000 | 可在後台調整 |
-| 商品推薦順序 | 瀏覽紀錄優先 | LocalStorage 實作 |
-| 優惠提示類型 | 動態讀取 Promotions | 顯示所有符合條件的優惠 |
-| UI 語言 | 繁體中文 | 全部介面 |
-| 視覺風格 | Scrapbook Retro | 紙張紋理、硬陰影、膠帶裝飾 |

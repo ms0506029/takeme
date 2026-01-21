@@ -1,15 +1,15 @@
-import type { CollectionSlug, GlobalSlug, Payload, PayloadRequest, File } from 'payload'
+import type { CollectionSlug, File, GlobalSlug, Payload, PayloadRequest } from 'payload'
 
+import { Address, Transaction, VariantOption } from '@/payload-types'
 import { contactFormData } from './contact-form'
 import { contactPageData } from './contact-page'
-import { productHatData } from './product-hat'
-import { productTshirtData, productTshirtVariant } from './product-tshirt'
 import { homePageData } from './home'
 import { imageHatData } from './image-hat'
+import { imageHero1Data } from './image-hero-1'
 import { imageTshirtBlackData } from './image-tshirt-black'
 import { imageTshirtWhiteData } from './image-tshirt-white'
-import { imageHero1Data } from './image-hero-1'
-import { Address, Transaction, VariantOption } from '@/payload-types'
+import { productHatData } from './product-hat'
+import { productTshirtData, productTshirtVariant } from './product-tshirt'
 
 const collections: CollectionSlug[] = [
   'categories',
@@ -25,7 +25,9 @@ const collections: CollectionSlug[] = [
   'transactions',
   'addresses',
   'orders',
+  'vendors',
 ]
+
 
 const categories = ['Accessories', 'T-Shirts', 'Hats']
 
@@ -235,6 +237,17 @@ export const seed = async ({
     }),
   )
 
+  payload.logger.info(`— Seeding vendors...`)
+
+  const vendor = await payload.create({
+    collection: 'vendors',
+    data: {
+      name: 'Official Store',
+      slug: 'official-store',
+      status: 'active',
+    },
+  })
+
   payload.logger.info(`— Seeding products...`)
 
   const productHat = await payload.create({
@@ -246,7 +259,9 @@ export const seed = async ({
       variantTypes: [colorVariantType],
       categories: [hatsCategory],
       relatedProducts: [],
+      vendor: vendor.id,
     }),
+
   })
 
   const productTshirt = await payload.create({
@@ -254,15 +269,18 @@ export const seed = async ({
     depth: 0,
     data: productTshirtData({
       galleryImages: [
-        { image: imageTshirtBlack, variantOption: black },
-        { image: imageTshirtWhite, variantOption: white },
+        { image: imageTshirtBlack, variantOption: black.id },
+        { image: imageTshirtWhite, variantOption: white.id },
       ],
+
       metaImage: imageTshirtBlack,
       contentImage: imageHero,
       variantTypes: [colorVariantType, sizeVariantType],
       categories: [tshirtsCategory],
       relatedProducts: [productHat],
+      vendor: vendor.id,
     }),
+
   })
 
   let hoodieID: number | string = productTshirt.id
@@ -321,6 +339,9 @@ export const seed = async ({
         contentImage: imageHero,
         metaImage: imageHat,
       }),
+      context: {
+        disableRevalidate: true,
+      },
     }),
     payload.create({
       collection: 'pages',
@@ -328,7 +349,11 @@ export const seed = async ({
       data: contactPageData({
         contactForm: contactForm,
       }),
+      context: {
+        disableRevalidate: true,
+      },
     }),
+
   ])
 
   payload.logger.info(`— Seeding addresses...`)
@@ -511,29 +536,30 @@ export const seed = async ({
       data: {
         navItems: [
           {
+            label: 'Home',
             link: {
               type: 'custom',
-              label: 'Home',
               url: '/',
             },
           },
           {
+            label: 'Shop',
             link: {
               type: 'custom',
-              label: 'Shop',
               url: '/shop',
             },
           },
           {
+            label: 'Account',
             link: {
               type: 'custom',
-              label: 'Account',
               url: '/account',
             },
           },
         ],
       },
     }),
+
     payload.updateGlobal({
       slug: 'footer',
       data: {

@@ -3,44 +3,49 @@ import type { Metadata } from 'next'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { Fragment } from 'react'
 
-import { CheckoutPage } from '@/components/checkout/CheckoutPage'
+import { CheckoutPageScrapbook } from '@/components/checkout/CheckoutPageScrapbook'
 
 // 強制動態渲染，避免 Build 時嘗試連接資料庫
 export const dynamic = 'force-dynamic'
 
 export default function Checkout() {
   return (
-    <div className="container min-h-[90vh] flex">
+    <>
       {!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY && (
-        <div>
-          <Fragment>
-            {'To enable checkout, you must '}
-            <a
-              href="https://dashboard.stripe.com/test/apikeys"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              obtain your Stripe API Keys
-            </a>
-            {' then set them as environment variables. See the '}
-            <a
-              href="https://github.com/payloadcms/payload/blob/main/templates/ecommerce/README.md#stripe"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              README
-            </a>
-            {' for more details.'}
-          </Fragment>
+        <div className="container py-4">
+          <div className="bg-amber-50 border-2 border-amber-200 rounded-lg p-4 text-amber-800">
+            <Fragment>
+              {'要啟用結帳功能，請先 '}
+              <a
+                href="https://dashboard.stripe.com/test/apikeys"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="underline font-bold"
+              >
+                取得 Stripe API Keys
+              </a>
+              {' 並設定環境變數。詳見 '}
+              <a
+                href="https://github.com/payloadcms/payload/blob/main/templates/ecommerce/README.md#stripe"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="underline font-bold"
+              >
+                README
+              </a>
+              {' 說明。'}
+            </Fragment>
+          </div>
         </div>
       )}
 
-      <h1 className="sr-only">Checkout</h1>
+      <h1 className="sr-only">結帳</h1>
 
-      <CheckoutPage />
-    </div>
+      <CheckoutPageScrapbook />
+    </>
   )
 }
+
 
 export const metadata: Metadata = {
   description: 'Checkout.',
