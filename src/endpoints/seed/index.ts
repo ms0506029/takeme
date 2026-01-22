@@ -81,6 +81,16 @@ export const seed = async ({
   payload: Payload
   req: PayloadRequest
 }): Promise<void> => {
+  // 環境變數控制：只有在 ENABLE_SEED=true 時才允許執行 seed
+  // 這樣可以防止生產環境意外觸發 seed 覆蓋資料
+  const enableSeed = process.env.ENABLE_SEED === 'true'
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  
+  if (!enableSeed && !isDevelopment) {
+    payload.logger.warn('⚠️ Seed endpoint is disabled in production. Set ENABLE_SEED=true to enable.')
+    throw new Error('Seed endpoint is disabled in production environment.')
+  }
+
   payload.logger.info('Seeding database...')
 
   // we need to clear the media directory before seeding
@@ -88,6 +98,7 @@ export const seed = async ({
   // this is because while `yarn seed` drops the database
   // the custom `/api/seed` endpoint does not
   payload.logger.info(`— Clearing collections and globals...`)
+
 
   // clear the database
   await Promise.all(
