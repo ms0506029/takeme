@@ -1,5 +1,6 @@
 'use client'
 
+import { LineLoginButton } from '@/components/auth/LineLoginButton'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
 import { Message } from '@/components/Message'
@@ -38,54 +39,75 @@ export const LoginForm: React.FC = () => {
         if (redirect?.current) router.push(redirect.current)
         else router.push('/account')
       } catch (_) {
-        setError('There was an error with the credentials provided. Please try again.')
+        setError('登入資訊有誤，請重新確認您的帳號密碼。')
       }
     },
     [login, router],
   )
 
   return (
-    <form className="" onSubmit={handleSubmit(onSubmit)}>
-      <Message className="classes.message" error={error} />
-      <div className="flex flex-col gap-8">
-        <FormItem>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            {...register('email', { required: 'Email is required.' })}
-          />
-          {errors.email && <FormError message={errors.email.message} />}
-        </FormItem>
+    <div className="space-y-6">
+      {/* LINE Login 區塊 */}
+      <div className="space-y-4">
+        <LineLoginButton text="使用 LINE 帳號登入" />
+      </div>
 
-        <FormItem>
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            {...register('password', { required: 'Please provide a password.' })}
-          />
-          {errors.password && <FormError message={errors.password.message} />}
-        </FormItem>
-
-        <div className="text-primary/70 mb-6 prose prose-a:hover:text-primary dark:prose-invert">
-          <p>
-            Forgot your password?{' '}
-            <Link href={`/recover-password${allParams}`}>Click here to reset it</Link>
-          </p>
+      {/* 分隔線 */}
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-gray-300" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="bg-white px-4 text-gray-500">或使用電子郵件登入</span>
         </div>
       </div>
 
-      <div className="flex gap-4 justify-between">
-        <Button asChild variant="outline" size="lg">
-          <Link href={`/create-account${allParams}`} className="grow max-w-[50%]">
-            Create an account
-          </Link>
-        </Button>
-        <Button className="grow" disabled={isLoading} size="lg" type="submit" variant="default">
-          {isLoading ? 'Processing' : 'Continue'}
-        </Button>
-      </div>
-    </form>
+      {/* Email 登入表單 */}
+      <form className="" onSubmit={handleSubmit(onSubmit)}>
+        <Message className="classes.message" error={error} />
+        <div className="flex flex-col gap-6">
+          <FormItem>
+            <Label htmlFor="email">電子郵件</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="請輸入您的 Email"
+              {...register('email', { required: '請輸入電子郵件。' })}
+            />
+            {errors.email && <FormError message={errors.email.message} />}
+          </FormItem>
+
+          <FormItem>
+            <Label htmlFor="password">密碼</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="請輸入密碼"
+              {...register('password', { required: '請輸入密碼。' })}
+            />
+            {errors.password && <FormError message={errors.password.message} />}
+          </FormItem>
+
+          <div className="text-primary/70 prose prose-a:hover:text-primary dark:prose-invert">
+            <p className="text-sm">
+              忘記密碼？{' '}
+              <Link href={`/recover-password${allParams}`}>點此重設</Link>
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-4 justify-between mt-6">
+          <Button asChild variant="outline" size="lg">
+            <Link href={`/create-account${allParams}`} className="grow max-w-[50%]">
+              建立帳號
+            </Link>
+          </Button>
+          <Button className="grow" disabled={isLoading} size="lg" type="submit" variant="default">
+            {isLoading ? '處理中...' : '登入'}
+          </Button>
+        </div>
+      </form>
+    </div>
   )
 }
+

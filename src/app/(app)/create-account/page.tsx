@@ -18,23 +18,29 @@ export default async function CreateAccount() {
   const { user } = await payload.auth({ headers })
 
   if (user) {
-    redirect(`/account?warning=${encodeURIComponent('You are already logged in.')}`)
+    redirect(`/account?warning=${encodeURIComponent('您已經登入了。')}`)
   }
 
   return (
     <div className="container py-16">
-      <h1 className="text-xl mb-4">Create Account</h1>
-      <RenderParams />
-      <CreateAccountForm />
+      <div className="max-w-md mx-auto">
+        <h1 className="text-2xl font-bold mb-2">建立帳號</h1>
+        <p className="text-gray-600 mb-8">
+          建立帳號以追蹤訂單、收藏商品與享受會員專屬優惠。
+        </p>
+        <RenderParams />
+        <CreateAccountForm />
+      </div>
     </div>
   )
 }
 
 export const metadata: Metadata = {
-  description: 'Create an account or log in to your existing account.',
+  description: '建立帳號以開始購物與管理您的訂單。',
   openGraph: mergeOpenGraph({
-    title: 'Account',
-    url: '/account',
+    title: '建立帳號 | Daytona Park',
+    url: '/create-account',
   }),
-  title: 'Account',
+  title: '建立帳號 | Daytona Park',
 }
+

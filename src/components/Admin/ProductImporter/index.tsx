@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import './styles.scss'
 
 /**
@@ -8,12 +8,37 @@ import './styles.scss'
  * Phase 7.2.1 - 商品匯入介面
  * 
  * 功能：
- * 1. 手動上傳 CSV/Excel 檔案匯入商品
- * 2. 顯示 Webhook 端點資訊供爬蟲系統使用
- * 3. 同步狀態監控
+ * 1. EasyStore 商品匯入（新增）
+ * 2. Webhook 端點資訊供爬蟲系統使用
+ * 3. CSV 上傳（開發中）
+ * 4. 同步狀態監控
  */
 
-type Tab = 'upload' | 'webhook' | 'status'
+type Tab = 'easystore' | 'webhook' | 'upload' | 'status'
+
+// Types
+interface ImportLog {
+  timestamp: string
+  type: 'success' | 'skip' | 'error' | 'info'
+  message: string
+  productTitle?: string
+}
+
+interface ImportProgress {
+  total: number
+  processed: number
+  created: number
+  updated: number
+  skipped: number
+  failed: number
+  currentProduct?: string
+  logs: ImportLog[]
+}
+
+interface Vendor {
+  id: string
+  name: string
+}
 
 // Icons
 const UploadIcon = () => (
@@ -32,6 +57,13 @@ const WebhookIcon = () => (
   </svg>
 )
 
+const StoreIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+  </svg>
+)
+
 const RefreshIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <polyline points="23 4 23 10 17 10"></polyline>
@@ -47,15 +79,67 @@ const CopyIcon = () => (
   </svg>
 )
 
+const CheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+)
+
+const XIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+)
+
+const PlayIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+  </svg>
+)
+
 export const ProductImporter: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('webhook')
+  const [activeTab, setActiveTab] = useState<Tab>('easystore')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [copied, setCopied] = useState(false)
+  
+  // EasyStore 相關狀態
+  const [vendors, setVendors] = useState<Vendor[]>([])
+  const [selectedVendor, setSelectedVendor] = useState<string>('')
+  const [skipExisting, setSkipExisting] = useState(true)
+  const [downloadImages, setDownloadImages] = useState(true)
+  const [previewData, setPreviewData] = useState<{
+    productCount?: number
+    existingCount?: number
+    newCount?: number
+  } | null>(null)
+  const [importing, setImporting] = useState(false)
+  const [importProgress, setImportProgress] = useState<ImportProgress | null>(null)
+  const [importLogs, setImportLogs] = useState<ImportLog[]>([])
 
   // Webhook URL
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
   const webhookUrl = `${baseUrl}/api/webhooks/product-sync`
+
+  // 載入商家列表
+  useEffect(() => {
+    const loadVendors = async () => {
+      try {
+        const response = await fetch('/api/vendors')
+        if (response.ok) {
+          const data = await response.json()
+          setVendors(data.docs || [])
+          if (data.docs?.length > 0) {
+            setSelectedVendor(data.docs[0].id)
+          }
+        }
+      } catch (err) {
+        console.error('載入商家失敗:', err)
+      }
+    }
+    loadVendors()
+  }, [])
 
   // 複製 URL
   const handleCopy = useCallback((text: string) => {
@@ -82,10 +166,109 @@ export const ProductImporter: React.FC = () => {
     }
   }
 
+  // 測試 EasyStore 連線
+  const testEasyStoreConnection = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/import/easystore?action=test')
+      const data = await response.json()
+      if (data.success) {
+        setMessage({ type: 'success', text: `EasyStore 連線成功！共有 ${data.productCount} 個商品` })
+      } else {
+        setMessage({ type: 'error', text: data.error || 'EasyStore 連線失敗' })
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: '無法連接 EasyStore API' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 預覽 EasyStore 商品
+  const previewEasyStore = async () => {
+    setLoading(true)
+    setPreviewData(null)
+    try {
+      const response = await fetch('/api/import/easystore')
+      const data = await response.json()
+      if (data.success) {
+        setPreviewData({
+          productCount: data.productCount,
+          existingCount: data.existingCount,
+          newCount: data.newCount,
+        })
+        setMessage({ type: 'success', text: `預覽完成：${data.productCount} 個商品` })
+      } else {
+        setMessage({ type: 'error', text: data.error || '預覽失敗' })
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: '無法預覽商品' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 執行 EasyStore 匯入
+  const startEasyStoreImport = async () => {
+    if (!selectedVendor) {
+      setMessage({ type: 'error', text: '請選擇目標商家' })
+      return
+    }
+
+    setImporting(true)
+    setImportLogs([])
+    setImportProgress(null)
+
+    try {
+      const response = await fetch('/api/import/easystore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vendorId: selectedVendor,
+          skipExisting,
+          downloadImages,
+        }),
+      })
+
+      const data = await response.json()
+      
+      if (data.success !== undefined) {
+        setImportProgress({
+          total: data.total,
+          processed: data.total,
+          created: data.created,
+          updated: data.updated,
+          skipped: data.skipped,
+          failed: data.failed,
+          logs: data.logs || [],
+        })
+        setImportLogs(data.logs || [])
+        
+        if (data.success) {
+          setMessage({ 
+            type: 'success', 
+            text: `匯入完成！建立: ${data.created}, 更新: ${data.updated}, 跳過: ${data.skipped}` 
+          })
+        } else {
+          setMessage({ 
+            type: 'error', 
+            text: `匯入完成但有錯誤。失敗: ${data.failed}` 
+          })
+        }
+      } else {
+        setMessage({ type: 'error', text: data.error || '匯入失敗' })
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: '匯入過程發生錯誤' })
+    } finally {
+      setImporting(false)
+    }
+  }
+
   // 清除訊息
-  React.useEffect(() => {
+  useEffect(() => {
     if (message) {
-      const timer = setTimeout(() => setMessage(null), 5000)
+      const timer = setTimeout(() => setMessage(null), 8000)
       return () => clearTimeout(timer)
     }
   }, [message])
@@ -96,12 +279,18 @@ export const ProductImporter: React.FC = () => {
       <div className="importer-header">
         <div>
           <h1>商品匯入</h1>
-          <p>從外部平台匯入商品或透過 Webhook 接收爬蟲資料</p>
+          <p>從 EasyStore 或其他平台匯入商品</p>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="tabs">
+        <button
+          className={`tab ${activeTab === 'easystore' ? 'active' : ''}`}
+          onClick={() => setActiveTab('easystore')}
+        >
+          🏪 EasyStore 匯入
+        </button>
         <button
           className={`tab ${activeTab === 'webhook' ? 'active' : ''}`}
           onClick={() => setActiveTab('webhook')}
@@ -125,7 +314,171 @@ export const ProductImporter: React.FC = () => {
       {/* Toast Message */}
       {message && (
         <div className={`toast toast-${message.type}`}>
+          {message.type === 'success' ? <CheckIcon /> : <XIcon />}
           {message.text}
+        </div>
+      )}
+
+      {/* Tab: EasyStore */}
+      {activeTab === 'easystore' && (
+        <div className="easystore-section">
+          <div className="info-card">
+            <div className="info-card-icon">
+              <StoreIcon />
+            </div>
+            <h2>EasyStore 商品匯入</h2>
+            <p>從您的 EasyStore 商店批量匯入商品到 Payload CMS</p>
+            
+            <button 
+              className="btn btn-secondary"
+              onClick={testEasyStoreConnection}
+              disabled={loading}
+            >
+              <RefreshIcon />
+              {loading ? '測試中...' : '測試連線'}
+            </button>
+          </div>
+
+          {/* 設定區塊 */}
+          <div className="settings-card">
+            <h3>匯入設定</h3>
+            
+            <div className="form-group">
+              <label>目標商家</label>
+              <select 
+                value={selectedVendor} 
+                onChange={(e) => setSelectedVendor(e.target.value)}
+                disabled={importing}
+              >
+                {vendors.length === 0 && (
+                  <option value="">載入中...</option>
+                )}
+                {vendors.map((vendor) => (
+                  <option key={vendor.id} value={vendor.id}>
+                    {vendor.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="checkbox-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={skipExisting}
+                  onChange={(e) => setSkipExisting(e.target.checked)}
+                  disabled={importing}
+                />
+                跳過已存在的商品（依據 EasyStore Product ID）
+              </label>
+            </div>
+
+            <div className="checkbox-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={downloadImages}
+                  onChange={(e) => setDownloadImages(e.target.checked)}
+                  disabled={importing}
+                />
+                下載圖片到 Payload Media（建議勾選）
+              </label>
+            </div>
+          </div>
+
+          {/* 操作按鈕 */}
+          <div className="action-buttons">
+            <button 
+              className="btn btn-secondary"
+              onClick={previewEasyStore}
+              disabled={loading || importing}
+            >
+              🔍 預覽商品
+            </button>
+            <button 
+              className="btn btn-primary"
+              onClick={startEasyStoreImport}
+              disabled={loading || importing || !selectedVendor}
+            >
+              <PlayIcon />
+              {importing ? '匯入中...' : '開始匯入'}
+            </button>
+          </div>
+
+          {/* 預覽結果 */}
+          {previewData && (
+            <div className="preview-result">
+              <h3>預覽結果</h3>
+              <div className="preview-stats">
+                <div className="stat">
+                  <span className="stat-value">{previewData.productCount}</span>
+                  <span className="stat-label">EasyStore 商品總數</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-value">{previewData.existingCount}</span>
+                  <span className="stat-label">已匯入過</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-value">{previewData.newCount}</span>
+                  <span className="stat-label">待匯入</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 匯入進度 */}
+          {importProgress && (
+            <div className="import-progress">
+              <h3>匯入進度</h3>
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill"
+                  style={{ 
+                    width: `${importProgress.total > 0 
+                      ? (importProgress.processed / importProgress.total) * 100 
+                      : 0}%` 
+                  }}
+                />
+              </div>
+              <div className="progress-text">
+                {importProgress.processed} / {importProgress.total} 
+                {importProgress.currentProduct && ` - ${importProgress.currentProduct}`}
+              </div>
+              <div className="progress-stats">
+                <span className="stat-success">✅ 建立: {importProgress.created}</span>
+                <span className="stat-update">🔄 更新: {importProgress.updated}</span>
+                <span className="stat-skip">⏭️ 跳過: {importProgress.skipped}</span>
+                <span className="stat-error">❌ 失敗: {importProgress.failed}</span>
+              </div>
+            </div>
+          )}
+
+          {/* 匯入日誌 */}
+          {importLogs.length > 0 && (
+            <div className="import-logs">
+              <h3>匯入日誌</h3>
+              <div className="logs-container">
+                {importLogs.slice(-50).map((log, index) => (
+                  <div key={index} className={`log-entry log-${log.type}`}>
+                    <span className="log-time">
+                      {new Date(log.timestamp).toLocaleTimeString()}
+                    </span>
+                    <span className="log-icon">
+                      {log.type === 'success' && '✅'}
+                      {log.type === 'skip' && '⏭️'}
+                      {log.type === 'error' && '❌'}
+                      {log.type === 'info' && 'ℹ️'}
+                    </span>
+                    <span className="log-message">
+                      {log.productTitle && <strong>{log.productTitle}</strong>}
+                      {log.productTitle && ' - '}
+                      {log.message}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -189,28 +542,6 @@ def sync_product(product_data):
         }
     }
     response = requests.post(WEBHOOK_URL, json=payload, headers=headers)
-    return response.json()
-
-# 批量同步
-def batch_sync_products(products):
-    payload = {
-        "action": "batch-sync",
-        "products": products
-    }
-    response = requests.post(WEBHOOK_URL, json=payload, headers=headers)
-    return response.json()
-
-# 更新折扣
-def update_discount(external_id, sale_price):
-    payload = {
-        "action": "update-discount",
-        "discount": {
-            "externalId": external_id,
-            "externalSource": "freaks",
-            "salePrice": sale_price
-        }
-    }
-    response = requests.post(WEBHOOK_URL, json=payload, headers=headers)
     return response.json()`}
             </pre>
           </div>
@@ -229,17 +560,17 @@ def update_discount(external_id, sale_price):
                 <tr>
                   <td><code>sync</code></td>
                   <td>同步單一商品（建立或更新）</td>
-                  <td>product: { title, externalId, externalSource, price }</td>
+                  <td><code>{'product: { title, externalId, externalSource, price }'}</code></td>
                 </tr>
                 <tr>
                   <td><code>batch-sync</code></td>
                   <td>批量同步多個商品</td>
-                  <td>products: ProductData[]</td>
+                  <td><code>{'products: ProductData[]'}</code></td>
                 </tr>
                 <tr>
                   <td><code>update-discount</code></td>
                   <td>更新商品折扣價</td>
-                  <td>discount: { externalId, externalSource, salePrice }</td>
+                  <td><code>{'discount: { externalId, externalSource, salePrice }'}</code></td>
                 </tr>
               </tbody>
             </table>
@@ -254,7 +585,7 @@ def update_discount(external_id, sale_price):
             <UploadIcon />
             <p className="dropzone-title">CSV 上傳功能開發中</p>
             <p className="dropzone-hint">
-              目前請使用 Webhook 方式整合爬蟲系統
+              目前請使用 EasyStore 匯入或 Webhook 方式整合
             </p>
           </div>
         </div>
