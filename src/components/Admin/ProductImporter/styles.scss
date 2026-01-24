@@ -415,19 +415,80 @@
       h3 {
         font-size: 1rem;
         margin: 0 0 1rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        // 匯入中動畫指示器
+        &::before {
+          content: '';
+          width: 8px;
+          height: 8px;
+          background: #22c55e;
+          border-radius: 50%;
+          animation: pulse 1.5s infinite;
+        }
       }
 
       .progress-bar {
-        height: 8px;
+        height: 12px;
         background: var(--color-base-100);
-        border-radius: 4px;
+        border-radius: 6px;
         overflow: hidden;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
+        position: relative;
 
         .progress-fill {
           height: 100%;
-          background: linear-gradient(90deg, #22c55e, #16a34a);
+          background: linear-gradient(
+            90deg,
+            #22c55e 0%,
+            #16a34a 50%,
+            #22c55e 100%
+          );
+          background-size: 200% 100%;
+          animation: progressShimmer 2s ease-in-out infinite;
           transition: width 0.3s ease;
+          border-radius: 6px;
+
+          // 條紋動畫效果
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+              45deg,
+              transparent,
+              transparent 10px,
+              rgba(255, 255, 255, 0.1) 10px,
+              rgba(255, 255, 255, 0.1) 20px
+            );
+            animation: progressStripes 0.5s linear infinite;
+          }
+        }
+      }
+
+      .current-product {
+        font-size: 0.8rem;
+        color: var(--color-text-sub);
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .spinner {
+          width: 14px;
+          height: 14px;
+          border: 2px solid var(--color-primary);
+          border-top-color: transparent;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
         }
       }
 
@@ -435,12 +496,20 @@
         font-size: 0.875rem;
         color: var(--color-text-sub);
         margin-bottom: 0.75rem;
+        font-weight: 500;
       }
 
       .progress-stats {
         display: flex;
         gap: 1.5rem;
         font-size: 0.875rem;
+        flex-wrap: wrap;
+
+        span {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
 
         .stat-success { color: #22c55e; }
         .stat-update { color: #3b82f6; }
@@ -448,6 +517,27 @@
         .stat-error { color: #ef4444; }
       }
     }
+
+    // 動畫定義
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    @keyframes progressShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    @keyframes progressStripes {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 0; }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
 
     .import-logs {
       background: var(--color-surface);

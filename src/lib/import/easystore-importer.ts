@@ -194,7 +194,8 @@ export async function importFromEasyStore(
           product,
           vendorId,
           downloadImages,
-          payload
+          payload,
+          addLog
         )
 
         if (existing.docs.length > 0) {
@@ -265,7 +266,8 @@ async function prepareProductData(
   product: EasyStoreProduct,
   vendorId: string,
   downloadImages: boolean,
-  payload: Awaited<ReturnType<typeof getPayload>>
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  addLog?: (type: 'success' | 'skip' | 'error' | 'info', message: string, productTitle?: string) => void
 ) {
   // 基本資料
   const baseData: Record<string, unknown> = {
@@ -301,6 +303,8 @@ async function prepareProductData(
   // 處理圖片
   if (downloadImages && product.images.length > 0) {
     const galleryItems: Array<{ image: string }> = []
+    let successCount = 0
+    let failCount = 0
 
     for (const img of product.images.slice(0, 10)) {
       // 最多 10 張圖
@@ -308,14 +312,20 @@ async function prepareProductData(
         const mediaId = await uploadImageToMedia(img.src, product.title, payload)
         if (mediaId) {
           galleryItems.push({ image: mediaId })
+          successCount++
         }
       } catch (err) {
-        console.warn(`圖片上傳失敗: ${img.src}`, err)
+        failCount++
+        const errorMsg = err instanceof Error ? err.message : '未知錯誤'
+        addLog?.('error', `圖片下載失敗: ${errorMsg}`, product.title)
       }
     }
 
     if (galleryItems.length > 0) {
       baseData.gallery = galleryItems
+      addLog?.('info', `圖片上傳: ${successCount} 成功, ${failCount} 失敗`, product.title)
+    } else if (failCount > 0) {
+      addLog?.('error', `所有 ${failCount} 張圖片下載失敗`, product.title)
     }
   }
 

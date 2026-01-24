@@ -223,17 +223,56 @@ export async function getProductById(productId: number): Promise<EasyStoreProduc
 
 /**
  * 下載圖片並轉換為 Buffer
+ * 增強版本：支援 timeout、重試機制
  */
-export async function downloadImage(imageUrl: string): Promise<Buffer> {
-  const response = await fetch(imageUrl)
+export async function downloadImage(
+  imageUrl: string,
+  options: { timeout?: number; retries?: number } = {}
+): Promise<Buffer> {
+  const { timeout = 30000, retries = 3 } = options
+  let lastError: Error | null = null
 
-  if (!response.ok) {
-    throw new Error(`圖片下載失敗: ${response.status}`)
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      // 建立帶有 timeout 的 AbortController
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), timeout)
+
+      const response = await fetch(imageUrl, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; PayloadCMS/1.0)',
+        },
+      })
+
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      const arrayBuffer = await response.arrayBuffer()
+      
+      if (arrayBuffer.byteLength === 0) {
+        throw new Error('圖片內容為空')
+      }
+
+      return Buffer.from(arrayBuffer)
+    } catch (error) {
+      lastError = error as Error
+      const errorMsg = error instanceof Error ? error.message : '未知錯誤'
+      console.warn(`[圖片下載] 嘗試 ${attempt}/${retries} 失敗: ${errorMsg} - ${imageUrl}`)
+
+      if (attempt < retries) {
+        // 指數退避等待
+        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt))
+      }
+    }
   }
 
-  const arrayBuffer = await response.arrayBuffer()
-  return Buffer.from(arrayBuffer)
+  throw new Error(`圖片下載失敗 (${retries} 次嘗試): ${lastError?.message || '未知錯誤'}`)
 }
+
 
 /**
  * 測試 API 連線
