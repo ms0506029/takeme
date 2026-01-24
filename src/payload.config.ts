@@ -51,10 +51,31 @@ export default buildConfig({
       beforeDashboard: ['@/components/BeforeDashboard#BeforeDashboard'],
       // Custom Navigation
       Nav: '@/components/Admin/CustomNav#CustomNav',
+      // Custom Views - 自訂頁面（帶側邊欄）
+      views: {
+        importProducts: {
+          Component: '@/components/Admin/ProductImporter/View#ProductImporterView',
+          path: '/import-products',
+        },
+        abandonedCarts: {
+          Component: '@/components/Admin/AbandonedCartsView/View#AbandonedCartsViewWrapper',
+          path: '/abandoned-carts',
+        },
+        importOrders: {
+          Component: '@/components/Admin/OrderImporter/View#OrderImporterView',
+          path: '/import-orders',
+        },
+        customerAnalytics: {
+          Component: '@/components/Admin/CustomerAnalytics/View#CustomerAnalyticsView',
+          path: '/customer-analytics',
+        },
+      },
+
     },
     user: Users.slug,
     dateFormat: 'yyyy-MM-dd HH:mm',
   },
+
   // 繁體中文介面設定 (UI)
   i18n: {
     supportedLanguages: { zhTw, en },
