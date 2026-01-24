@@ -469,7 +469,7 @@ export interface Product {
   /**
    * 商品資料來源
    */
-  externalSource?: ('beams' | 'zozo' | 'freaks' | 'manual') | null;
+  externalSource?: ('beams' | 'zozo' | 'freaks' | 'easystore' | 'manual') | null;
   /**
    * 來源平台的商品編號
    */
