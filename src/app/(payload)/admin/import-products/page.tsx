@@ -1,5 +1,4 @@
 import { ProductImporter } from '@/components/Admin/ProductImporter'
-import { DefaultTemplate } from '@payloadcms/next/templates'
 import { Metadata } from 'next'
 
 /**
@@ -7,7 +6,7 @@ import { Metadata } from 'next'
  * Phase 7.2.1 - 商品匯入頁面
  * 
  * 路徑: /admin/import-products
- * 使用 DefaultTemplate 確保側邊欄正常顯示
+ * 注意：此頁面位於 (payload) 路由組內，會自動繼承 Payload 的 RootLayout
  */
 
 export const metadata: Metadata = {
@@ -16,8 +15,10 @@ export const metadata: Metadata = {
 
 export default function ImportProductsPage() {
   return (
-    <DefaultTemplate>
-      <ProductImporter />
-    </DefaultTemplate>
+    <div className="template-default__wrap">
+      <div className="gutter--left gutter--right">
+        <ProductImporter />
+      </div>
+    </div>
   )
 }
