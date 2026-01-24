@@ -468,7 +468,19 @@
             );
             animation: progressStripes 0.5s linear infinite;
           }
+
+          // Indeterminate 左右移動動畫
+          &.progress-indeterminate {
+            position: absolute;
+            animation: indeterminate 1.5s ease-in-out infinite;
+          }
         }
+      }
+
+      @keyframes indeterminate {
+        0% { left: -30%; }
+        50% { left: 70%; }
+        100% { left: -30%; }
       }
 
       .current-product {

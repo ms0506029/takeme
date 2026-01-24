@@ -120,15 +120,64 @@ const styles = {
   },
 }
 
-const NavGroup = ({ label, children, icon }: { label: string, children: React.ReactNode, icon?: React.ReactNode }) => (
-  <div>
-    <div style={styles.groupLabel}>
-      {icon && <span style={{ display: 'flex', alignItems: 'center', color: '#94A3B8' }}>{icon}</span>}
-      <span>{label}</span>
+const NavGroup = ({ label, children, icon, defaultOpen = true }: { label: string, children: React.ReactNode, icon?: React.ReactNode, defaultOpen?: boolean }) => {
+  // 使用 localStorage 記住展開狀態
+  const [isOpen, setIsOpen] = React.useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(`nav-group-${label}`)
+      return saved !== null ? saved === 'true' : defaultOpen
+    }
+    return defaultOpen
+  })
+  const [isHovered, setIsHovered] = React.useState(false)
+
+  const toggle = () => {
+    const newState = !isOpen
+    setIsOpen(newState)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(`nav-group-${label}`, String(newState))
+    }
+  }
+
+  return (
+    <div>
+      <div 
+        style={{
+          ...styles.groupLabel,
+          cursor: 'pointer',
+          backgroundColor: isHovered ? '#FAF5F2' : 'transparent',
+          borderRadius: '8px',
+          margin: '4px 8px',
+          padding: '10px 16px',
+          transition: 'background-color 0.2s ease',
+        }}
+        onClick={toggle}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {icon && <span style={{ display: 'flex', alignItems: 'center', color: '#94A3B8' }}>{icon}</span>}
+        <span style={{ flex: 1 }}>{label}</span>
+        <span style={{ 
+          display: 'flex',
+          alignItems: 'center',
+          transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          color: '#94A3B8',
+        }}>
+          <Icons.ChevronRight />
+        </span>
+      </div>
+      <div style={{
+        maxHeight: isOpen ? '1000px' : '0',
+        overflow: 'hidden',
+        transition: 'max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        opacity: isOpen ? 1 : 0,
+      }}>
+        {children}
+      </div>
     </div>
-    <div>{children}</div>
-  </div>
-)
+  )
+}
 
 const NavLink = ({ href, children }: { href: string, children: React.ReactNode }) => {
   const pathname = usePathname()

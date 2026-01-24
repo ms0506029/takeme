@@ -441,18 +441,28 @@ export const ProductImporter: React.FC = () => {
             <div className="import-progress">
               <h3>匯入進度</h3>
               <div className="progress-bar">
-                <div 
-                  className="progress-fill"
-                  style={{ 
-                    width: `${importProgress.total > 0 
-                      ? (importProgress.processed / importProgress.total) * 100 
-                      : 0}%` 
-                  }}
-                />
+                {importProgress.total === 0 ? (
+                  // 連接中 - indeterminate 動畫
+                  <div 
+                    className="progress-fill progress-indeterminate"
+                    style={{ width: '30%' }}
+                  />
+                ) : (
+                  // 正常進度條
+                  <div 
+                    className="progress-fill"
+                    style={{ 
+                      width: `${(importProgress.processed / importProgress.total) * 100}%` 
+                    }}
+                  />
+                )}
+              </div>
+              <div className="current-product">
+                <div className="spinner" />
+                {importProgress.currentProduct || '正在處理中...'}
               </div>
               <div className="progress-text">
                 {importProgress.processed} / {importProgress.total} 
-                {importProgress.currentProduct && ` - ${importProgress.currentProduct}`}
               </div>
               <div className="progress-stats">
                 <span className="stat-success">✅ 建立: {importProgress.created}</span>
