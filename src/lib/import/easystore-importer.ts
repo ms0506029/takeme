@@ -415,24 +415,29 @@ async function prepareProductData(
     )
   }
 
-  // 處理圖片
+  // 處理圖片 - 並行下載（最多同時處理 3 張）
   if (downloadImages && product.images.length > 0) {
     const galleryItems: Array<{ image: string }> = []
     let successCount = 0
     let failCount = 0
+    const maxImages = 5 // 減少到 5 張以加快速度
+    const imagesToProcess = product.images.slice(0, maxImages)
 
-    for (const img of product.images.slice(0, 10)) {
-      // 最多 10 張圖
-      try {
-        const mediaId = await uploadImageToMedia(img.src, product.title, payload)
-        if (mediaId) {
-          galleryItems.push({ image: mediaId })
+    // 並行處理圖片（每批 3 張）
+    const batchSize = 3
+    for (let i = 0; i < imagesToProcess.length; i += batchSize) {
+      const batch = imagesToProcess.slice(i, i + batchSize)
+      const results = await Promise.allSettled(
+        batch.map(img => uploadImageToMedia(img.src, product.title, payload))
+      )
+
+      for (const result of results) {
+        if (result.status === 'fulfilled' && result.value) {
+          galleryItems.push({ image: result.value })
           successCount++
+        } else {
+          failCount++
         }
-      } catch (err) {
-        failCount++
-        const errorMsg = err instanceof Error ? err.message : '未知錯誤'
-        addLog?.('error', `圖片下載失敗: ${errorMsg}`, product.title)
       }
     }
 

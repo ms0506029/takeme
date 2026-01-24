@@ -223,13 +223,13 @@ export async function getProductById(productId: number): Promise<EasyStoreProduc
 
 /**
  * 下載圖片並轉換為 Buffer
- * 增強版本：支援 timeout、重試機制
+ * 優化版本：縮短 timeout 和減少 retry 以加快匯入速度
  */
 export async function downloadImage(
   imageUrl: string,
   options: { timeout?: number; retries?: number } = {}
 ): Promise<Buffer> {
-  const { timeout = 30000, retries = 3 } = options
+  const { timeout = 8000, retries = 2 } = options  // 縮短 timeout 到 8 秒，減少 retry 到 2 次
   let lastError: Error | null = null
 
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -264,8 +264,8 @@ export async function downloadImage(
       console.warn(`[圖片下載] 嘗試 ${attempt}/${retries} 失敗: ${errorMsg} - ${imageUrl}`)
 
       if (attempt < retries) {
-        // 指數退避等待
-        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt))
+        // 短暫等待後重試
+        await new Promise((resolve) => setTimeout(resolve, 500 * attempt))
       }
     }
   }
