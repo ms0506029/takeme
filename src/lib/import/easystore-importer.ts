@@ -398,7 +398,10 @@ async function prepareProductData(
   }
 
   // 價格（使用第一個變體的價格）
-  const firstVariant = product.variants[0]
+  // 🔧 修復：安全存取 variants 陣列，避免 undefined 錯誤
+  const hasVariants = Array.isArray(product.variants) && product.variants.length > 0
+  const firstVariant = hasVariants ? product.variants[0] : null
+  
   if (firstVariant) {
     baseData.priceInUSD = convertToUSD(firstVariant.price)
 
@@ -413,6 +416,11 @@ async function prepareProductData(
       (sum, v) => sum + (v.inventory_quantity || 0),
       0
     )
+  } else {
+    // 無變體時使用預設值，商品仍可建立
+    baseData.priceInUSD = 0
+    baseData.inventory = 0
+    addLog?.('info', `商品無變體資料，使用預設值 (價格=0, 庫存=0)`, product.title)
   }
 
   // 處理圖片 - 並行下載（最多同時處理 3 張）
@@ -445,7 +453,8 @@ async function prepareProductData(
       baseData.gallery = galleryItems
       addLog?.('info', `圖片上傳: ${successCount} 成功, ${failCount} 失敗`, product.title)
     } else if (failCount > 0) {
-      addLog?.('error', `所有 ${failCount} 張圖片下載失敗`, product.title)
+      // 🔧 修復：圖片下載失敗改為警告，商品仍可建立
+      addLog?.('info', `圖片下載失敗 (${failCount} 張)，商品仍會建立`, product.title)
     }
   }
 
@@ -480,12 +489,16 @@ async function prepareProductData(
   // 由於 ecommerce plugin 的變體結構較複雜，這裡採用簡化方式:
   // - 如果有多個變體，啟用 enableVariants
   // - 將變體資訊存入外部欄位供後續處理
-  if (product.variants.length > 1 && product.options.length > 0) {
+  // 🔧 修復：加強變體檢查，避免空陣列錯誤
+  const variantCount = hasVariants ? product.variants.length : 0
+  const optionCount = Array.isArray(product.options) ? product.options.length : 0
+  
+  if (variantCount > 1 && optionCount > 0) {
     baseData.enableVariants = true
     // 將 EasyStore 變體資料存為 JSON 供後續處理
     // 注意: 完整的變體同步需要建立 variantTypes 和 variantOptions，較為複雜
     // 這裡先記錄變體資訊，後續可手動或透過另一個工具處理
-    addLog?.('info', `發現 ${product.variants.length} 個變體, ${product.options.length} 個選項類型`, product.title)
+    addLog?.('info', `發現 ${variantCount} 個變體, ${optionCount} 個選項類型`, product.title)
   }
 
   return baseData

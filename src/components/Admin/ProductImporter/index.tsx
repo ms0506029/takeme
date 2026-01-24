@@ -98,6 +98,325 @@ const PlayIcon = () => (
   </svg>
 )
 
+// ===== CSV 上傳元件 =====
+
+interface CsvUploadSectionProps {
+  vendors: Vendor[]
+  selectedVendor: string
+  setSelectedVendor: (id: string) => void
+  setMessage: (msg: { type: 'success' | 'error'; text: string } | null) => void
+}
+
+interface CsvPreviewProduct {
+  handle: string
+  title: string
+  variantCount: number
+  imageCount: number
+  price: number
+}
+
+interface CsvProgress {
+  phase: 'parsing' | 'processing' | 'done'
+  total: number
+  processed: number
+  created: number
+  updated: number
+  skipped: number
+  failed: number
+  currentProduct?: string
+}
+
+const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({
+  vendors,
+  selectedVendor,
+  setSelectedVendor,
+  setMessage,
+}) => {
+  const [file, setFile] = useState<File | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [previewData, setPreviewData] = useState<{
+    rowCount: number
+    productCount: number
+    products: CsvPreviewProduct[]
+  } | null>(null)
+  const [importing, setImporting] = useState(false)
+  const [progress, setProgress] = useState<CsvProgress | null>(null)
+  const [downloadImages, setDownloadImages] = useState(true)
+  const [imageQuality, setImageQuality] = useState<'thumbnail' | 'detail'>('detail')
+
+  // 拖放處理
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }, [])
+
+  const handleDragLeave = useCallback(() => {
+    setIsDragging(false)
+  }, [])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const droppedFile = e.dataTransfer.files[0]
+    if (droppedFile && (droppedFile.name.endsWith('.csv') || droppedFile.name.endsWith('.xlsx'))) {
+      setFile(droppedFile)
+      setPreviewData(null)
+    } else {
+      setMessage({ type: 'error', text: '請上傳 CSV 或 Excel 檔案' })
+    }
+  }, [setMessage])
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0]
+    if (selectedFile) {
+      setFile(selectedFile)
+      setPreviewData(null)
+    }
+  }, [])
+
+  // 預覽 CSV
+  const handlePreview = async () => {
+    if (!file) return
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const response = await fetch('/api/import/csv?preview=true', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await response.json()
+
+      if (data.success) {
+        setPreviewData({
+          rowCount: data.rowCount,
+          productCount: data.productCount,
+          products: data.products,
+        })
+        setMessage({ type: 'success', text: `預覽完成：${data.productCount} 個商品` })
+      } else {
+        setMessage({ type: 'error', text: data.error || '預覽失敗' })
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: '預覽過程發生錯誤' })
+    }
+  }
+
+  // 執行匯入
+  const handleImport = async () => {
+    if (!file || !selectedVendor) {
+      setMessage({ type: 'error', text: '請選擇檔案和目標商家' })
+      return
+    }
+
+    setImporting(true)
+    setProgress({ phase: 'parsing', total: 0, processed: 0, created: 0, updated: 0, skipped: 0, failed: 0 })
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('downloadImages', String(downloadImages))
+    formData.append('imageQuality', imageQuality)
+
+    try {
+      const response = await fetch('/api/import/csv', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await response.json()
+
+      if (data.success !== undefined) {
+        setProgress({
+          phase: 'done',
+          total: data.total,
+          processed: data.total,
+          created: data.created,
+          updated: data.updated,
+          skipped: data.skipped,
+          failed: data.failed,
+        })
+
+        if (data.success) {
+          setMessage({
+            type: 'success',
+            text: `匯入完成！建立: ${data.created}, 更新: ${data.updated}, 跳過: ${data.skipped}`,
+          })
+        } else {
+          setMessage({
+            type: 'error',
+            text: `匯入完成但有錯誤。失敗: ${data.failed}`,
+          })
+        }
+      } else {
+        setMessage({ type: 'error', text: data.error || '匯入失敗' })
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: '匯入過程發生錯誤' })
+    } finally {
+      setImporting(false)
+    }
+  }
+
+  return (
+    <div className="upload-section">
+      {/* 拖放上傳區域 */}
+      <div
+        className={`dropzone ${isDragging ? 'dropzone-active' : ''} ${file ? 'dropzone-has-file' : ''}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <UploadIcon />
+        {file ? (
+          <>
+            <p className="dropzone-title">📄 {file.name}</p>
+            <p className="dropzone-hint">{(file.size / 1024).toFixed(1)} KB</p>
+            <button className="btn btn-secondary btn-sm" onClick={() => { setFile(null); setPreviewData(null) }}>
+              移除檔案
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="dropzone-title">拖放 CSV/Excel 檔案至此</p>
+            <p className="dropzone-hint">或點擊下方按鈕選擇檔案</p>
+            <label className="btn btn-secondary">
+              選擇檔案
+              <input type="file" accept=".csv,.xlsx" onChange={handleFileSelect} hidden />
+            </label>
+          </>
+        )}
+      </div>
+
+      {/* 設定區塊 */}
+      {file && (
+        <div className="settings-card">
+          <h3>匯入設定</h3>
+
+          <div className="form-group">
+            <label>目標商家</label>
+            <select
+              value={selectedVendor}
+              onChange={(e) => setSelectedVendor(e.target.value)}
+              disabled={importing}
+            >
+              {vendors.length === 0 && <option value="">載入中...</option>}
+              {vendors.map((vendor) => (
+                <option key={vendor.id} value={vendor.id}>
+                  {vendor.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={downloadImages}
+                onChange={(e) => setDownloadImages(e.target.checked)}
+                disabled={importing}
+              />
+              下載圖片並轉換為 WebP（建議勾選）
+            </label>
+          </div>
+
+          {downloadImages && (
+            <div className="form-group">
+              <label>圖片品質</label>
+              <select
+                value={imageQuality}
+                onChange={(e) => setImageQuality(e.target.value as 'thumbnail' | 'detail')}
+                disabled={importing}
+              >
+                <option value="detail">高品質 (80%, ≈150KB)</option>
+                <option value="thumbnail">壓縮 (65%, ≈50KB)</option>
+              </select>
+            </div>
+          )}
+
+          <div className="action-buttons">
+            <button className="btn btn-secondary" onClick={handlePreview} disabled={importing}>
+              🔍 預覽
+            </button>
+            <button className="btn btn-primary" onClick={handleImport} disabled={importing || !selectedVendor}>
+              <PlayIcon />
+              {importing ? '匯入中...' : '開始匯入'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 預覽結果 */}
+      {previewData && (
+        <div className="preview-result">
+          <h3>預覽結果</h3>
+          <div className="preview-stats">
+            <div className="stat">
+              <span className="stat-value">{previewData.rowCount}</span>
+              <span className="stat-label">CSV 行數</span>
+            </div>
+            <div className="stat">
+              <span className="stat-value">{previewData.productCount}</span>
+              <span className="stat-label">商品數量</span>
+            </div>
+          </div>
+
+          {previewData.products.length > 0 && (
+            <table className="preview-table">
+              <thead>
+                <tr>
+                  <th>Handle</th>
+                  <th>標題</th>
+                  <th>變體數</th>
+                  <th>圖片數</th>
+                  <th>價格</th>
+                </tr>
+              </thead>
+              <tbody>
+                {previewData.products.map((p, i) => (
+                  <tr key={i}>
+                    <td><code>{p.handle}</code></td>
+                    <td>{p.title}</td>
+                    <td>{p.variantCount}</td>
+                    <td>{p.imageCount}</td>
+                    <td>NT${p.price}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {/* 匯入進度 */}
+      {progress && (
+        <div className="import-progress">
+          <h3>匯入進度</h3>
+          <div className="progress-bar">
+            {progress.phase === 'parsing' ? (
+              <div className="progress-fill progress-indeterminate" style={{ width: '30%' }} />
+            ) : (
+              <div
+                className="progress-fill"
+                style={{ width: `${progress.total > 0 ? (progress.processed / progress.total) * 100 : 0}%` }}
+              />
+            )}
+          </div>
+          <div className="progress-text">
+            {progress.processed} / {progress.total}
+          </div>
+          <div className="progress-stats">
+            <span className="stat-success">✅ 建立: {progress.created}</span>
+            <span className="stat-update">🔄 更新: {progress.updated}</span>
+            <span className="stat-skip">⏭️ 跳過: {progress.skipped}</span>
+            <span className="stat-error">❌ 失敗: {progress.failed}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export const ProductImporter: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('easystore')
   const [loading, setLoading] = useState(false)
@@ -600,15 +919,12 @@ def sync_product(product_data):
 
       {/* Tab: Upload */}
       {activeTab === 'upload' && (
-        <div className="upload-section">
-          <div className="dropzone">
-            <UploadIcon />
-            <p className="dropzone-title">CSV 上傳功能開發中</p>
-            <p className="dropzone-hint">
-              目前請使用 EasyStore 匯入或 Webhook 方式整合
-            </p>
-          </div>
-        </div>
+        <CsvUploadSection 
+          vendors={vendors}
+          selectedVendor={selectedVendor}
+          setSelectedVendor={setSelectedVendor}
+          setMessage={setMessage}
+        />
       )}
 
       {/* Tab: Status */}

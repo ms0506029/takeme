@@ -260,6 +260,8 @@
       padding: 4rem 2rem;
       text-align: center;
       background: var(--color-surface);
+      transition: all 0.2s ease;
+      cursor: pointer;
 
       svg {
         color: var(--color-text-sub);
@@ -278,9 +280,242 @@
         font-size: 0.875rem;
         color: var(--color-text-sub);
         opacity: 0.7;
-        margin: 0;
+        margin: 0 0 1rem 0;
+      }
+
+      // 拖放中效果
+      &.dropzone-active {
+        border-color: var(--color-primary);
+        background: rgba(201, 145, 93, 0.05);
+      }
+
+      // 已有檔案
+      &.dropzone-has-file {
+        padding: 2rem;
+        border-style: solid;
+        border-color: var(--color-primary);
+        background: rgba(201, 145, 93, 0.03);
+
+        .dropzone-title {
+          color: var(--color-primary);
+        }
       }
     }
+
+    // 設定卡片（繼承 easystore-section 樣式）
+    .settings-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+
+      h3 {
+        font-size: 1rem;
+        margin: 0 0 1rem 0;
+        color: var(--color-text-main);
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+
+        label {
+          display: block;
+          font-size: 0.875rem;
+          font-weight: 500;
+          margin-bottom: 0.5rem;
+          color: var(--color-text-main);
+        }
+
+        select {
+          width: 100%;
+          padding: 0.625rem 0.875rem;
+          border: 1px solid var(--color-border);
+          border-radius: var(--radius-sm);
+          font-size: 0.875rem;
+          background: var(--color-base-100);
+          color: var(--color-text-main);
+
+          &:focus {
+            outline: none;
+            border-color: var(--color-primary);
+          }
+        }
+      }
+
+      .checkbox-group {
+        margin-bottom: 0.75rem;
+
+        label {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.875rem;
+          color: var(--color-text-main);
+          cursor: pointer;
+
+          input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--color-primary);
+          }
+        }
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+    }
+
+    // 預覽結果
+    .preview-result {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+
+      h3 {
+        font-size: 1rem;
+        margin: 0 0 1rem 0;
+      }
+
+      .preview-stats {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+
+        .stat {
+          display: flex;
+          flex-direction: column;
+
+          .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary);
+          }
+
+          .stat-label {
+            font-size: 0.75rem;
+            color: var(--color-text-sub);
+          }
+        }
+      }
+    }
+
+    // 預覽表格
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+
+      th, td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      th {
+        background: var(--color-base-100);
+        font-weight: 600;
+        color: var(--color-text-sub);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      code {
+        background: var(--color-base-100);
+        padding: 0.125rem 0.375rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+    }
+
+    // 匯入進度（複製 easystore-section 的樣式）
+    .import-progress {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+
+      h3 {
+        font-size: 1rem;
+        margin: 0 0 1rem 0;
+      }
+
+      .progress-bar {
+        height: 12px;
+        background: var(--color-base-100);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 0.75rem;
+        position: relative;
+
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #22c55e 0%, #16a34a 50%, #22c55e 100%);
+          background-size: 200% 100%;
+          animation: progressShimmer 2s ease-in-out infinite;
+          transition: width 0.3s ease;
+          border-radius: 6px;
+
+          &.progress-indeterminate {
+            position: absolute;
+            animation: indeterminate 1.5s ease-in-out infinite;
+          }
+        }
+      }
+
+      .progress-text {
+        font-size: 0.875rem;
+        color: var(--color-text-sub);
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+      }
+
+      .progress-stats {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 0.875rem;
+        flex-wrap: wrap;
+
+        span {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
+
+        .stat-success { color: #22c55e; }
+        .stat-update { color: #3b82f6; }
+        .stat-skip { color: #f59e0b; }
+        .stat-error { color: #ef4444; }
+      }
+    }
+
+    @keyframes indeterminate {
+      0% { left: -30%; }
+      50% { left: 70%; }
+      100% { left: -30%; }
+    }
+
+    @keyframes progressShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  }
+
+  // 小尺寸按鈕
+  .btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
   }
 
   // Status Section
