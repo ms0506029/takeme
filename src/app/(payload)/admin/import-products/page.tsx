@@ -6,7 +6,8 @@ import { Metadata } from 'next'
  * Phase 7.2.1 - 商品匯入頁面
  * 
  * 路徑: /admin/import-products
- * 注意：此頁面位於 (payload) 路由組內，會自動繼承 Payload 的 RootLayout
+ * 注意：Payload 3.0 自訂頁面不會自動獲得側邊欄
+ * 側邊欄由 CustomNav 組件透過連結提供導航
  */
 
 export const metadata: Metadata = {
@@ -14,11 +15,5 @@ export const metadata: Metadata = {
 }
 
 export default function ImportProductsPage() {
-  return (
-    <div className="template-default__wrap">
-      <div className="gutter--left gutter--right">
-        <ProductImporter />
-      </div>
-    </div>
-  )
+  return <ProductImporter />
 }

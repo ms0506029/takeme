@@ -217,7 +217,17 @@ export const ProductImporter: React.FC = () => {
 
     setImporting(true)
     setImportLogs([])
-    setImportProgress(null)
+    // 立即顯示進度條（初始狀態）
+    setImportProgress({
+      total: 0,
+      processed: 0,
+      created: 0,
+      updated: 0,
+      skipped: 0,
+      failed: 0,
+      currentProduct: '正在連接 EasyStore...',
+      logs: [],
+    })
 
     try {
       const response = await fetch('/api/import/easystore', {
