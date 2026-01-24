@@ -301,6 +301,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                 { label: 'BEAMS', value: 'beams' },
                 { label: 'ZOZO', value: 'zozo' },
                 { label: 'Freak\'s Store', value: 'freaks' },
+                { label: 'EasyStore', value: 'easystore' },
                 { label: '手動建立', value: 'manual' },
               ],
               defaultValue: 'manual',
