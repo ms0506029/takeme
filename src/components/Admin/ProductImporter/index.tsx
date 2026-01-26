@@ -31,6 +31,7 @@ interface ImportProgress {
   updated: number
   skipped: number
   failed: number
+  totalVariants?: number
   currentProduct?: string
   logs: ImportLog[]
 }
@@ -527,7 +528,7 @@ export const ProductImporter: React.FC = () => {
     }
   }
 
-  // 執行 EasyStore 匯入
+  // 執行 EasyStore 匯入 (使用 SSE 串流)
   const startEasyStoreImport = async () => {
     if (!selectedVendor) {
       setMessage({ type: 'error', text: '請選擇目標商家' })
@@ -549,7 +550,8 @@ export const ProductImporter: React.FC = () => {
     })
 
     try {
-      const response = await fetch('/api/import/easystore', {
+      // 使用 SSE 串流 API
+      const response = await fetch('/api/import/easystore/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -559,9 +561,96 @@ export const ProductImporter: React.FC = () => {
         }),
       })
 
-      const data = await response.json()
-      
-      if (data.success !== undefined) {
+      if (!response.ok) {
+        throw new Error('連接失敗')
+      }
+
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+
+      if (!reader) {
+        throw new Error('無法讀取串流')
+      }
+
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+
+        // 解析 SSE 事件
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || '' // 保留不完整的行
+
+        let eventType = ''
+        for (const line of lines) {
+          if (line.startsWith('event: ')) {
+            eventType = line.slice(7)
+          } else if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6))
+              handleSSEEvent(eventType, data)
+            } catch {
+              // 忽略解析錯誤
+            }
+          }
+        }
+      }
+
+    } catch (err) {
+      setMessage({ type: 'error', text: err instanceof Error ? err.message : '匯入過程發生錯誤' })
+    } finally {
+      setImporting(false)
+    }
+  }
+
+  // 處理 SSE 事件
+  const handleSSEEvent = (event: string, data: any) => {
+    switch (event) {
+      case 'start':
+      case 'loading':
+        setImportProgress(prev => ({
+          ...prev!,
+          currentProduct: data.message,
+          total: data.total || prev?.total || 0,
+        }))
+        break
+
+      case 'loaded':
+        setImportProgress(prev => ({
+          ...prev!,
+          total: data.total,
+          currentProduct: data.message,
+        }))
+        break
+
+      case 'progress':
+        setImportProgress({
+          total: data.total,
+          processed: data.processed,
+          created: data.created,
+          updated: data.updated,
+          skipped: data.skipped,
+          failed: data.failed,
+          totalVariants: data.totalVariants || 0,
+          currentProduct: data.currentProduct,
+          logs: [],
+        })
+        // 添加日誌
+        setImportLogs(prev => [
+          ...prev,
+          {
+            timestamp: new Date().toISOString(),
+            type: data.status === 'error' ? 'error' : data.status === 'skipped' ? 'skip' : 'success',
+            message: data.message,
+            productTitle: data.currentProduct,
+          },
+        ].slice(-100)) // 只保留最近 100 條
+        break
+
+      case 'complete':
         setImportProgress({
           total: data.total,
           processed: data.total,
@@ -569,28 +658,18 @@ export const ProductImporter: React.FC = () => {
           updated: data.updated,
           skipped: data.skipped,
           failed: data.failed,
-          logs: data.logs || [],
+          totalVariants: data.totalVariants || 0,
+          logs: [],
         })
-        setImportLogs(data.logs || [])
-        
-        if (data.success) {
-          setMessage({ 
-            type: 'success', 
-            text: `匯入完成！建立: ${data.created}, 更新: ${data.updated}, 跳過: ${data.skipped}` 
-          })
-        } else {
-          setMessage({ 
-            type: 'error', 
-            text: `匯入完成但有錯誤。失敗: ${data.failed}` 
-          })
-        }
-      } else {
-        setMessage({ type: 'error', text: data.error || '匯入失敗' })
-      }
-    } catch (err) {
-      setMessage({ type: 'error', text: '匯入過程發生錯誤' })
-    } finally {
-      setImporting(false)
+        setMessage({
+          type: data.success ? 'success' : 'error',
+          text: data.message,
+        })
+        break
+
+      case 'error':
+        setMessage({ type: 'error', text: data.message })
+        break
     }
   }
 
@@ -788,6 +867,9 @@ export const ProductImporter: React.FC = () => {
                 <span className="stat-update">🔄 更新: {importProgress.updated}</span>
                 <span className="stat-skip">⏭️ 跳過: {importProgress.skipped}</span>
                 <span className="stat-error">❌ 失敗: {importProgress.failed}</span>
+                {(importProgress.totalVariants ?? 0) > 0 && (
+                  <span className="stat-variant">🎨 變體: {importProgress.totalVariants}</span>
+                )}
               </div>
             </div>
           )}

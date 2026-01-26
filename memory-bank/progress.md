@@ -1,5 +1,5 @@
 # Progress Tracker
-**Last Updated：** 2026-01-21
+**Last Updated：** 2026-01-27
 
 ---
 
@@ -44,6 +44,16 @@
 - [x] **Phase 9.2**: Header Icon 整合 + CartDrawer 重構
 - [x] **Phase 9.3**: 購物車專頁 `/cart`
 - [x] **Phase 9.4**: 結帳頁面視覺優化
+
+### EasyStore 商品匯入系統 ✅
+- [x] SSE 串流即時進度推送
+- [x] **完整變體同步**:
+  - 自動建立 VariantTypes (顏色、尺寸)
+  - 自動建立 VariantOptions (白色、FREE、S、M 等)
+  - 自動建立 Variants (含價格、庫存、SKU)
+- [x] **圖片-變體關聯**: 自動將圖片關聯到對應的變體選項
+- [x] 進度介面顯示變體同步數量
+- [x] Slug 生成修復（移除中文字符）
 
 ---
 
@@ -91,6 +101,28 @@
 ---
 
 ## 📝 最近更新日誌
+
+### 2026-01-27
+- ✅ **EasyStore 匯入系統 Bug 修復 + 端對端測試通過**
+  - 修復 `processVariants()` 無法解析 EasyStore 實際 API 格式的問題
+    - EasyStore API 使用 `variant.name` (如 "白色, FREE") 而非 `variant.option1/2/3`
+    - EasyStore API 沒有 `product.options` 陣列
+  - 新增 `parseVariantName()` 函數解析變體名稱
+  - 新增 `inferOptionTypeName()` 函數自動判斷選項類型（顏色/尺寸）
+  - 修復圖片 URL 欄位：EasyStore 使用 `url` 而非 `src`
+  - 修復更新商品時重複建立變體的問題（先刪除舊變體）
+  - 端對端測試驗證：商品、變體、圖片、圖片-變體關聯全部正常
+
+### 2026-01-26
+- ✅ **EasyStore 變體同步功能完整實作**
+  - `src/lib/import/easystore-importer.ts` 新增完整變體處理邏輯
+  - 新增 `getOrCreateVariantType()` - 建立/查詢規格類型
+  - 新增 `getOrCreateVariantOption()` - 建立/查詢規格選項
+  - 新增 `createProductVariant()` - 建立產品變體
+  - 新增 `processVariants()` - 處理 EasyStore 變體結構
+  - 新增 `processImagesWithVariantLinks()` - 圖片變體關聯
+- ✅ SSE 串流 API 更新顯示變體同步數量
+- ✅ 前端 ProductImporter 介面顯示變體統計
 
 ### 2026-01-21
 - ✅ **Phase 9 全數完成**

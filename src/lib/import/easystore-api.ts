@@ -31,19 +31,22 @@ export interface EasyStoreVariant {
   id: number
   product_id: number
   title: string
+  name?: string // 變體名稱，格式如 "白色, FREE"
   price: string
   compare_at_price: string | null
   sku: string | null
   barcode: string | null
-  position: number
+  position?: number
   inventory_quantity: number
   inventory_management: string | null
   option1: string | null
   option2: string | null
   option3: string | null
+  options?: string // 選項 ID 字串，格式如 "#id1, #id2"
   weight: number
   weight_unit: string
-  requires_shipping: boolean
+  requires_shipping?: boolean
+  shipping_required?: boolean
   taxable: boolean
   image_id: number | null
 }
@@ -60,11 +63,16 @@ export interface EasyStoreImage {
   id: number
   product_id: number
   position: number
-  src: string
-  alt: string | null
+  url: string // 圖片 URL (EasyStore API 使用 url 而非 src)
+  src?: string // 相容舊格式
+  alt?: string | null
+  title?: string
+  extension?: string
+  format_type?: string
   width: number
   height: number
-  variant_ids: number[]
+  size?: number
+  variant_ids?: number[]
 }
 
 interface EasyStoreApiResponse<T> {
