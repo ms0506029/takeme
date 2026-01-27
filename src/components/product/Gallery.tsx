@@ -44,7 +44,8 @@ export const Gallery: React.FC<Props> = ({ gallery }) => {
 
   // 當 URL 參數變化時，滾動到對應的圖片
   useEffect(() => {
-    const values = searchParams.values().toArray()
+    // 使用 Array.from() 取代 .toArray() 以支援 Safari
+    const values = Array.from(searchParams.values())
 
     if (values && api) {
       // 優先找有 variantOption 匹配的圖片
