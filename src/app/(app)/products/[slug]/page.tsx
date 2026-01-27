@@ -190,9 +190,10 @@ const queryProductBySlug = async ({ slug }: { slug: string }) => {
 
   const payload = await getPayload({ config: configPromise })
 
+  // 先查詢產品（不包含變體）
   const result = await payload.find({
     collection: 'products',
-    depth: 3,
+    depth: 2,
     draft,
     limit: 1,
     overrideAccess: draft,
@@ -207,15 +208,33 @@ const queryProductBySlug = async ({ slug }: { slug: string }) => {
         ...(draft ? [] : [{ _status: { equals: 'published' } }]),
       ],
     },
-    populate: {
-      variants: {
-        title: true,
-        priceInUSD: true,
-        inventory: true,
-        options: true,
+  })
+
+  const product = result.docs?.[0]
+  if (!product) return null
+
+  // 單獨查詢所有變體，確保沒有分頁限制
+  const variantsResult = await payload.find({
+    collection: 'variants',
+    depth: 2, // 確保 options.variantType 被填充
+    draft,
+    limit: 100, // 足夠容納所有變體
+    overrideAccess: draft,
+    pagination: false,
+    where: {
+      product: {
+        equals: product.id,
       },
     },
   })
 
-  return result.docs?.[0] || null
+  // 合併變體資料到產品
+  return {
+    ...product,
+    variants: {
+      docs: variantsResult.docs,
+      hasNextPage: false,
+      totalDocs: variantsResult.docs.length,
+    },
+  }
 }

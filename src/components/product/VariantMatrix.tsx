@@ -65,8 +65,11 @@ export function VariantMatrix({ product }: Props) {
       variant.options?.forEach((opt) => {
         if (typeof opt !== 'object') return
 
-        const typeId = typeof opt.type === 'object' ? opt.type.id : opt.type
-        const typeName = typeof opt.type === 'object' ? opt.type.name?.toLowerCase() || '' : ''
+        // 注意：欄位是 variantType 不是 type
+        const typeId =
+          typeof opt.variantType === 'object' ? opt.variantType.id : opt.variantType
+        const typeName =
+          typeof opt.variantType === 'object' ? opt.variantType.name?.toLowerCase() || '' : ''
 
         if (
           (colorType && typeof colorType === 'object' && typeId === colorType.id) ||

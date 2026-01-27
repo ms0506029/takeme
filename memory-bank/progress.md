@@ -1,5 +1,5 @@
 # Progress Tracker
-**Last Updated：** 2026-01-27
+**Last Updated：** 2026-01-27 (晚間更新)
 
 ---
 
@@ -64,6 +64,14 @@
   - 缺貨時自動顯示
   - 申請/取消通知功能
   - 變體規格支援
+- [x] **VariantMatrix 組件**: 變體矩陣佈局（參考 Daytona Park）
+  - 按顏色分組顯示所有尺寸
+  - 每個尺寸有獨立收藏按鈕
+  - 缺貨只標示在尺寸層級
+- [x] **VariantWishlistButton 組件**: 行內小型愛心按鈕
+- [x] **Gallery 優化**: 查看更多功能
+- [ ] 🔴 **Cloudflare R2 設定**（進行中，已中斷）
+- [ ] 重新匯入商品圖片
 - [ ] 遺棄購物車 LINE 提醒（待實作）
 
 ---
@@ -112,6 +120,18 @@
 ---
 
 ## 📝 最近更新日誌
+
+### 2026-01-27 (晚間)
+- ✅ **VariantMatrix Bug 修復 - 商品顏色顯示不完整**
+  - **問題描述**：EasyStore 匯入的商品應有 5 種顏色，但只顯示 4 種
+  - **根本原因 1**：變體查詢有分頁限制（limit: 10），導致 15 個變體只返回 10 個
+    - 解決：單獨查詢變體，設定 `limit: 100` 和 `pagination: false`
+  - **根本原因 2**：VariantMatrix 使用 `opt.type` 但正確欄位是 `opt.variantType`
+    - 解決：修正欄位名稱為 `opt.variantType`
+  - **修改檔案**：
+    - `src/app/(app)/products/[slug]/page.tsx` - 重構 queryProductBySlug
+    - `src/components/product/VariantMatrix.tsx` - 修正 variantType 欄位
+  - **驗證結果**：5 種顏色（格紋深灰、格紋淺灰、深藍、棕色、黑色）全部正確顯示
 
 ### 2026-01-27
 - ✅ **商品頁 UI 優化 - VariantMatrix 變體矩陣**
