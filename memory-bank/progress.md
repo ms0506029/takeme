@@ -107,13 +107,67 @@
 | 階段八：會員中心 | 已完成 | 100% |
 | **階段九：購物車系統** | **已完成** | **100%** |
 | 階段十：LINE Login | 未開始 | 0% |
-| **階段十一：商品頁整合** | **進行中** | **67%** |
+| **階段十一：商品頁整合** | **進行中** | **85%** |
 
 ---
 
 ## 📝 最近更新日誌
 
 ### 2026-01-27
+- ✅ **商品頁 UI 優化 - VariantMatrix 變體矩陣**
+  - 新增 `VariantMatrix` 組件 (`src/components/product/VariantMatrix.tsx`)
+    - 按顏色分組顯示所有尺寸變體
+    - 每個尺寸行內顯示：庫存狀態、加入購物車/到貨通知、收藏按鈕
+    - 缺貨狀態只顯示在尺寸層級，不在顏色層級
+    - 每個顏色組顯示縮圖（從 gallery 關聯取得）
+  - 新增 `VariantWishlistButton` 組件 (`src/components/product/VariantWishlistButton.tsx`)
+    - 小型愛心按鈕，適合放在表格行內
+    - 支援特定變體（顏色+尺寸）的收藏功能
+  - 優化 `Gallery` 組件
+    - 新增「查看更多」功能，初始顯示 10 張縮圖
+    - 超過限制時顯示 "+N 更多" 計數器
+    - 展開後可收合回初始狀態
+  - 更新 `ProductDescription` 組件
+    - 有變體商品：使用 VariantMatrix 取代舊版 VariantSelector
+    - 無變體商品：保留原本的加入購物車/收藏按鈕
+    - 版面更緊湊（調整 gap 和 font-size）
+  - 參考設計：Daytona Park (https://www.daytona-park.com/)
+
+- ✅ **前端驗證完成 - 圖片載入 & 版面修復**
+  - 修復 `Media/Image/index.tsx` 圖片載入問題
+    - 問題：使用 `NEXT_PUBLIC_SERVER_URL` 前綴導致指向生產環境 URL
+    - 解決：改用相對路徑 `src = url || ''`
+    - 結果：所有商品圖片正常顯示
+  - 修復 `products/[slug]/page.tsx` 版面溢位問題
+    - 問題：全螢幕時 Carousel 元素超出 viewport
+    - 解決：在 Gallery 父容器和主商品容器加入 `overflow-hidden`
+    - 結果：版面正常，無水平溢位
+  - 驗證 VariantSelector 顯示正確
+    - 顏色：黑色、格紋深灰、棕色、深藍（缺貨）
+    - 尺寸：S（缺貨）、M、L
+    - 缺貨選項可點擊，顯示紅色高亮樣式
+  - 驗證 API 端點運作正常
+    - `/api/users/me` - 返回用戶資料（驗證通過）
+    - `/api/wishlist` - 認證修復生效
+    - `/api/restock-requests` - 認證修復生效
+  - ⚠️ 發現環境配置問題
+    - `.env` 中 `NEXT_PUBLIC_SERVER_URL=https://takemejapan.zeabur.app`
+    - 本地開發時 AuthProvider 指向生產環境，導致 CORS/cookie 問題
+    - 解決方案：建立 `.env.local` 設定 `NEXT_PUBLIC_SERVER_URL=http://localhost:3000`
+- ✅ **Phase 11 Bug 修復 - VariantSelector & API 認證**
+  - 修復 `VariantSelector` 顯示錯誤選項的問題
+    - 問題：顯示所有 VariantType 的選項，而非只顯示該商品使用的選項
+    - 解決：新增 `usedOptionIds` 過濾邏輯，只顯示商品變體實際使用的選項
+    - 結果：顏色只顯示 4 種、尺寸只顯示 S/M/L（無 FREE）
+  - 修復缺貨變體無法選擇的問題
+    - 問題：`disabled={!isAvailableForSale}` 導致缺貨選項不可點擊
+    - 解決：移除 disabled，改用視覺樣式區分缺貨狀態（紅色高亮 + 刪除線）
+    - 結果：可選擇缺貨變體，觸發 RestockNotifyButton 顯示
+  - 修復 `/api/wishlist` 和 `/api/restock-requests` 認證失敗問題
+    - 問題：API 檢查 `authorization` header 存在才執行認證，但前端使用 cookie
+    - 解決：移除 authHeader 檢查，讓 `payload.auth()` 自動處理 cookie/bearer token
+    - 結果：API 返回 `success: true`，功能正常
+  - 設置測試變體：「深藍 + S」庫存設為 0，驗證補貨通知按鈕
 - ✅ **Phase 11 商品頁整合 - 願望清單 & 補貨通知**
   - 新增 `WishlistButton` 組件 (`src/components/product/WishlistButton.tsx`)
     - 愛心 Icon 顯示收藏狀態（紅色填滿/空心）

@@ -6,7 +6,7 @@ import { AddToCart } from '@/components/Cart/AddToCart'
 import { Price } from '@/components/Price'
 import React, { Suspense } from 'react'
 
-import { VariantSelector } from './VariantSelector'
+import { VariantMatrix } from './VariantMatrix'
 import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
 import { StockIndicator } from '@/components/product/StockIndicator'
 import { WishlistButton } from '@/components/product/WishlistButton'
@@ -54,15 +54,11 @@ export function ProductDescription({ product }: { product: Product }) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <h1 className="text-2xl font-medium">{product.title}</h1>
-          <Suspense fallback={null}>
-            <WishlistButton product={product} />
-          </Suspense>
-        </div>
-        <div className="uppercase font-mono">
+    <div className="flex flex-col gap-4">
+      {/* 標題與價格 */}
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-2">
+        <h1 className="text-xl font-medium">{product.title}</h1>
+        <div className="uppercase font-mono text-lg">
           {hasVariants ? (
             <Price highestAmount={highestAmount} lowestAmount={lowestAmount} />
           ) : (
@@ -70,33 +66,38 @@ export function ProductDescription({ product }: { product: Product }) {
           )}
         </div>
       </div>
-      {product.description ? (
-        <RichText className="" data={product.description} enableGutter={false} />
-      ) : null}
-      <hr />
-      {hasVariants && (
-        <>
-          <Suspense fallback={null}>
-            <VariantSelector product={product} />
-          </Suspense>
 
-          <hr />
+      {/* 商品描述 */}
+      {product.description ? (
+        <RichText className="text-sm text-gray-600" data={product.description} enableGutter={false} />
+      ) : null}
+
+      {/* 變體矩陣（有變體時顯示） */}
+      {hasVariants ? (
+        <Suspense fallback={<div className="h-32 bg-gray-100 animate-pulse rounded-lg" />}>
+          <VariantMatrix product={product} />
+        </Suspense>
+      ) : (
+        <>
+          {/* 無變體商品：顯示庫存狀態、收藏按鈕、加入購物車 */}
+          <div className="flex items-center justify-between border rounded-lg p-3">
+            <Suspense fallback={null}>
+              <StockIndicator product={product} />
+            </Suspense>
+            <div className="flex items-center gap-2">
+              <Suspense fallback={null}>
+                <AddToCart product={product} />
+              </Suspense>
+              <Suspense fallback={null}>
+                <RestockNotifyButton product={product} />
+              </Suspense>
+              <Suspense fallback={null}>
+                <WishlistButton product={product} />
+              </Suspense>
+            </div>
+          </div>
         </>
       )}
-      <div className="flex items-center justify-between">
-        <Suspense fallback={null}>
-          <StockIndicator product={product} />
-        </Suspense>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-3">
-        <Suspense fallback={null}>
-          <AddToCart product={product} />
-        </Suspense>
-        <Suspense fallback={null}>
-          <RestockNotifyButton product={product} />
-        </Suspense>
-      </div>
     </div>
   )
 }

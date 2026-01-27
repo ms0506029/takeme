@@ -785,7 +785,7 @@ async function prepareProductData(
     externalUrl: `https://takemejapan.easy.co/products/${product.handle}`,
     lastSyncedAt: new Date().toISOString(),
     syncStatus: 'synced' as const,
-    _status: product.status === 'active' ? 'published' : 'draft',
+    _status: product.status === 'draft' || product.status === 'archived' ? 'draft' : 'published',
   }
 
   // 價格（使用第一個變體的價格）
@@ -1092,6 +1092,11 @@ export async function importSingleProduct(
 
 /**
  * 處理商品圖片並關聯變體選項
+ *
+ * 優化策略：
+ * 1. 優先匯入每個顏色的代表圖片（有 image_id 映射的）
+ * 2. 如果還有配額，再從剩餘圖片中選取
+ * 3. 確保每個顏色都有一張代表圖
  */
 async function processImagesWithVariantLinks(
   product: EasyStoreProduct,
@@ -1104,15 +1109,29 @@ async function processImagesWithVariantLinks(
   let failCount = 0
   let linkedCount = 0
 
-  const maxImages = 10
-  const imagesToProcess = product.images.slice(0, maxImages)
+  const maxImages = 150 // 增加上限以容納更多圖片
+
+  // 優先排序：先處理有變體關聯的圖片（顏色代表圖），再處理其他圖片
+  const linkedImageIds = new Set(imageOptionMap.keys())
+  const linkedImages = product.images.filter((img) => linkedImageIds.has(img.id))
+  const otherImages = product.images.filter((img) => !linkedImageIds.has(img.id))
+
+  // 合併：先放顏色代表圖，再放其他圖片
+  const sortedImages = [...linkedImages, ...otherImages]
+  const imagesToProcess = sortedImages.slice(0, maxImages)
+
+  addLog?.(
+    'info',
+    `圖片排序: ${linkedImages.length} 張顏色代表圖, ${otherImages.length} 張其他圖片`,
+    product.title,
+  )
 
   // 並行處理圖片（每批 3 張）
   const batchSize = 3
   for (let i = 0; i < imagesToProcess.length; i += batchSize) {
     const batch = imagesToProcess.slice(i, i + batchSize)
     const results = await Promise.allSettled(
-      batch.map((img) => uploadImageToMedia(img.url || img.src || '', product.title, payload))
+      batch.map((img) => uploadImageToMedia(img.url || img.src || '', product.title, payload)),
     )
 
     for (let j = 0; j < results.length; j++) {

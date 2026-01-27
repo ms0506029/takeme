@@ -16,12 +16,9 @@ import { getPayload } from 'payload'
 async function getCurrentUser() {
   const payload = await getPayload({ config: configPromise })
   const headersList = await headers()
-  
-  const authHeader = headersList.get('authorization')
-  
-  if (!authHeader) return null
-  
+
   try {
+    // payload.auth 會自動從 cookie 或 authorization header 取得用戶
     const { user } = await payload.auth({ headers: headersList })
     return user
   } catch {

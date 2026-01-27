@@ -20,12 +20,29 @@ export function VariantSelector({ product }: { product: Product }) {
     return null
   }
 
+  // 收集該商品所有變體實際使用的選項 ID
+  const usedOptionIds = new Set<string>()
+  variants?.forEach((variant) => {
+    if (typeof variant === 'object' && variant.options) {
+      variant.options.forEach((opt) => {
+        const optId = typeof opt === 'object' ? opt.id : opt
+        if (optId) usedOptionIds.add(String(optId))
+      })
+    }
+  })
+
   return variantTypes?.map((type) => {
     if (!type || typeof type !== 'object') {
       return <></>
     }
 
-    const options = type.options?.docs
+    const allOptions = type.options?.docs
+
+    // 只過濾出該商品實際使用的選項
+    const options = allOptions?.filter((option) => {
+      if (!option || typeof option !== 'object') return false
+      return usedOptionIds.has(String(option.id))
+    })
 
     if (!options || !Array.isArray(options) || !options.length) {
       return <></>
@@ -90,27 +107,27 @@ export function VariantSelector({ product }: { product: Product }) {
               const optionUrl = createUrl(pathname, optionSearchParams)
 
               // The option is active if it's in the url params.
-              const isActive =
-                Boolean(isAvailableForSale) &&
-                searchParams.get(optionKeyLowerCase) === String(optionID)
+              const isActive = searchParams.get(optionKeyLowerCase) === String(optionID)
 
               return (
                 <Button
                   variant={'ghost'}
                   aria-disabled={!isAvailableForSale}
                   className={clsx('px-2', {
-                    'bg-primary/5 text-primary': isActive,
+                    'bg-primary/5 text-primary': isActive && isAvailableForSale,
+                    'bg-red-50 text-red-400 border-red-200': isActive && !isAvailableForSale,
+                    'text-muted-foreground line-through opacity-60': !isAvailableForSale && !isActive,
                   })}
-                  disabled={!isAvailableForSale}
                   key={option.id}
                   onClick={() => {
                     router.replace(`${optionUrl}`, {
                       scroll: false,
                     })
                   }}
-                  title={`${option.label} ${!isAvailableForSale ? ' (Out of Stock)' : ''}`}
+                  title={`${option.label} ${!isAvailableForSale ? ' (缺貨)' : ''}`}
                 >
                   {option.label}
+                  {!isAvailableForSale && <span className="ml-1 text-xs">(缺貨)</span>}
                 </Button>
               )
             })}

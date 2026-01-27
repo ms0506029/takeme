@@ -49,7 +49,9 @@ export const Image: React.FC<MediaProps> = (props) => {
 
     const filename = fullFilename
 
-    src = `${process.env.NEXT_PUBLIC_SERVER_URL}${url}`
+    // 使用相對路徑，讓 Next.js Image 自動處理
+    // 避免在本地開發時指向生產環境 URL
+    src = url || ''
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
