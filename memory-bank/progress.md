@@ -55,6 +55,17 @@
 - [x] 進度介面顯示變體同步數量
 - [x] Slug 生成修復（移除中文字符）
 
+### 商品頁整合 (Phase 11) 🚧
+- [x] **WishlistButton 組件**: 愛心收藏按鈕
+  - 登入狀態檢查
+  - 收藏狀態切換（加入/移除）
+  - 變體規格支援
+- [x] **RestockNotifyButton 組件**: 補貨通知按鈕
+  - 缺貨時自動顯示
+  - 申請/取消通知功能
+  - 變體規格支援
+- [ ] 遺棄購物車 LINE 提醒（待實作）
+
 ---
 
 ## 🚧 準備中
@@ -72,8 +83,8 @@
 - [ ] 自動綁定 LINE User ID
 
 ### 階段十一：商品頁整合
-- [ ] 商品頁愛心 Icon（加入願望清單）
-- [ ] 缺貨時「補貨通知」按鈕
+- [x] 商品頁愛心 Icon（加入願望清單）
+- [x] 缺貨時「補貨通知」按鈕
 - [ ] 遺棄購物車 LINE 提醒
 
 ### 階段十二：部署與最後驗證
@@ -96,13 +107,25 @@
 | 階段八：會員中心 | 已完成 | 100% |
 | **階段九：購物車系統** | **已完成** | **100%** |
 | 階段十：LINE Login | 未開始 | 0% |
-| 階段十一：商品頁整合 | 未開始 | 0% |
+| **階段十一：商品頁整合** | **進行中** | **67%** |
 
 ---
 
 ## 📝 最近更新日誌
 
 ### 2026-01-27
+- ✅ **Phase 11 商品頁整合 - 願望清單 & 補貨通知**
+  - 新增 `WishlistButton` 組件 (`src/components/product/WishlistButton.tsx`)
+    - 愛心 Icon 顯示收藏狀態（紅色填滿/空心）
+    - 支援登入檢查、變體選擇驗證
+    - 整合現有 `/api/wishlist` API 端點
+  - 新增 `RestockNotifyButton` 組件 (`src/components/product/RestockNotifyButton.tsx`)
+    - 僅在缺貨時顯示「到貨通知我」按鈕
+    - 已申請時顯示「已訂閱補貨通知」狀態
+    - 整合現有 `/api/restock-requests` API 端點
+  - 整合至 `ProductDescription` 組件
+    - 愛心 Icon 顯示於商品標題旁
+    - 補貨通知按鈕顯示於加入購物車按鈕旁
 - ✅ **EasyStore 匯入系統 Bug 修復 + 端對端測試通過**
   - 修復 `processVariants()` 無法解析 EasyStore 實際 API 格式的問題
     - EasyStore API 使用 `variant.name` (如 "白色, FREE") 而非 `variant.option1/2/3`
@@ -112,6 +135,11 @@
   - 修復圖片 URL 欄位：EasyStore 使用 `url` 而非 `src`
   - 修復更新商品時重複建立變體的問題（先刪除舊變體）
   - 端對端測試驗證：商品、變體、圖片、圖片-變體關聯全部正常
+- ✅ **圖片-變體關聯優化**
+  - 修復只有第一張圖有顏色關聯的問題
+  - 優化 `processImagesWithVariantLinks()`：優先匯入顏色代表圖
+  - 增加 maxImages 上限至 15 張以容納更多顏色
+  - 驗證結果：所有顏色都有對應的代表圖片
 
 ### 2026-01-26
 - ✅ **EasyStore 變體同步功能完整實作**

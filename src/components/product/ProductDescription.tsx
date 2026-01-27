@@ -9,6 +9,8 @@ import React, { Suspense } from 'react'
 import { VariantSelector } from './VariantSelector'
 import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
 import { StockIndicator } from '@/components/product/StockIndicator'
+import { WishlistButton } from '@/components/product/WishlistButton'
+import { RestockNotifyButton } from '@/components/product/RestockNotifyButton'
 
 export function ProductDescription({ product }: { product: Product }) {
   const { currency } = useCurrency()
@@ -53,8 +55,13 @@ export function ProductDescription({ product }: { product: Product }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="text-2xl font-medium">{product.title}</h1>
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <h1 className="text-2xl font-medium">{product.title}</h1>
+          <Suspense fallback={null}>
+            <WishlistButton product={product} />
+          </Suspense>
+        </div>
         <div className="uppercase font-mono">
           {hasVariants ? (
             <Price highestAmount={highestAmount} lowestAmount={lowestAmount} />
@@ -82,9 +89,12 @@ export function ProductDescription({ product }: { product: Product }) {
         </Suspense>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center gap-3">
         <Suspense fallback={null}>
           <AddToCart product={product} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <RestockNotifyButton product={product} />
         </Suspense>
       </div>
     </div>
