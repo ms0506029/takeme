@@ -267,6 +267,179 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
 
+    // ====== 幣別與匯率設定 ======
+    {
+      type: 'collapsible',
+      label: '幣別與匯率設定',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: 'currency',
+          type: 'group',
+          label: '',
+          fields: [
+            // 主要幣別設定
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'defaultCurrency',
+                  type: 'select',
+                  label: '網站預設幣別',
+                  defaultValue: 'TWD',
+                  required: true,
+                  options: [
+                    { label: 'TWD 新台幣', value: 'TWD' },
+                    { label: 'USD 美元', value: 'USD' },
+                    { label: 'JPY 日圓', value: 'JPY' },
+                    { label: 'CNY 人民幣', value: 'CNY' },
+                    { label: 'HKD 港幣', value: 'HKD' },
+                  ],
+                  admin: {
+                    width: '50%',
+                    description: '商品價格顯示的幣別',
+                  },
+                },
+                {
+                  name: 'currencySymbol',
+                  type: 'text',
+                  label: '幣別符號',
+                  defaultValue: 'NT$',
+                  admin: {
+                    width: '50%',
+                    description: '顯示在價格前的符號',
+                  },
+                },
+              ],
+            },
+            // EasyStore 匯入設定
+            {
+              type: 'collapsible',
+              label: 'EasyStore 匯入設定',
+              admin: {
+                initCollapsed: false,
+                description: '設定從 EasyStore 匯入商品時的幣別轉換規則',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'easyStoreCurrency',
+                      type: 'select',
+                      label: 'EasyStore 商品幣別',
+                      defaultValue: 'TWD',
+                      options: [
+                        { label: 'TWD 新台幣', value: 'TWD' },
+                        { label: 'USD 美元', value: 'USD' },
+                        { label: 'JPY 日圓', value: 'JPY' },
+                        { label: 'CNY 人民幣', value: 'CNY' },
+                        { label: 'HKD 港幣', value: 'HKD' },
+                      ],
+                      admin: {
+                        width: '50%',
+                        description: 'EasyStore 商品的原始幣別',
+                      },
+                    },
+                    {
+                      name: 'enableCurrencyConversion',
+                      type: 'checkbox',
+                      label: '啟用匯率轉換',
+                      defaultValue: false,
+                      admin: {
+                        width: '50%',
+                        description: '匯入時是否自動轉換幣別',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            // 自定義匯率
+            {
+              type: 'collapsible',
+              label: '自定義匯率設定',
+              admin: {
+                initCollapsed: true,
+                description: '設定各幣別對網站預設幣別的匯率（用於匯入轉換）',
+              },
+              fields: [
+                {
+                  name: 'exchangeRates',
+                  type: 'array',
+                  label: '匯率列表',
+                  labels: {
+                    singular: '匯率',
+                    plural: '匯率',
+                  },
+                  admin: {
+                    description: '設定其他幣別轉換為預設幣別的匯率',
+                  },
+                  fields: [
+                    {
+                      type: 'row',
+                      fields: [
+                        {
+                          name: 'fromCurrency',
+                          type: 'select',
+                          label: '來源幣別',
+                          required: true,
+                          options: [
+                            { label: 'USD 美元', value: 'USD' },
+                            { label: 'JPY 日圓', value: 'JPY' },
+                            { label: 'CNY 人民幣', value: 'CNY' },
+                            { label: 'HKD 港幣', value: 'HKD' },
+                            { label: 'TWD 新台幣', value: 'TWD' },
+                          ],
+                          admin: {
+                            width: '40%',
+                          },
+                        },
+                        {
+                          name: 'rate',
+                          type: 'number',
+                          label: '匯率',
+                          required: true,
+                          min: 0,
+                          admin: {
+                            width: '30%',
+                            step: 0.0001,
+                            description: '1 單位 = ? 預設幣別',
+                          },
+                        },
+                        {
+                          name: 'lastUpdated',
+                          type: 'date',
+                          label: '更新日期',
+                          admin: {
+                            width: '30%',
+                            date: {
+                              displayFormat: 'yyyy-MM-dd',
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  name: 'exchangeRateNote',
+                  type: 'textarea',
+                  label: '匯率備註',
+                  admin: {
+                    description: '記錄匯率來源或注意事項',
+                    placeholder: '例：匯率參考台灣銀行牌告匯率',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+
     // ====== 購物車與運費設定 ======
     {
       type: 'collapsible',

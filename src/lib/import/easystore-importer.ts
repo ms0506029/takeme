@@ -440,6 +440,7 @@ async function processVariants(
   product: EasyStoreProduct,
   productId: string,
   payload: Awaited<ReturnType<typeof getPayload>>,
+  currencySettings: CurrencySettings,
   addLog?: LogFunction
 ): Promise<{
   variantTypeIds: string[]
@@ -558,8 +559,8 @@ async function processVariants(
         continue
       }
 
-      // 價格轉換
-      const priceUSD = convertToUSD(variant.price)
+      // 價格轉換（根據 SiteSettings 幣別設定）
+      const variantPrice = convertPrice(variant.price, currencySettings)
 
       // 使用變體的 name 作為標題，或構建一個
       const variantTitle = variantName || variant.title || `${product.title} - ${optionValues.join(' / ')}`
@@ -568,7 +569,7 @@ async function processVariants(
       await createProductVariant(
         productId,
         optionIds,
-        priceUSD,
+        variantPrice,
         variant.inventory_quantity || 0,
         variantTitle,
         payload
@@ -594,16 +595,104 @@ type LogFunction = (
   productTitle?: string
 ) => void
 
-/**
- * 價格轉換（TWD -> USD，粗略轉換）
+// ===== 幣別設定快取 =====
+export interface CurrencySettings {
+  defaultCurrency: string
+  easyStoreCurrency: string
+  enableCurrencyConversion: boolean
+  exchangeRates: Array<{
+    fromCurrency: string
+    rate: number
+  }>
+}
 
- * TODO: 從 SiteSettings 讀取匯率
+let currencySettingsCache: CurrencySettings | null = null
+
+/**
+ * 從 SiteSettings 讀取幣別設定
  */
-function convertToUSD(twdPrice: string | number): number {
-  const twd = typeof twdPrice === 'string' ? parseFloat(twdPrice) : twdPrice
-  if (isNaN(twd)) return 0
-  // 假設 1 USD = 32 TWD
-  return Math.round((twd / 32) * 100) / 100
+export async function getCurrencySettings(
+  payload: Awaited<ReturnType<typeof getPayload>>
+): Promise<CurrencySettings> {
+  // 使用快取避免重複查詢
+  if (currencySettingsCache) {
+    return currencySettingsCache
+  }
+
+  try {
+    const siteSettings = await payload.findGlobal({
+      slug: 'siteSettings',
+    })
+
+    const currency = (siteSettings as any)?.currency || {}
+
+    currencySettingsCache = {
+      defaultCurrency: currency.defaultCurrency || 'TWD',
+      easyStoreCurrency: currency.easyStoreCurrency || 'TWD',
+      enableCurrencyConversion: currency.enableCurrencyConversion || false,
+      exchangeRates: currency.exchangeRates || [],
+    }
+
+    return currencySettingsCache
+  } catch (err) {
+    console.warn('無法讀取幣別設定，使用預設值 (TWD)', err)
+    return {
+      defaultCurrency: 'TWD',
+      easyStoreCurrency: 'TWD',
+      enableCurrencyConversion: false,
+      exchangeRates: [],
+    }
+  }
+}
+
+/**
+ * 清除幣別設定快取（匯入結束時呼叫）
+ */
+export function clearCurrencySettingsCache(): void {
+  currencySettingsCache = null
+}
+
+/**
+ * 價格轉換
+ *
+ * 根據 SiteSettings 的幣別設定進行轉換：
+ * - 如果來源幣別與目標幣別相同，不轉換
+ * - 如果啟用轉換且有匯率設定，進行轉換
+ * - 否則直接返回原價
+ */
+function convertPrice(
+  price: string | number,
+  settings: CurrencySettings
+): number {
+  const numericPrice = typeof price === 'string' ? parseFloat(price) : price
+  if (isNaN(numericPrice)) return 0
+
+  // 如果來源幣別與目標幣別相同，不轉換
+  if (settings.easyStoreCurrency === settings.defaultCurrency) {
+    return Math.round(numericPrice * 100) / 100
+  }
+
+  // 如果未啟用轉換，直接返回原價
+  if (!settings.enableCurrencyConversion) {
+    return Math.round(numericPrice * 100) / 100
+  }
+
+  // 查找匯率
+  const exchangeRate = settings.exchangeRates.find(
+    (rate) => rate.fromCurrency === settings.easyStoreCurrency
+  )
+
+  if (exchangeRate && exchangeRate.rate > 0) {
+    // 轉換：原價 × 匯率 = 目標幣別金額
+    const converted = numericPrice * exchangeRate.rate
+    return Math.round(converted * 100) / 100
+  }
+
+  // 找不到匯率，返回原價並記錄警告
+  console.warn(
+    `找不到 ${settings.easyStoreCurrency} -> ${settings.defaultCurrency} 的匯率設定，使用原價`
+  )
+  return Math.round(numericPrice * 100) / 100
 }
 
 // ===== 主要匯入邏輯 =====
@@ -640,6 +729,13 @@ export async function importFromEasyStore(
   }
 
   try {
+    // 載入幣別設定
+    const currencySettings = await getCurrencySettings(payload)
+    addLog(
+      'info',
+      `幣別設定: EasyStore=${currencySettings.easyStoreCurrency}, 網站=${currencySettings.defaultCurrency}, 轉換=${currencySettings.enableCurrencyConversion ? '啟用' : '停用'}`
+    )
+
     // 取得所有商品
     addLog('info', '開始從 EasyStore 取得商品資料...')
     const products = await fetchAllProducts((loaded, total) => {
@@ -699,6 +795,7 @@ export async function importFromEasyStore(
           vendorId,
           downloadImages,
           payload,
+          currencySettings,
           addLog
         )
 
@@ -772,6 +869,7 @@ async function prepareProductData(
   vendorId: string,
   downloadImages: boolean,
   payload: Awaited<ReturnType<typeof getPayload>>,
+  currencySettings: CurrencySettings,
   addLog?: LogFunction,
   imageOptionMap?: Map<number, string> // image_id -> variantOptionId 映射
 ) {
@@ -788,12 +886,13 @@ async function prepareProductData(
     _status: product.status === 'draft' || product.status === 'archived' ? 'draft' : 'published',
   }
 
-  // 價格（使用第一個變體的價格）
+  // 價格（使用第一個變體的價格，根據 SiteSettings 幣別設定轉換）
   const hasVariants = Array.isArray(product.variants) && product.variants.length > 0
   const firstVariant = hasVariants ? product.variants[0] : null
 
   if (firstVariant) {
-    baseData.priceInUSD = convertToUSD(firstVariant.price)
+    // 使用 priceInUSD 欄位存儲價格（欄位名稱保持相容，實際幣別由 SiteSettings 決定）
+    baseData.priceInUSD = convertPrice(firstVariant.price, currencySettings)
 
     // 庫存（所有變體的總和）
     baseData.inventory = product.variants.reduce((sum, v) => sum + (v.inventory_quantity || 0), 0)
@@ -994,13 +1093,17 @@ export async function importSingleProduct(
   downloadImages: boolean,
   payload: Awaited<ReturnType<typeof getPayload>>,
   existingId?: string,
-  addLog?: LogFunction
+  addLog?: LogFunction,
+  currencySettingsOverride?: CurrencySettings
 ): Promise<{ action: 'created' | 'updated'; productId: string; variantCount: number }> {
+  // 載入或使用傳入的幣別設定
+  const currencySettings = currencySettingsOverride || await getCurrencySettings(payload)
+
   // 檢查是否有多個變體（可能需要建立變體資料）
   const hasMultipleVariants = Array.isArray(product.variants) && product.variants.length > 1
 
   // Step 1: 準備並建立/更新商品基本資料（先不含圖片，等變體處理完再加）
-  const productData = await prepareProductData(product, vendorId, false, payload, addLog)
+  const productData = await prepareProductData(product, vendorId, false, payload, currencySettings, addLog)
 
   let productId: string
   let action: 'created' | 'updated'
@@ -1049,7 +1152,7 @@ export async function importSingleProduct(
   let variantTypeIds: string[] = []
 
   if (hasMultipleVariants) {
-    const variantResult = await processVariants(product, productId, payload, addLog)
+    const variantResult = await processVariants(product, productId, payload, currencySettings, addLog)
     variantTypeIds = variantResult.variantTypeIds
     imageOptionMap = variantResult.imageOptionMap
     variantCount = variantResult.variantCount

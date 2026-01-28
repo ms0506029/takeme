@@ -1,5 +1,5 @@
 # Progress Tracker
-**Last Updated：** 2026-01-28 (Cloudflare R2 圖片儲存配置)
+**Last Updated：** 2026-01-28 (幣別設定功能)
 
 ---
 
@@ -54,6 +54,13 @@
 - [x] **圖片-變體關聯**: 自動將圖片關聯到對應的變體選項
 - [x] 進度介面顯示變體同步數量
 - [x] Slug 生成修復（移除中文字符）
+- [x] **幣別與匯率設定** (2026-01-28):
+  - SiteSettings 新增「幣別與匯率設定」區塊
+  - EasyStore 來源幣別設定（預設 TWD）
+  - 網站預設幣別設定（預設 TWD）
+  - 可選啟用匯率轉換
+  - 自定義匯率列表（支援 USD、JPY、CNY、HKD）
+  - 同幣別時自動跳過轉換，價格保持一致
 
 ### 商品頁整合 (Phase 11) 🚧
 - [x] **WishlistButton 組件**: 愛心收藏按鈕
@@ -127,6 +134,24 @@
 ---
 
 ## 📝 最近更新日誌
+
+### 2026-01-28 (Admin Panel Hydration Error 修復)
+- ✅ **修復 Zeabur 生產環境 Admin 面板空白問題**
+  - **問題**: Admin 面板 (`/admin`) 顯示完全空白，React Hydration Error #418
+  - **原因 1**: `BeforeLogin` 組件使用 `process.env.PAYLOAD_PUBLIC_SERVER_URL`
+    - 只有 `NEXT_PUBLIC_` 前綴的環境變數才能在客戶端使用
+    - 服務器渲染 `https://...` 但客戶端渲染 `undefined`
+    - 導致 hydration mismatch
+  - **原因 2**: `NavClient` 組件在 `useState` 初始化中使用 `localStorage`
+    - 服務器端 `localStorage` 不存在
+    - 導致 hydration mismatch
+  - **解決方案**:
+    - `BeforeLogin`: 改用 `NEXT_PUBLIC_SERVER_URL`
+    - `NavClient`: 將 `localStorage` 讀取移至 `useEffect`
+  - **額外修復**:
+    - `next.config.js`: 新增 R2 公開 URL 至 `images.remotePatterns`
+- ✅ **推送至 GitHub** (commit: 2ec490e)
+- ⚠️ **待確認**: Zeabur 自動重新部署後 admin 面板應恢復正常
 
 ### 2026-01-28 (Cloudflare R2 圖片儲存配置)
 - ✅ **Cloudflare R2 儲存桶設定完成**

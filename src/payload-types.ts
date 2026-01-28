@@ -314,6 +314,7 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -2316,6 +2317,7 @@ export interface CategoriesSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -2943,6 +2945,42 @@ export interface SiteSetting {
      */
     ogImage?: (string | null) | Media;
   };
+  currency: {
+    /**
+     * 商品價格顯示的幣別
+     */
+    defaultCurrency: 'TWD' | 'USD' | 'JPY' | 'CNY' | 'HKD';
+    /**
+     * 顯示在價格前的符號
+     */
+    currencySymbol?: string | null;
+    /**
+     * EasyStore 商品的原始幣別
+     */
+    easyStoreCurrency?: ('TWD' | 'USD' | 'JPY' | 'CNY' | 'HKD') | null;
+    /**
+     * 匯入時是否自動轉換幣別
+     */
+    enableCurrencyConversion?: boolean | null;
+    /**
+     * 設定其他幣別轉換為預設幣別的匯率
+     */
+    exchangeRates?:
+      | {
+          fromCurrency: 'USD' | 'JPY' | 'CNY' | 'HKD' | 'TWD';
+          /**
+           * 1 單位 = ? 預設幣別
+           */
+          rate: number;
+          lastUpdated?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * 記錄匯率來源或注意事項
+     */
+    exchangeRateNote?: string | null;
+  };
   cartSettings?: {
     freeShippingEnabled?: boolean | null;
     /**
@@ -3217,6 +3255,23 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         defaultTitle?: T;
         defaultDescription?: T;
         ogImage?: T;
+      };
+  currency?:
+    | T
+    | {
+        defaultCurrency?: T;
+        currencySymbol?: T;
+        easyStoreCurrency?: T;
+        enableCurrencyConversion?: T;
+        exchangeRates?:
+          | T
+          | {
+              fromCurrency?: T;
+              rate?: T;
+              lastUpdated?: T;
+              id?: T;
+            };
+        exchangeRateNote?: T;
       };
   cartSettings?:
     | T

@@ -5,7 +5,12 @@
  */
 
 import { fetchAllProducts, type EasyStoreProduct } from '@/lib/import/easystore-api'
-import { importSingleProduct } from '@/lib/import/easystore-importer'
+import {
+  importSingleProduct,
+  getCurrencySettings,
+  clearCurrencySettingsCache,
+  type CurrencySettings,
+} from '@/lib/import/easystore-importer'
 import configPromise from '@payload-config'
 import { NextRequest } from 'next/server'
 import { getPayload } from 'payload'
@@ -80,8 +85,18 @@ export async function POST(request: NextRequest) {
           }
         }
 
+        // 載入幣別設定
+        const currencySettings = await getCurrencySettings(payload)
+
         // 開始匯入流程
-        sendEvent('start', { message: '正在連接 EasyStore...' })
+        sendEvent('start', {
+          message: '正在連接 EasyStore...',
+          currencySettings: {
+            source: currencySettings.easyStoreCurrency,
+            target: currencySettings.defaultCurrency,
+            conversion: currencySettings.enableCurrencyConversion,
+          },
+        })
 
         // 取得所有商品
         const products = await fetchAllProducts((loaded, total) => {
@@ -139,7 +154,9 @@ export async function POST(request: NextRequest) {
               targetVendorId as string,
               downloadImages,
               payload,
-              existing.docs[0]?.id
+              existing.docs[0]?.id,
+              undefined, // addLog
+              currencySettings
             )
 
             if (result.action === 'created') {
@@ -207,6 +224,8 @@ export async function POST(request: NextRequest) {
         const errorMsg = error instanceof Error ? error.message : '匯入過程發生錯誤'
         sendEvent('error', { message: errorMsg })
       } finally {
+        // 清除幣別設定快取，確保下次匯入使用最新設定
+        clearCurrencySettingsCache()
         controller.close()
       }
     },
