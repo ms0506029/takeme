@@ -121,15 +121,17 @@ const styles = {
 }
 
 const NavGroup = ({ label, children, icon, defaultOpen = true }: { label: string, children: React.ReactNode, icon?: React.ReactNode, defaultOpen?: boolean }) => {
-  // 使用 localStorage 記住展開狀態
-  const [isOpen, setIsOpen] = React.useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem(`nav-group-${label}`)
-      return saved !== null ? saved === 'true' : defaultOpen
-    }
-    return defaultOpen
-  })
+  // Start with defaultOpen to avoid hydration mismatch
+  const [isOpen, setIsOpen] = React.useState(defaultOpen)
   const [isHovered, setIsHovered] = React.useState(false)
+
+  // Sync with localStorage after mount (client-side only)
+  React.useEffect(() => {
+    const saved = localStorage.getItem(`nav-group-${label}`)
+    if (saved !== null) {
+      setIsOpen(saved === 'true')
+    }
+  }, [label])
 
   const toggle = () => {
     const newState = !isOpen

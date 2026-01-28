@@ -60,6 +60,11 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
+      // Cloudflare R2 Public URL for media storage
+      {
+        hostname: 'pub-0253cb3d5f6644fc95fad66f6d98c09e.r2.dev',
+        protocol: 'https',
+      },
     ],
   },
   reactStrictMode: true,
