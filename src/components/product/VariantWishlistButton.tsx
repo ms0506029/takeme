@@ -119,19 +119,23 @@ export function VariantWishlistButton({ product, variantSku, colorLabel, sizeLab
     <Button
       variant="ghost"
       size="icon"
-      className="h-8 w-8 rounded-full hover:bg-red-50 transition-colors flex-shrink-0"
+      className={`min-h-[36px] min-w-[36px] h-9 w-9 rounded-full transition-all duration-200 flex-shrink-0 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-400 ${
+        isInWishlist ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-red-50'
+      }`}
       onClick={toggleWishlist}
       disabled={isLoading}
       aria-label={isInWishlist ? '從願望清單移除' : '加入願望清單'}
+      aria-pressed={isInWishlist}
       title={isInWishlist ? '從願望清單移除' : '加入願望清單'}
     >
       {isLoading ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
+        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
       ) : (
         <Heart
-          className={`h-4 w-4 transition-colors ${
-            isInWishlist ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-400'
+          className={`h-5 w-5 transition-all duration-200 ${
+            isInWishlist ? 'fill-red-500 text-red-500 scale-110' : 'text-gray-400 hover:text-red-400'
           }`}
+          aria-hidden="true"
         />
       )}
     </Button>

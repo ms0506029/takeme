@@ -6,7 +6,15 @@ import type { Media as MediaType, Product, RestockRequest, Variant } from '@/pay
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import { useCartDrawer } from '@/components/Cart/CartDrawer'
 import { useAuth } from '@/providers/Auth'
-import { Bell, BellRing, Loader2, ShoppingCart } from 'lucide-react'
+import {
+  Bell,
+  BellRing,
+  Check,
+  Loader2,
+  PackageX,
+  ShoppingCart,
+  ShoppingCartIcon,
+} from 'lucide-react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { VariantWishlistButton } from './VariantWishlistButton'
@@ -141,28 +149,28 @@ export function VariantMatrix({ product }: Props) {
 // 顏色分組卡片
 function ColorGroupCard({ group, product }: { group: ColorGroup; product: Product }) {
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="flex">
-        {/* 左側縮圖 */}
-        <div className="w-20 h-auto flex-shrink-0 bg-gray-50 flex items-center justify-center border-r">
+        {/* 左側縮圖 - 改善視覺比例 */}
+        <div className="w-24 sm:w-28 flex-shrink-0 bg-gray-50 flex items-center justify-center border-r border-gray-100">
           {group.thumbnail ? (
             <Media
               resource={group.thumbnail}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover aspect-square"
               imgClassName="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+            <div className="w-full aspect-square bg-gray-100 flex items-center justify-center">
               <span className="text-xs text-gray-400">無圖</span>
             </div>
           )}
         </div>
 
         {/* 右側尺寸列表 */}
-        <div className="flex-1 divide-y">
-          {/* 顏色標題 */}
-          <div className="px-3 py-2 bg-gray-50">
-            <span className="text-sm font-medium">{group.colorLabel}</span>
+        <div className="flex-1 divide-y divide-gray-100">
+          {/* 顏色標題 - 改善對比度 */}
+          <div className="px-4 py-3 bg-gray-50/80">
+            <span className="text-sm font-semibold text-gray-800">{group.colorLabel}</span>
           </div>
 
           {/* 尺寸行 */}
@@ -185,19 +193,33 @@ function VariantRow({ variantInfo, product }: { variantInfo: VariantInfo; produc
   const isOutOfStock = inventory <= 0
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 transition-colors">
+    <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 transition-colors duration-200">
       {/* 尺寸標籤 */}
-      <span className="w-10 text-sm font-medium flex-shrink-0">{sizeLabel}</span>
+      <span className="w-12 text-sm font-semibold flex-shrink-0">{sizeLabel}</span>
 
-      {/* 庫存狀態 */}
+      {/* 庫存狀態 - 使用圖示+文字（非僅顏色） */}
       <span
-        className={`text-xs flex-shrink-0 ${isOutOfStock ? 'text-red-500' : 'text-green-600'}`}
+        className={`flex items-center gap-1 text-xs font-medium flex-shrink-0 ${
+          isOutOfStock ? 'text-red-600' : 'text-emerald-600'
+        }`}
+        role="status"
+        aria-label={isOutOfStock ? '缺貨' : `庫存：${inventory}`}
       >
-        {isOutOfStock ? '缺貨' : inventory < 10 ? `剩 ${inventory}` : '有庫存'}
+        {isOutOfStock ? (
+          <>
+            <PackageX className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>缺貨</span>
+          </>
+        ) : (
+          <>
+            <Check className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>{inventory < 10 ? `剩 ${inventory}` : '有庫存'}</span>
+          </>
+        )}
       </span>
 
-      {/* 操作按鈕 */}
-      <div className="flex-1 flex items-center justify-end gap-1">
+      {/* 操作按鈕 - 間距至少 8px (gap-2) */}
+      <div className="flex-1 flex items-center justify-end gap-2">
         {isOutOfStock ? (
           <RestockButton product={product} variantInfo={variantInfo} />
         ) : (
@@ -215,7 +237,7 @@ function VariantRow({ variantInfo, product }: { variantInfo: VariantInfo; produc
   )
 }
 
-// 加入購物車按鈕（行內版）
+// 加入購物車按鈕（行內版）- 符合 44px 觸控目標
 function AddToCartButton({ product, variant }: { product: Product; variant: Variant }) {
   const { addItem, cart, isLoading } = useCart()
   const { openCart } = useCartDrawer()
@@ -247,18 +269,22 @@ function AddToCartButton({ product, variant }: { product: Product; variant: Vari
 
   return (
     <Button
-      variant="ghost"
+      variant={isInCart ? 'secondary' : 'default'}
       size="sm"
-      className="h-7 px-2 text-xs gap-1"
+      className="min-h-[36px] px-3 text-xs gap-1.5 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2"
       onClick={handleAddToCart}
       disabled={isLoading || isInCart}
+      aria-label={isInCart ? '已加入購物車' : '加入購物車'}
     >
       {isLoading ? (
-        <Loader2 className="h-3 w-3 animate-spin" />
+        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+      ) : isInCart ? (
+        <ShoppingCartIcon className="h-4 w-4" aria-hidden="true" />
       ) : (
-        <ShoppingCart className="h-3 w-3" />
+        <ShoppingCart className="h-4 w-4" aria-hidden="true" />
       )}
-      {isInCart ? '已加入' : '加入購物車'}
+      <span className="hidden sm:inline">{isInCart ? '已加入' : '加入購物車'}</span>
+      <span className="sm:hidden">{isInCart ? '已加入' : '加入'}</span>
     </Button>
   )
 }
@@ -371,20 +397,25 @@ function RestockButton({
 
   return (
     <Button
-      variant="ghost"
+      variant={hasRequested ? 'secondary' : 'outline'}
       size="sm"
-      className={`h-7 px-2 text-xs gap-1 ${hasRequested ? 'text-amber-600' : 'text-gray-500'}`}
+      className={`min-h-[36px] px-3 text-xs gap-1.5 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 ${
+        hasRequested ? 'text-amber-600 border-amber-200 bg-amber-50' : ''
+      }`}
       onClick={handleRestockRequest}
       disabled={isLoading}
+      aria-label={hasRequested ? '已訂閱補貨通知，點擊取消' : '訂閱補貨通知'}
+      aria-pressed={hasRequested}
     >
       {isLoading ? (
-        <Loader2 className="h-3 w-3 animate-spin" />
+        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
       ) : hasRequested ? (
-        <BellRing className="h-3 w-3" />
+        <BellRing className="h-4 w-4" aria-hidden="true" />
       ) : (
-        <Bell className="h-3 w-3" />
+        <Bell className="h-4 w-4" aria-hidden="true" />
       )}
-      {hasRequested ? '已訂閱' : '到貨通知'}
+      <span className="hidden sm:inline">{hasRequested ? '已訂閱' : '到貨通知'}</span>
+      <span className="sm:hidden">{hasRequested ? '已訂閱' : '通知'}</span>
     </Button>
   )
 }

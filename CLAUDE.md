@@ -442,6 +442,232 @@ const useModals = () => {
 
 ---
 
+## 🔴 技能庫自動觸發規則 (MANDATORY)
+
+**重要**: 以下規則為強制性，Claude 必須在符合條件時**主動**調用對應技能庫，無需用戶提示。
+
+---
+
+### 📁 技能庫總覽
+
+| 分類 | 技能庫 | 路徑 |
+|------|--------|------|
+| UI/UX 設計 | UI/UX Pro Max | `~/.claude/skills/ui-ux-pro-max/` |
+| UI/UX 設計 | Theme Factory | `~/.claude/skills/awesome-repo/theme-factory/` |
+| UI/UX 設計 | Brand Guidelines | `~/.claude/skills/awesome-repo/brand-guidelines/` |
+| 視覺創作 | Canvas Design | `~/.claude/skills/awesome-repo/canvas-design/` |
+| 視覺創作 | Algorithmic Art | `~/.claude/skills/awesome-repo/algorithmic-art/` |
+| Web 開發 | Next.js Skills | `~/.claude/skills/nextjs-skills/` |
+| Web 開發 | Artifacts Builder | `~/.claude/skills/awesome-repo/artifacts-builder/` |
+| Web 測試 | WebApp Testing | `~/.claude/skills/awesome-repo/webapp-testing/` |
+| 前端品質 | Dify Skills | `~/.claude/skills/dify-skills/` |
+| 內容寫作 | Content Research Writer | `~/.claude/skills/awesome-repo/content-research-writer/` |
+| 內容寫作 | Changelog Generator | `~/.claude/skills/awesome-repo/changelog-generator/` |
+| 內容寫作 | Internal Comms | `~/.claude/skills/awesome-repo/internal-comms/` |
+| Notion 整合 | Knowledge Capture | `~/.claude/skills/awesome-repo/notion-knowledge-capture/` |
+| Notion 整合 | Meeting Intelligence | `~/.claude/skills/awesome-repo/notion-meeting-intelligence/` |
+| Notion 整合 | Research Documentation | `~/.claude/skills/awesome-repo/notion-research-documentation/` |
+| Notion 整合 | Spec to Implementation | `~/.claude/skills/awesome-repo/notion-spec-to-implementation/` |
+| 檔案管理 | File Organizer | `~/.claude/skills/awesome-repo/file-organizer/` |
+| 檔案管理 | Invoice Organizer | `~/.claude/skills/awesome-repo/invoice-organizer/` |
+| 行銷業務 | Competitive Ads Extractor | `~/.claude/skills/awesome-repo/competitive-ads-extractor/` |
+| 行銷業務 | Lead Research Assistant | `~/.claude/skills/awesome-repo/lead-research-assistant/` |
+| 行銷業務 | Domain Name Brainstormer | `~/.claude/skills/awesome-repo/domain-name-brainstormer/` |
+| 媒體工具 | Slack GIF Creator | `~/.claude/skills/awesome-repo/slack-gif-creator/` |
+| 媒體工具 | Video Downloader | `~/.claude/skills/awesome-repo/video-downloader/` |
+| 媒體工具 | Image Enhancer | `~/.claude/skills/awesome-repo/image-enhancer/` |
+| 開發工具 | MCP Builder | `~/.claude/skills/awesome-repo/mcp-builder/` |
+| 開發工具 | Skill Creator | `~/.claude/skills/awesome-repo/skill-creator/` |
+| 分析工具 | Meeting Insights Analyzer | `~/.claude/skills/awesome-repo/meeting-insights-analyzer/` |
+| 分析工具 | Raffle Winner Picker | `~/.claude/skills/awesome-repo/raffle-winner-picker/` |
+
+---
+
+### 🎨 UI/UX 設計類 - 自動觸發條件
+
+#### UI/UX Pro Max (最常用)
+**觸發關鍵字**: 建立組件、設計頁面、UI、介面、按鈕、表單、顏色、字體、響應式、無障礙
+
+| 觸發條件 | 必須執行的動作 |
+|---------|---------------|
+| 建立/修改任何 UI 組件 | `python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "component accessibility" --domain ux` |
+| 設計新頁面 | `python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "<頁面類型>" --design-system` |
+| 選擇顏色配置 | `--domain color` |
+| 選擇字體配對 | `--domain typography` |
+| 實作動畫/過渡 | `--domain ux` 搜尋 "animation" |
+| 建立圖表 | `--domain chart` |
+| Landing Page | `--domain landing` |
+
+**UI 開發完成前強制檢查**:
+```bash
+python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py "accessibility touch-target focus-states" --domain ux
+```
+
+#### Theme Factory
+**觸發關鍵字**: 主題、配色方案、品牌風格、slide deck、簡報樣式
+
+| 觸發條件 | 動作 |
+|---------|------|
+| 需要為 artifact 選擇主題 | 讀取 `theme-factory/SKILL.md` |
+| 建立簡報/投影片 | 顯示 `theme-showcase.pdf` 讓用戶選擇 |
+
+#### Brand Guidelines
+**觸發關鍵字**: Anthropic 品牌、企業識別、品牌顏色
+
+| 觸發條件 | 動作 |
+|---------|------|
+| 需要 Anthropic 品牌風格 | 讀取 `brand-guidelines/SKILL.md` |
+
+---
+
+### 🌐 Web 開發類 - 自動觸發條件
+
+#### Next.js Skills
+**觸發關鍵字**: SSR、SSG、ISR、App Router、Server Components、API Routes、next/image、middleware
+
+| 觸發條件 | 動作 |
+|---------|------|
+| 處理 Next.js 特定功能 | 讀取 `nextjs-skills/CLAUDE.md` |
+| 效能優化 | 查詢相關最佳實踐 |
+| 測試 Next.js 應用 | 使用 `pnpm test-dev-turbo` |
+
+#### Artifacts Builder
+**觸發關鍵字**: HTML artifact、React artifact、複雜互動組件
+
+| 觸發條件 | 動作 |
+|---------|------|
+| 建立複雜的 HTML artifact | 讀取 `artifacts-builder/SKILL.md` |
+| 需要 shadcn/ui 組件 | 使用 `scripts/init-artifact.sh` |
+
+#### WebApp Testing (Playwright)
+**觸發關鍵字**: E2E 測試、瀏覽器測試、UI 測試、截圖驗證
+
+| 觸發條件 | 動作 |
+|---------|------|
+| 測試 Web 應用 | 讀取 `webapp-testing/SKILL.md` |
+| 需要瀏覽器截圖 | 使用 Playwright 腳本 |
+
+---
+
+### 🧪 前端品質類 - 自動觸發條件
+
+#### Dify Skills (前端測試/審查/重構)
+**觸發關鍵字**: 測試、單元測試、code review、重構、效能優化
+
+| 觸發條件 | 動作 |
+|---------|------|
+| 編寫前端測試 | 讀取 `dify-skills/web/AGENTS.md` - TDD 流程 |
+| 代碼審查 | 檢查 TypeScript strict、ESLint |
+| 組件過大 (>300行) | 考慮重構拆分 |
+| React 效能問題 | 檢查重渲染、memo、useCallback |
+
+---
+
+### ✍️ 內容寫作類 - 自動觸發條件
+
+#### Content Research Writer
+**觸發關鍵字**: 部落格、文章、教程、思想領導力、引用、參考資料
+
+| 觸發條件 | 動作 |
+|---------|------|
+| 撰寫部落格/文章 | 讀取 `content-research-writer/SKILL.md` |
+| 需要研究和引用 | 協助大綱、研究、添加引用 |
+
+#### Changelog Generator
+**觸發關鍵字**: 更新日誌、release notes、版本紀錄
+
+| 觸發條件 | 動作 |
+|---------|------|
+| 生成更新日誌 | 讀取 `changelog-generator/SKILL.md` |
+| 準備發布說明 | 分析 git commits，分類變更 |
+
+#### Internal Comms
+**觸發關鍵字**: 內部溝通、3P 報告、狀態更新、公司通訊
+
+| 觸發條件 | 動作 |
+|---------|------|
+| 撰寫內部溝通文件 | 讀取 `internal-comms/SKILL.md` |
+| 3P 更新報告 | 使用 `examples/3p-updates.md` 模板 |
+
+---
+
+### 📝 Notion 整合類 - 自動觸發條件
+
+**前提**: 需要有 Notion MCP 連接
+
+| 技能 | 觸發條件 | 動作 |
+|------|---------|------|
+| Knowledge Capture | 保存對話/知識到 Notion | 讀取 SKILL.md |
+| Meeting Intelligence | 準備會議資料 | 讀取 SKILL.md |
+| Research Documentation | 跨 Notion 研究/文檔化 | 讀取 SKILL.md |
+| Spec to Implementation | 將規格轉為任務 | 讀取 SKILL.md |
+
+---
+
+### 📁 檔案管理類 - 自動觸發條件
+
+| 技能 | 觸發關鍵字 | 動作 |
+|------|-----------|------|
+| File Organizer | 整理檔案、清理資料夾、重複檔案 | 讀取 SKILL.md |
+| Invoice Organizer | 發票整理、收據歸檔、稅務準備 | 讀取 SKILL.md |
+
+---
+
+### 📈 行銷業務類 - 自動觸發條件
+
+| 技能 | 觸發關鍵字 | 動作 |
+|------|-----------|------|
+| Competitive Ads Extractor | 競爭對手廣告、廣告分析 | 讀取 SKILL.md |
+| Lead Research Assistant | 潛在客戶、銷售線索、BD | 讀取 SKILL.md |
+| Domain Name Brainstormer | 網域名稱、域名建議 | 讀取 SKILL.md |
+
+---
+
+### 🎬 媒體工具類 - 自動觸發條件
+
+| 技能 | 觸發關鍵字 | 動作 |
+|------|-----------|------|
+| Slack GIF Creator | Slack GIF、表情動畫 | 讀取 SKILL.md |
+| Video Downloader | 下載影片、YouTube | 讀取 SKILL.md |
+| Image Enhancer | 圖片增強、提升解析度 | 讀取 SKILL.md |
+| Algorithmic Art | 生成藝術、p5.js | 讀取 SKILL.md |
+| Canvas Design | 海報設計、視覺藝術 | 讀取 SKILL.md |
+
+---
+
+### 🔧 開發工具類 - 自動觸發條件
+
+| 技能 | 觸發關鍵字 | 動作 |
+|------|-----------|------|
+| MCP Builder | 建立 MCP server、工具整合 | 讀取 SKILL.md |
+| Skill Creator | 建立新技能、更新技能 | 讀取 SKILL.md |
+
+---
+
+### 📊 分析工具類 - 自動觸發條件
+
+| 技能 | 觸發關鍵字 | 動作 |
+|------|-----------|------|
+| Meeting Insights Analyzer | 會議分析、溝通模式 | 讀取 SKILL.md |
+| Raffle Winner Picker | 抽獎、隨機選擇 | 讀取 SKILL.md |
+
+---
+
+### ⚠️ 違規處理
+
+如果 Claude 未主動調用相關技能庫，用戶可使用以下提示：
+
+```
+請使用 [技能名稱] 技能庫重新檢查/執行
+```
+
+Claude 必須立即：
+1. 讀取對應的 SKILL.md
+2. 按照技能指引執行
+3. 修正之前的輸出
+
+---
+
 ## UI/UX Pro Max 設計智能
 
 ### 快速使用

@@ -242,15 +242,8 @@ svg[aria-label*="Daytona"] {
   max-height: 40px !important;
 }
 
-/* 備用響應式網格規則（Tailwind JIT 備援） */
-@media (min-width: 1024px) {
-  .lg\:grid-cols-5 {
-    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-  }
-  .lg\:grid-cols-6 {
-    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
-  }
-}
+/* 備用響應式網格規則 - 注意：Tailwind 4 可能不會編譯這些類別
+   Gallery 組件已改用內聯樣式確保網格正確渲染 */
 
 /* 備用 aspect-ratio 規則 */
 .aspect-\[3\/4\] {
@@ -261,4 +254,51 @@ svg[aria-label*="Daytona"] {
 .backdrop-blur-md {
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* =============================================
+   無障礙：減少動態效果 (UI/UX Pro Max)
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =============================================
+   觸控優化 (UI/UX Pro Max)
+   ============================================= */
+@media (pointer: coarse) {
+  /* 確保觸控設備上的最小點擊區域 */
+  button,
+  [role="button"],
+  a,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* 減少觸控設備上的 hover 效果延遲 */
+  * {
+    touch-action: manipulation;
+  }
+}
+
+/* =============================================
+   Focus 狀態可見性 (UI/UX Pro Max)
+   ============================================= */
+:focus-visible {
+  outline: 2px solid var(--color-scrapbook-primary);
+  outline-offset: 2px;
+}
+
+/* 移除預設 focus 樣式，只保留 focus-visible */
+:focus:not(:focus-visible) {
+  outline: none;
 }

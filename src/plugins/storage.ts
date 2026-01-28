@@ -1,8 +1,16 @@
 /**
  * Cloudflare R2 圖片儲存配置
- * 
+ *
  * 用於儲存商品圖片至 CDN，提供全球加速訪問
  * 如未配置環境變數，此 plugin 將不會啟用
+ *
+ * 環境變數:
+ * - S3_BUCKET: R2 儲存桶名稱
+ * - S3_ACCESS_KEY: R2 API Access Key
+ * - S3_SECRET_KEY: R2 API Secret Key
+ * - S3_ENDPOINT: R2 S3 API 端點
+ * - S3_REGION: 地區（R2 使用 'auto'）
+ * - S3_PUBLIC_URL: 公開訪問 URL（用於產生圖片連結）
  */
 import { s3Storage } from '@payloadcms/storage-s3'
 
@@ -19,16 +27,29 @@ const isS3Configured = Boolean(
  */
 export const createStoragePlugin = () => {
   if (!isS3Configured) {
+    console.log('[R2 Storage] 未配置環境變數，使用本地儲存')
     return undefined
   }
+
+  console.log('[R2 Storage] 使用 Cloudflare R2 儲存')
 
   return s3Storage({
     collections: {
       media: {
-        // 允許覆蓋現有檔案
+        // 禁用本地儲存，完全使用 R2
         disableLocalStorage: true,
         // 產生圖片路徑前綴
         prefix: 'media',
+        // 產生公開訪問 URL
+        generateFileURL: ({ filename, prefix }) => {
+          const publicUrl = process.env.S3_PUBLIC_URL
+          if (publicUrl) {
+            // 使用公開 URL（R2 Public Development URL 或自定義域名）
+            return `${publicUrl}/${prefix}/${filename}`
+          }
+          // 後備方案：使用 S3 API 端點（需要適當的訪問權限）
+          return `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${prefix}/${filename}`
+        },
       },
     },
     bucket: process.env.S3_BUCKET!,

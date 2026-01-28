@@ -54,22 +54,30 @@ export function ProductDescription({ product }: { product: Product }) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* 標題與價格 */}
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-2">
-        <h1 className="text-xl font-medium">{product.title}</h1>
-        <div className="uppercase font-mono text-lg">
-          {hasVariants ? (
-            <Price highestAmount={highestAmount} lowestAmount={lowestAmount} />
-          ) : (
-            <Price amount={amount} />
-          )}
+    <div className="flex flex-col gap-5">
+      {/* 標題與價格 - 改善視覺層級 */}
+      <div className="flex flex-col gap-3">
+        <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-gray-900">
+          {product.title}
+        </h1>
+        <div className="flex items-baseline gap-2">
+          <span className="text-2xl lg:text-3xl font-bold text-primary font-mono">
+            {hasVariants ? (
+              <Price highestAmount={highestAmount} lowestAmount={lowestAmount} />
+            ) : (
+              <Price amount={amount} />
+            )}
+          </span>
         </div>
       </div>
 
-      {/* 商品描述 */}
+      {/* 商品描述 - 改善可讀性 */}
       {product.description ? (
-        <RichText className="text-sm text-gray-600" data={product.description} enableGutter={false} />
+        <RichText
+          className="text-sm leading-relaxed text-gray-600 prose prose-sm max-w-none"
+          data={product.description}
+          enableGutter={false}
+        />
       ) : null}
 
       {/* 變體矩陣（有變體時顯示） */}

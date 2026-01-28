@@ -1,5 +1,5 @@
 # Progress Tracker
-**Last Updated：** 2026-01-27 (晚間更新)
+**Last Updated：** 2026-01-28 (Cloudflare R2 圖片儲存配置)
 
 ---
 
@@ -70,25 +70,32 @@
   - 缺貨只標示在尺寸層級
 - [x] **VariantWishlistButton 組件**: 行內小型愛心按鈕
 - [x] **Gallery 優化**: 查看更多功能
-- [ ] 🔴 **Cloudflare R2 設定**（進行中，已中斷）
-- [ ] 重新匯入商品圖片
+- [x] **Cloudflare R2 圖片儲存配置** ✅
+  - R2 Bucket: `takemejapan-media` (APAC 區域)
+  - 公開 URL 已啟用: `pub-0253cb3d5f6644fc95fad66f6d98c09e.r2.dev`
+  - CORS 政策已配置（localhost + 生產域名）
+  - Payload CMS 儲存插件已整合
+- [ ] 重新匯入商品圖片（使用 R2 儲存）
 - [ ] 遺棄購物車 LINE 提醒（待實作）
 
 ---
 
 ## 🚧 準備中
 
-### 第三方登入 (Phase 10)
-- [ ] LINE Login 按鈕 integration
-- [ ] 自動綁定 LINE User ID
+### 第三方登入 (Phase 10) ✅
+- [x] LINE Login 按鈕 integration（已存在）
+- [x] 自動綁定 LINE User ID（已存在）
+- [x] 登入/註冊/忘記密碼頁面 UI/UX 優化
 
 ---
 
 ## 📋 待辦事項 (Backlog)
 
-### 階段十：LINE Login
-- [ ] 登入頁 LINE Login 按鈕
-- [ ] 自動綁定 LINE User ID
+### 階段十：LINE Login ✅
+- [x] 登入頁 LINE Login 按鈕
+- [x] 自動綁定 LINE User ID
+- [x] 忘記密碼/重設密碼頁面
+- [x] 認證頁面 UI/UX 優化
 
 ### 階段十一：商品頁整合
 - [x] 商品頁愛心 Icon（加入願望清單）
@@ -114,12 +121,165 @@
 | 階段七：LINE Bot 整合 | 已完成 | 100% |
 | 階段八：會員中心 | 已完成 | 100% |
 | **階段九：購物車系統** | **已完成** | **100%** |
-| 階段十：LINE Login | 未開始 | 0% |
+| **階段十：LINE Login** | **已完成** | **100%** |
 | **階段十一：商品頁整合** | **進行中** | **85%** |
 
 ---
 
 ## 📝 最近更新日誌
+
+### 2026-01-28 (Cloudflare R2 圖片儲存配置)
+- ✅ **Cloudflare R2 儲存桶設定完成**
+  - 建立 R2 Bucket: `takemejapan-media`
+  - 位置: Asia Pacific (APAC)
+  - 儲存類別: Standard
+- ✅ **公開訪問 URL 已啟用**
+  - Public Development URL: `https://pub-0253cb3d5f6644fc95fad66f6d98c09e.r2.dev`
+  - 注意: 生產環境建議使用自定義域名（需先將 takemejapan.com 加入 Cloudflare）
+- ✅ **CORS 政策已配置**
+  ```json
+  {
+    "AllowedOrigins": ["http://localhost:3000", "https://takemejapan.com", "https://www.takemejapan.com", "https://takemejapan.zeabur.app"],
+    "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"],
+    "AllowedHeaders": ["*"],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+  ```
+- ✅ **API Token 建立**
+  - Token 名稱: `payload-cms-takemejapan`
+  - 權限: Object Read and Write
+  - 範圍: All buckets
+- ✅ **Payload CMS 儲存插件配置**
+  - 更新 `src/plugins/storage.ts`:
+    - 新增 `generateFileURL` 使用公開 R2 URL
+    - 新增詳細註解說明環境變數
+    - 新增啟用/未啟用日誌訊息
+  - 新增環境變數至 `.env`:
+    - `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`
+    - `S3_ENDPOINT`, `S3_REGION`, `S3_PUBLIC_URL`
+- ⚠️ **待辦**:
+  - 重新匯入商品圖片以使用 R2 儲存
+  - 生產環境建議新增自定義域名（如 `images.takemejapan.com`）
+
+### 2026-01-28 (登出頁面中文化)
+- ✅ **登出頁面完整中文化與連結修復**
+  - **`src/app/(app)/logout/LogoutPage/index.tsx`**:
+    - 載入狀態：「登出中...」、「請稍候」
+    - 成功狀態：「已成功登出」/「您已經登出」
+    - 感謝語：「感謝您的使用，期待您再次光臨！」
+    - 按鈕文字：「繼續購物」、「重新登入」
+    - 連結文字：「或返回 首頁」
+  - **`src/app/(app)/logout/page.tsx`**:
+    - 中文 metadata：`title: '登出 | Daytona Park'`
+    - 統一視覺風格（居中版面、品牌圖示、表單卡片）
+  - **修復無效連結**：
+    - `/search` → `/shop`（繼續購物）
+    - 確保所有連結都是有效的：`/shop`、`/login`、`/`
+  - **瀏覽器驗證結果**：
+    - ✅ 繼續購物 → `/shop` 商店頁面
+    - ✅ 重新登入 → `/login` 登入頁面
+    - ✅ 首頁 → `/` 首頁
+
+### 2026-01-28 (認證頁面 UI/UX 優化)
+- ✅ **認證系統審查與優化**
+  - 使用 UI/UX Pro Max 技能庫進行設計系統生成
+  - 調用 Explore Agent 全面審查現有認證實作
+- ✅ **修復 LoginForm 錯誤連結**
+  - 問題：「忘記密碼」連結指向不存在的 `/recover-password`
+  - 解決：改為正確路徑 `/forgot-password`
+- ✅ **新增 /recover-password 頁面**
+  - 用途：用戶點擊重設密碼郵件連結後的目標頁面
+  - 功能：接收 token 參數、驗證有效性、設定新密碼
+  - 新增元件：`RecoverPasswordForm` (`src/components/forms/RecoverPasswordForm/index.tsx`)
+  - 新增頁面：`src/app/(app)/recover-password/page.tsx`
+- ✅ **ForgotPasswordForm 翻譯與優化**
+  - 全部英文文字翻譯為繁體中文
+  - 新增成功畫面（郵件圖示 + 友善提示）
+  - 新增 loading 狀態顯示
+  - 更新 metadata 為中文
+- ✅ **認證頁面 UI/UX 全面升級**
+  - **統一視覺風格**：
+    - 居中版面 (`min-h-[calc(100vh-200px)] flex items-center justify-center`)
+    - 品牌圖示區塊（圓形背景 + SVG 圖示）
+    - 表單卡片樣式 (`bg-white rounded-2xl shadow-sm border`)
+    - 底部說明文字
+  - **登入頁 (`/login`)**：
+    - 新增「歡迎回來」標題與說明文字
+    - LINE 登入按鈕移至頂部，強調快速登入
+    - 優化分隔線樣式
+    - 「忘記密碼」連結移至密碼欄位右側
+    - 使用 scrapbook 主題色 (`#C9925E`)
+  - **註冊頁 (`/create-account`)**：
+    - 新增「加入會員」標題與說明文字
+    - 使用 scrapbook 次要色 (`#4A6C6F`)
+    - 新增電子郵件格式驗證
+    - 新增密碼長度驗證（至少 8 字元）
+    - 改善錯誤訊息（已註冊帳號的友善提示）
+  - **忘記密碼頁 (`/forgot-password`)**：
+    - 新增鑰匙圖示
+    - 使用琥珀色系統色
+  - **重設密碼頁 (`/recover-password`)**：
+    - 新增盾牌圖示
+    - Token 無效時顯示友善錯誤畫面
+    - 成功後 3 秒自動跳轉登入頁
+  - **表單元素優化**：
+    - 輸入框高度增加至 48px (`h-12`)
+    - 按鈕高度增加至 48px 符合觸控標準
+    - 新增 `autoComplete` 屬性優化瀏覽器自動填入
+    - Loading spinner 動畫
+- **修改檔案清單**:
+  - `src/components/forms/LoginForm/index.tsx`
+  - `src/components/forms/CreateAccountForm/index.tsx`
+  - `src/components/forms/ForgotPasswordForm/index.tsx`
+  - `src/components/forms/RecoverPasswordForm/index.tsx` (新增)
+  - `src/app/(app)/login/page.tsx`
+  - `src/app/(app)/create-account/page.tsx`
+  - `src/app/(app)/forgot-password/page.tsx`
+  - `src/app/(app)/recover-password/page.tsx` (新增)
+
+### 2026-01-28 (Gallery 展開更多 Bug 修復)
+- ✅ **修復「展開更多」按鈕點擊後無圖片顯示問題**
+  - **問題**: 點擊展開按鈕後，圖片顯示為全寬堆疊而非縮圖網格
+  - **根因**: Tailwind CSS 4 未正確編譯 `grid-cols-5` 類別
+  - **解決方案**: 在 `Gallery.tsx` 使用內聯樣式定義網格佈局
+    ```tsx
+    style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}
+    ```
+  - 現在展開後可正確顯示 5 欄縮圖網格，所有 87 張圖片皆可瀏覽
+
+### 2026-01-28 (UI/UX Pro Max 優化)
+- ✅ **商品頁 UI/UX Pro Max 全面優化**
+  - 使用 UI/UX Pro Max 技能庫進行審查與優化
+  - **Gallery 組件優化**:
+    - 「展開更多 (N 張)」按鈕移至輪播下方，始終可見
+    - 新增主圖右下角圖片計數器 (1 / 87)
+    - 縮圖加入 `cursor-pointer` 提示可點擊
+  - **VariantMatrix 無障礙改進**:
+    - 庫存狀態：新增圖示 (✓ 有庫存 / ❌ 缺貨)，不僅依賴顏色
+    - Touch Target Size：按鈕最小高度 36px，符合觸控友好標準
+    - 按鈕間距：從 `gap-1` (4px) 增加至 `gap-2` (8px)
+    - ARIA Labels：所有按鈕加入 `aria-label` 和 `aria-pressed`
+    - Focus 狀態：加入 `focus-visible:ring-2` 可見焦點環
+  - **VariantWishlistButton 優化**:
+    - 尺寸從 32px 增加至 36px
+    - 加入 `aria-pressed` 狀態追蹤
+    - 優化 hover/active 狀態視覺回饋
+  - **ProductDescription 排版改進**:
+    - 標題：`text-xl` → `text-2xl lg:text-3xl font-bold`
+    - 價格：更大、更醒目的顯示
+    - 間距：整體 gap 從 4 增加至 5
+  - **全域 CSS 無障礙支援**:
+    - 新增 `prefers-reduced-motion` 減少動態效果
+    - 觸控設備最小點擊區域 44px
+    - `touch-action: manipulation` 減少觸控延遲
+    - 全域 `:focus-visible` 焦點環樣式
+  - **修改檔案**:
+    - `src/components/product/Gallery.tsx`
+    - `src/components/product/VariantMatrix.tsx`
+    - `src/components/product/VariantWishlistButton.tsx`
+    - `src/components/product/ProductDescription.tsx`
+    - `src/app/(app)/globals.css`
 
 ### 2026-01-27 (晚間)
 - ✅ **VariantMatrix Bug 修復 - 商品顏色顯示不完整**
