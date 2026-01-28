@@ -26,6 +26,7 @@ import { NavItemRowLabel as NavItemRowLabel_d4655109717a6f5707cd0a6520a4fd9e } f
 import { CustomNav as CustomNav_c7444955c2e5437a06591727650df7dc } from '@/components/Admin/CustomNav'
 import { BeforeDashboard as BeforeDashboard_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
 import { BeforeLogin as BeforeLogin_8a7ab0eb7ab5c511aba12e68480bfe5e } from '@/components/BeforeLogin'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { ProductImporterView as ProductImporterView_9f8258059606bfb046e532dde68d7ebf } from '@/components/Admin/ProductImporter/View'
 import { AbandonedCartsViewWrapper as AbandonedCartsViewWrapper_e437614fff3cf4e6e502a4419e3c38b7 } from '@/components/Admin/AbandonedCartsView/View'
 import { OrderImporterView as OrderImporterView_2b4cc482b61b4c10162695f664a09fd3 } from '@/components/Admin/OrderImporter/View'
@@ -61,6 +62,7 @@ export const importMap = {
   "@/components/Admin/CustomNav#CustomNav": CustomNav_c7444955c2e5437a06591727650df7dc,
   "@/components/BeforeDashboard#BeforeDashboard": BeforeDashboard_1a7510af427896d367a49dbf838d2de6,
   "@/components/BeforeLogin#BeforeLogin": BeforeLogin_8a7ab0eb7ab5c511aba12e68480bfe5e,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@/components/Admin/ProductImporter/View#ProductImporterView": ProductImporterView_9f8258059606bfb046e532dde68d7ebf,
   "@/components/Admin/AbandonedCartsView/View#AbandonedCartsViewWrapper": AbandonedCartsViewWrapper_e437614fff3cf4e6e502a4419e3c38b7,
   "@/components/Admin/OrderImporter/View#OrderImporterView": OrderImporterView_2b4cc482b61b4c10162695f664a09fd3,
