@@ -1,4 +1,5 @@
 import { ecommercePlugin } from '@payloadcms/plugin-ecommerce'
+import { USD } from '@payloadcms/plugin-ecommerce/client/react'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
@@ -6,6 +7,21 @@ import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/
 import { Plugin } from 'payload'
 
 import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
+
+// ===== 自定義幣別 =====
+const TWD = {
+  code: 'TWD',
+  decimals: 0, // 台幣通常不顯示小數
+  label: '新台幣',
+  symbol: 'NT$',
+}
+
+const JPY = {
+  code: 'JPY',
+  decimals: 0, // 日圓不顯示小數
+  label: '日圓',
+  symbol: '¥',
+}
 
 import { adminOnlyFieldAccess } from '@/access/adminOnlyFieldAccess'
 import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus'
@@ -79,6 +95,11 @@ export const plugins: Plugin[] = [
       customerOnlyFieldAccess,
       isAdmin,
       isDocumentOwner,
+    },
+    // ===== 幣別設定 =====
+    currencies: {
+      defaultCurrency: 'TWD', // 預設使用台幣
+      supportedCurrencies: [TWD, JPY, USD], // 支援的幣別
     },
     customers: {
       slug: 'users',
