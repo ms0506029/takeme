@@ -115,6 +115,56 @@ export const plugins: Plugin[] = [
     },
     products: {
       productsCollectionOverride: ProductsCollection,
+      // ===== Variants 配置必須在 products 下 =====
+      variants: {
+        variantsCollectionOverride: ({ defaultCollection }) => ({
+          ...defaultCollection,
+          labels: {
+            singular: '規格變體',
+            plural: '規格變體',
+          },
+          admin: {
+            ...defaultCollection?.admin,
+            group: '商品管理',
+            defaultColumns: ['title', 'sku', 'inventory', 'priceInTWD'],
+          },
+          fields: [
+            ...defaultCollection.fields,
+            // SKU 欄位 - 用於庫存管理和訂單追蹤
+            {
+              name: 'sku',
+              type: 'text',
+              label: 'SKU',
+              index: true,
+              admin: {
+                description: '商品變體唯一識別碼（格式: FS-{hash}-{colorCode}-{size}）',
+              },
+            },
+          ],
+        }),
+        variantOptionsCollectionOverride: ({ defaultCollection }) => ({
+          ...defaultCollection,
+          labels: {
+            singular: '規格選項',
+            plural: '規格選項',
+          },
+          admin: {
+            ...defaultCollection?.admin,
+            group: '商品管理',
+          },
+        }),
+        variantTypesCollectionOverride: ({ defaultCollection }) => ({
+          ...defaultCollection,
+          labels: {
+            singular: '規格類型',
+            plural: '規格類型',
+          },
+          admin: {
+            ...defaultCollection?.admin,
+            group: '商品管理',
+          },
+        }),
+      },
     },
     // 側邊欄分組設定
     orders: {
@@ -128,6 +178,9 @@ export const plugins: Plugin[] = [
           ...defaultCollection?.admin,
           group: '訂單管理',
           defaultColumns: ['orderNumber', 'externalOrderId', 'status', 'amount', 'createdAt'],
+          components: {
+            beforeListTable: ['@/components/Admin/BulkActions#OrdersBulkActions'],
+          },
         },
         // ===== Phase 7.3.3: Points Engine Hook =====
         hooks: {
@@ -280,41 +333,6 @@ export const plugins: Plugin[] = [
         admin: {
           ...defaultCollection?.admin,
           group: '客戶管理',
-        },
-      }),
-    },
-    variants: {
-      variantsCollectionOverride: ({ defaultCollection }) => ({
-        ...defaultCollection,
-        labels: {
-          singular: '規格變體',
-          plural: '規格變體',
-        },
-        admin: {
-          ...defaultCollection?.admin,
-          group: '商品管理',
-        },
-      }),
-      variantOptionsCollectionOverride: ({ defaultCollection }) => ({
-        ...defaultCollection,
-        labels: {
-          singular: '規格選項',
-          plural: '規格選項',
-        },
-        admin: {
-          ...defaultCollection?.admin,
-          group: '商品管理',
-        },
-      }),
-      variantTypesCollectionOverride: ({ defaultCollection }) => ({
-        ...defaultCollection,
-        labels: {
-          singular: '規格類型',
-          plural: '規格類型',
-        },
-        admin: {
-          ...defaultCollection?.admin,
-          group: '商品管理',
         },
       }),
     },

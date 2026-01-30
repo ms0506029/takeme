@@ -83,6 +83,9 @@ export interface Config {
     categories: Category;
     media: Media;
     adBanners: AdBanner;
+    'scraper-platforms': ScraperPlatform;
+    'scraping-jobs': ScrapingJob;
+    'scraped-products': ScrapedProduct;
     forms: Form;
     'form-submissions': FormSubmission;
     addresses: Address;
@@ -124,6 +127,9 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     adBanners: AdBannersSelect<false> | AdBannersSelect<true>;
+    'scraper-platforms': ScraperPlatformsSelect<false> | ScraperPlatformsSelect<true>;
+    'scraping-jobs': ScrapingJobsSelect<false> | ScrapingJobsSelect<true>;
+    'scraped-products': ScrapedProductsSelect<false> | ScrapedProductsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
@@ -148,12 +154,14 @@ export interface Config {
     footer: Footer;
     siteSettings: SiteSetting;
     trackingScripts: TrackingScript;
+    'scraper-settings': ScraperSetting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     trackingScripts: TrackingScriptsSelect<false> | TrackingScriptsSelect<true>;
+    'scraper-settings': ScraperSettingsSelect<false> | ScraperSettingsSelect<true>;
   };
   locale: 'zh-TW' | 'en';
   user: User & {
@@ -396,7 +404,7 @@ export interface Order {
   transactions?: (string | Transaction)[] | null;
   status?: OrderStatus;
   amount?: number | null;
-  currency?: 'USD' | null;
+  currency?: ('TWD' | 'JPY' | 'USD') | null;
   /**
    * 從外部平台匯入的原始訂單編號
    */
@@ -464,6 +472,10 @@ export interface Product {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  priceInTWDEnabled?: boolean | null;
+  priceInTWD?: number | null;
+  priceInJPYEnabled?: boolean | null;
+  priceInJPY?: number | null;
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
   relatedProducts?: (string | Product)[] | null;
@@ -1228,8 +1240,16 @@ export interface Variant {
   product: string | Product;
   options: (string | VariantOption)[];
   inventory?: number | null;
+  priceInTWDEnabled?: boolean | null;
+  priceInTWD?: number | null;
+  priceInJPYEnabled?: boolean | null;
+  priceInJPY?: number | null;
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
+  /**
+   * 商品變體唯一識別碼（格式: FS-{hash}-{colorCode}-{size}）
+   */
+  sku?: string | null;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -1273,7 +1293,7 @@ export interface Transaction {
   order?: (string | null) | Order;
   cart?: (string | null) | Cart;
   amount?: number | null;
-  currency?: 'USD' | null;
+  currency?: ('TWD' | 'JPY' | 'USD') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1296,7 +1316,7 @@ export interface Cart {
   purchasedAt?: string | null;
   status?: ('active' | 'purchased' | 'abandoned') | null;
   subtotal?: number | null;
-  currency?: 'USD' | null;
+  currency?: ('TWD' | 'JPY' | 'USD') | null;
   /**
    * 購物車被系統標記為遺棄的時間
    */
@@ -1631,6 +1651,329 @@ export interface AdBanner {
   createdAt: string;
 }
 /**
+ * 管理各網站的爬蟲配置
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scraper-platforms".
+ */
+export interface ScraperPlatform {
+  id: string;
+  name: string;
+  /**
+   * 用於 API 識別，請使用小寫英文和連字號
+   */
+  slug: string;
+  baseUrl: string;
+  isActive?: boolean | null;
+  /**
+   * 顯示在平台列表中的小圖示
+   */
+  icon?: (string | null) | Media;
+  urlPatterns: {
+    /**
+     * 正則表達式，匹配列表頁 URL
+     */
+    listing: string;
+    /**
+     * 正則表達式，匹配商品頁 URL，可用括號捕獲商品 ID
+     */
+    product: string;
+  };
+  listingSelectors: {
+    /**
+     * 包含單一商品的容器元素
+     */
+    productCard: string;
+    /**
+     * 指向商品詳情頁的連結
+     */
+    productLink: string;
+    /**
+     * 屬性名稱或選擇器，用於提取商品 ID
+     */
+    productId?: string | null;
+    thumbnail?: string | null;
+    title?: string | null;
+    brand?: string | null;
+    price?: string | null;
+    originalPrice?: string | null;
+    nextPage?: string | null;
+    /**
+     * URL 中的頁碼參數
+     */
+    pageParam?: string | null;
+    totalCount?: string | null;
+  };
+  /**
+   * 啟用後可提取商品詳情、變體、尺寸表等完整資訊
+   */
+  supportDeepScrape?: boolean | null;
+  productSelectors?: {
+    title?: string | null;
+    brand?: string | null;
+    price?: string | null;
+    description?: string | null;
+    images?: string | null;
+    variants?: string | null;
+    variantColor?: string | null;
+    variantSize?: string | null;
+    stockStatus?: string | null;
+    sizeChart?: string | null;
+    materials?: string | null;
+  };
+  settings?: {
+    /**
+     * 翻頁之間的等待時間
+     */
+    pageDelay?: number | null;
+    /**
+     * 每個請求之間的等待時間
+     */
+    requestDelay?: number | null;
+    maxRetries?: number | null;
+    /**
+     * 此平台需要登入才能爬取
+     */
+    requiresLogin?: boolean | null;
+    userAgent?: string | null;
+  };
+  pricing?: {
+    useGlobalPricing?: boolean | null;
+    currency?: ('JPY' | 'USD' | 'TWD') | null;
+    /**
+     * 不使用全局設定時，可自訂此平台的定價層級
+     */
+    customPricingTiers?:
+      | {
+          name?: string | null;
+          minPrice?: number | null;
+          maxPrice?: number | null;
+          exchangeRate?: number | null;
+          taxMultiplier?: number | null;
+          handlingFee?: number | null;
+          shippingFee?: number | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * JSON 格式的自定義函數配置，用於特殊情況的資料提取。請謹慎使用。
+   */
+  customExtractors?: string | null;
+  totalProductsScraped?: number | null;
+  lastUsedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * 管理爬蟲任務的執行
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scraping-jobs".
+ */
+export interface ScrapingJob {
+  id: string;
+  platform: string | ScraperPlatform;
+  /**
+   * 深層：完整資料；淺層：僅價格庫存
+   */
+  type: 'deep' | 'shallow';
+  /**
+   * 列表頁或單一商品頁的 URL
+   */
+  sourceUrl: string;
+  /**
+   * 自動偵測
+   */
+  urlType?: ('listing' | 'product') | null;
+  status?: ('pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled') | null;
+  progress?: {
+    currentPage?: number | null;
+    totalPages?: number | null;
+    productsFound?: number | null;
+    productsProcessed?: number | null;
+    productsImported?: number | null;
+    productsSkipped?: number | null;
+    errors?: number | null;
+    /**
+     * 正在處理的頁面 URL
+     */
+    currentUrl?: string | null;
+  };
+  config?: {
+    /**
+     * 0 = 無限制
+     */
+    maxPages?: number | null;
+    /**
+     * 0 = 無限制
+     */
+    maxProducts?: number | null;
+    /**
+     * 從第幾頁開始
+     */
+    startPage?: number | null;
+    /**
+     * 跳過已匯入的商品
+     */
+    excludeExisting?: boolean | null;
+    /**
+     * 爬取完成後自動執行匯入
+     */
+    autoImport?: boolean | null;
+    /**
+     * 將圖片下載到 Media
+     */
+    downloadImages?: boolean | null;
+  };
+  startedAt?: string | null;
+  completedAt?: string | null;
+  /**
+   * 任務執行的總時長
+   */
+  duration?: number | null;
+  logs?:
+    | {
+        timestamp?: string | null;
+        level?: ('info' | 'warn' | 'error' | 'debug') | null;
+        message?: string | null;
+        data?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * 任務失敗時的錯誤詳情
+   */
+  errorMessage?: string | null;
+  createdBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * 爬取後的商品暫存區，可編輯後再匯入
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scraped-products".
+ */
+export interface ScrapedProduct {
+  id: string;
+  job: string | ScrapingJob;
+  platform: string | ScraperPlatform;
+  /**
+   * 來源平台的商品 ID
+   */
+  externalId: string;
+  externalUrl: string;
+  originalTitle?: string | null;
+  /**
+   * 可手動編輯
+   */
+  translatedTitle?: string | null;
+  brand?: string | null;
+  category?: string | null;
+  /**
+   * 原始描述（日文）
+   */
+  description?: string | null;
+  /**
+   * 翻譯後的描述（可編輯）
+   */
+  translatedDescription?: string | null;
+  originalPrice?: number | null;
+  /**
+   * 如有折扣
+   */
+  salePrice?: number | null;
+  /**
+   * 根據定價規則計算
+   */
+  calculatedPrice?: number | null;
+  /**
+   * 價格計算的詳細步驟
+   */
+  pricingDetails?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  thumbnailUrl?: string | null;
+  imageUrls?:
+    | {
+        url?: string | null;
+        /**
+         * 此圖片對應的顏色
+         */
+        colorName?: string | null;
+        /**
+         * Base64 編碼圖片（由 Extension 下載）
+         */
+        base64?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * 包含顏色、尺寸、庫存等資訊
+   */
+  variants?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * 尺寸對照表資料
+   */
+  sizeChart?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  materials?: string | null;
+  translationStatus?: ('pending' | 'translated' | 'review' | 'manual') | null;
+  /**
+   * 無法翻譯的原因或注意事項
+   */
+  translationNotes?: string | null;
+  importStatus?: ('pending' | 'review' | 'imported' | 'skipped' | 'failed') | null;
+  importedProduct?: (string | null) | Product;
+  scrapedAt?: string | null;
+  importedAt?: string | null;
+  importError?: string | null;
+  /**
+   * 完整的原始 JSON 資料，用於除錯
+   */
+  rawData?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
@@ -1714,6 +2057,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'adBanners';
         value: string | AdBanner;
+      } | null)
+    | ({
+        relationTo: 'scraper-platforms';
+        value: string | ScraperPlatform;
+      } | null)
+    | ({
+        relationTo: 'scraping-jobs';
+        value: string | ScrapingJob;
+      } | null)
+    | ({
+        relationTo: 'scraped-products';
+        value: string | ScrapedProduct;
       } | null)
     | ({
         relationTo: 'forms';
@@ -2357,6 +2712,177 @@ export interface AdBannersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scraper-platforms_select".
+ */
+export interface ScraperPlatformsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  baseUrl?: T;
+  isActive?: T;
+  icon?: T;
+  urlPatterns?:
+    | T
+    | {
+        listing?: T;
+        product?: T;
+      };
+  listingSelectors?:
+    | T
+    | {
+        productCard?: T;
+        productLink?: T;
+        productId?: T;
+        thumbnail?: T;
+        title?: T;
+        brand?: T;
+        price?: T;
+        originalPrice?: T;
+        nextPage?: T;
+        pageParam?: T;
+        totalCount?: T;
+      };
+  supportDeepScrape?: T;
+  productSelectors?:
+    | T
+    | {
+        title?: T;
+        brand?: T;
+        price?: T;
+        description?: T;
+        images?: T;
+        variants?: T;
+        variantColor?: T;
+        variantSize?: T;
+        stockStatus?: T;
+        sizeChart?: T;
+        materials?: T;
+      };
+  settings?:
+    | T
+    | {
+        pageDelay?: T;
+        requestDelay?: T;
+        maxRetries?: T;
+        requiresLogin?: T;
+        userAgent?: T;
+      };
+  pricing?:
+    | T
+    | {
+        useGlobalPricing?: T;
+        currency?: T;
+        customPricingTiers?:
+          | T
+          | {
+              name?: T;
+              minPrice?: T;
+              maxPrice?: T;
+              exchangeRate?: T;
+              taxMultiplier?: T;
+              handlingFee?: T;
+              shippingFee?: T;
+              id?: T;
+            };
+      };
+  customExtractors?: T;
+  totalProductsScraped?: T;
+  lastUsedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scraping-jobs_select".
+ */
+export interface ScrapingJobsSelect<T extends boolean = true> {
+  platform?: T;
+  type?: T;
+  sourceUrl?: T;
+  urlType?: T;
+  status?: T;
+  progress?:
+    | T
+    | {
+        currentPage?: T;
+        totalPages?: T;
+        productsFound?: T;
+        productsProcessed?: T;
+        productsImported?: T;
+        productsSkipped?: T;
+        errors?: T;
+        currentUrl?: T;
+      };
+  config?:
+    | T
+    | {
+        maxPages?: T;
+        maxProducts?: T;
+        startPage?: T;
+        excludeExisting?: T;
+        autoImport?: T;
+        downloadImages?: T;
+      };
+  startedAt?: T;
+  completedAt?: T;
+  duration?: T;
+  logs?:
+    | T
+    | {
+        timestamp?: T;
+        level?: T;
+        message?: T;
+        data?: T;
+        id?: T;
+      };
+  errorMessage?: T;
+  createdBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scraped-products_select".
+ */
+export interface ScrapedProductsSelect<T extends boolean = true> {
+  job?: T;
+  platform?: T;
+  externalId?: T;
+  externalUrl?: T;
+  originalTitle?: T;
+  translatedTitle?: T;
+  brand?: T;
+  category?: T;
+  description?: T;
+  translatedDescription?: T;
+  originalPrice?: T;
+  salePrice?: T;
+  calculatedPrice?: T;
+  pricingDetails?: T;
+  thumbnailUrl?: T;
+  imageUrls?:
+    | T
+    | {
+        url?: T;
+        colorName?: T;
+        base64?: T;
+        id?: T;
+      };
+  variants?: T;
+  sizeChart?: T;
+  materials?: T;
+  translationStatus?: T;
+  translationNotes?: T;
+  importStatus?: T;
+  importedProduct?: T;
+  scrapedAt?: T;
+  importedAt?: T;
+  importError?: T;
+  rawData?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms_select".
  */
 export interface FormsSelect<T extends boolean = true> {
@@ -2533,8 +3059,13 @@ export interface VariantsSelect<T extends boolean = true> {
   product?: T;
   options?: T;
   inventory?: T;
+  priceInTWDEnabled?: T;
+  priceInTWD?: T;
+  priceInJPYEnabled?: T;
+  priceInJPY?: T;
   priceInUSDEnabled?: T;
   priceInUSD?: T;
+  sku?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
@@ -2591,6 +3122,10 @@ export interface ProductsSelect<T extends boolean = true> {
   enableVariants?: T;
   variantTypes?: T;
   variants?: T;
+  priceInTWDEnabled?: T;
+  priceInTWD?: T;
+  priceInJPYEnabled?: T;
+  priceInJPY?: T;
   priceInUSDEnabled?: T;
   priceInUSD?: T;
   relatedProducts?: T;
@@ -3112,6 +3647,141 @@ export interface TrackingScript {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scraper-settings".
+ */
+export interface ScraperSetting {
+  id: string;
+  pricing?: {
+    /**
+     * 1 日圓 = ? 台幣
+     */
+    defaultExchangeRate?: number | null;
+    roundingRule?: ('ceil10' | 'ceil100' | 'round10' | 'none') | null;
+    /**
+     * 根據原價範圍套用不同的計算公式
+     */
+    tiers?:
+      | {
+          name: string;
+          minPrice: number;
+          /**
+           * 留空 = 無上限
+           */
+          maxPrice?: number | null;
+          taxMultiplier?: number | null;
+          handlingFee?: number | null;
+          shippingFee?: number | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * 價格計算公式參考
+     */
+    pricingFormula?: string | null;
+  };
+  translation?: {
+    enabled?: boolean | null;
+    fallbackMode?: ('keep' | 'review') | null;
+    /**
+     * 可用變數: {brand}, {feature}, {category}, {color}
+     */
+    template?: string | null;
+    /**
+     * 日文分類 → 中文分類
+     */
+    categoryMappings?:
+      | {
+          japanese: string;
+          chinese: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * 日文顏色 → 中文顏色
+     */
+    colorMappings?:
+      | {
+          japanese: string;
+          chinese: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * 日文尺寸項目 → 中文
+     */
+    sizeMappings?:
+      | {
+          japanese: string;
+          chinese: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  import?: {
+    /**
+     * 匯入商品時的預設商家
+     */
+    defaultVendor?: (string | null) | Vendor;
+    /**
+     * 將圖片從來源網站下載到本地
+     */
+    downloadImages?: boolean | null;
+    /**
+     * 根據爬取的顏色/尺寸建立變體
+     */
+    createVariants?: boolean | null;
+    /**
+     * 匯入後自動設為已發布狀態
+     */
+    autoPublish?: boolean | null;
+    defaultCategory?: (string | null) | Category;
+    /**
+     * 標記商品來源平台
+     */
+    externalSource?: ('freaks' | 'beams' | 'zozo' | 'other') | null;
+    /**
+     * 同時下載圖片的數量（過高可能被封鎖）
+     */
+    maxConcurrentDownloads?: number | null;
+  };
+  extension?: {
+    enabled?: boolean | null;
+    /**
+     * Extension 驗證用的 API Key
+     */
+    apiKey?: string | null;
+    /**
+     * Extension 連線的 WebSocket URL
+     */
+    wsEndpoint?: string | null;
+    /**
+     * Extension 回報存活狀態的間隔
+     */
+    heartbeatInterval?: number | null;
+    /**
+     * 超過此時間無心跳視為斷線
+     */
+    connectionTimeout?: number | null;
+    /**
+     * 用於提示用戶更新
+     */
+    extensionVersion?: string | null;
+    /**
+     * 用戶下載 Extension 的連結
+     */
+    extensionDownloadUrl?: string | null;
+  };
+  status?: {
+    totalJobsRun?: number | null;
+    totalProductsScraped?: number | null;
+    totalProductsImported?: number | null;
+    lastJobAt?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -3346,6 +4016,91 @@ export interface TrackingScriptsSelect<T extends boolean = true> {
   hotjarId?: T;
   customHeadScript?: T;
   customBodyScript?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "scraper-settings_select".
+ */
+export interface ScraperSettingsSelect<T extends boolean = true> {
+  pricing?:
+    | T
+    | {
+        defaultExchangeRate?: T;
+        roundingRule?: T;
+        tiers?:
+          | T
+          | {
+              name?: T;
+              minPrice?: T;
+              maxPrice?: T;
+              taxMultiplier?: T;
+              handlingFee?: T;
+              shippingFee?: T;
+              id?: T;
+            };
+        pricingFormula?: T;
+      };
+  translation?:
+    | T
+    | {
+        enabled?: T;
+        fallbackMode?: T;
+        template?: T;
+        categoryMappings?:
+          | T
+          | {
+              japanese?: T;
+              chinese?: T;
+              id?: T;
+            };
+        colorMappings?:
+          | T
+          | {
+              japanese?: T;
+              chinese?: T;
+              id?: T;
+            };
+        sizeMappings?:
+          | T
+          | {
+              japanese?: T;
+              chinese?: T;
+              id?: T;
+            };
+      };
+  import?:
+    | T
+    | {
+        defaultVendor?: T;
+        downloadImages?: T;
+        createVariants?: T;
+        autoPublish?: T;
+        defaultCategory?: T;
+        externalSource?: T;
+        maxConcurrentDownloads?: T;
+      };
+  extension?:
+    | T
+    | {
+        enabled?: T;
+        apiKey?: T;
+        wsEndpoint?: T;
+        heartbeatInterval?: T;
+        connectionTimeout?: T;
+        extensionVersion?: T;
+        extensionDownloadUrl?: T;
+      };
+  status?:
+    | T
+    | {
+        totalJobsRun?: T;
+        totalProductsScraped?: T;
+        totalProductsImported?: T;
+        lastJobAt?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

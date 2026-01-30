@@ -259,6 +259,25 @@ export const NavClient: React.FC = () => {
           </NavLink>
         </NavGroup>
 
+        {/* 爬蟲系統 */}
+        <NavGroup label="爬蟲系統" icon={<Icons.Product />} defaultOpen={false}>
+          <NavLink href="/admin/scraper">
+            控制台
+          </NavLink>
+          <NavLink href="/admin/collections/scraper-platforms">
+            平台管理
+          </NavLink>
+          <NavLink href="/admin/collections/scraping-jobs">
+            爬取任務
+          </NavLink>
+          <NavLink href="/admin/collections/scraped-products">
+            商品預覽
+          </NavLink>
+          <NavLink href="/admin/globals/scraper-settings">
+            爬蟲設定
+          </NavLink>
+        </NavGroup>
+
         {/* 客戶管理 */}
         <NavGroup label="客戶管理" icon={<Icons.User />}>
           <NavLink href="/admin/collections/users">

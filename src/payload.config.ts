@@ -31,10 +31,13 @@ import { RestockRequests } from '@/collections/RestockRequests'
 import { Users } from '@/collections/Users'
 import { Vendors } from '@/collections/Vendors'
 import { Wishlist } from '@/collections/Wishlist'
+// 爬蟲系統 Collections
+import { ScraperPlatforms, ScrapingJobs, ScrapedProducts } from '@/collections/Scraper'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
 import { SiteSettings } from '@/globals/SiteSettings'
 import { TrackingScripts } from '@/globals/TrackingScripts'
+import { ScraperSettings } from '@/globals/ScraperSettings'
 import { plugins } from './plugins'
 
 const filename = fileURLToPath(import.meta.url)
@@ -69,6 +72,11 @@ export default buildConfig({
           Component: '@/components/Admin/CustomerAnalytics/View#CustomerAnalyticsView',
           path: '/customer-analytics',
         },
+        // 爬蟲系統 - 任務控制台
+        scraperDashboard: {
+          Component: '@/components/Admin/Scraper/Dashboard/View#ScraperDashboardView',
+          path: '/scraper',
+        },
       },
 
     },
@@ -87,9 +95,11 @@ export default buildConfig({
     defaultLocale: 'zh-TW',
   },
   collections: [
-    Users, Vendors, MemberLevels, PointTransactions, 
+    Users, Vendors, MemberLevels, PointTransactions,
     Wishlist, RestockRequests,  // 願望清單 + 補貨通知
-    Promotions, Pages, Categories, Media, AdBanners
+    Promotions, Pages, Categories, Media, AdBanners,
+    // 爬蟲系統
+    ScraperPlatforms, ScrapingJobs, ScrapedProducts,
   ],
   db: mongooseAdapter({
     // 直接使用 process.env 以確保在 Runtime 時讀取（繞過 Next.js build-time 評估）
@@ -133,7 +143,7 @@ export default buildConfig({
   }),
   //email: nodemailerAdapter(),
   endpoints: [],
-  globals: [Header, Footer, SiteSettings, TrackingScripts],
+  globals: [Header, Footer, SiteSettings, TrackingScripts, ScraperSettings],
   plugins,
   secret: env.PAYLOAD_SECRET || '',
   typescript: {

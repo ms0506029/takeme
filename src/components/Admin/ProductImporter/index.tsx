@@ -2,21 +2,40 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 import './styles.scss'
+import {
+  Store,
+  Webhook,
+  Upload,
+  Activity,
+  RefreshCw,
+  Copy,
+  Check,
+  X,
+  Play,
+  AlertCircle,
+  CheckCircle2,
+  XCircle,
+  SkipForward,
+  RotateCw,
+  Palette,
+  FileSpreadsheet,
+  Loader2,
+  ExternalLink,
+} from 'lucide-react'
 
 /**
  * Product Importer Admin View
  * Phase 7.2.1 - 商品匯入介面
- * 
- * 功能：
- * 1. EasyStore 商品匯入（新增）
- * 2. Webhook 端點資訊供爬蟲系統使用
- * 3. CSV 上傳（開發中）
- * 4. 同步狀態監控
+ *
+ * UI/UX Pro Max Design System:
+ * - Primary: #6366F1 (Indigo)
+ * - CTA: #10B981 (Emerald)
+ * - No emojis - use Lucide icons
+ * - Data-Dense Dashboard style
  */
 
 type Tab = 'easystore' | 'webhook' | 'upload' | 'status'
 
-// Types
 interface ImportLog {
   timestamp: string
   type: 'success' | 'skip' | 'error' | 'info'
@@ -41,73 +60,6 @@ interface Vendor {
   name: string
 }
 
-// Icons
-const UploadIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-    <polyline points="17 8 12 3 7 8"></polyline>
-    <line x1="12" y1="3" x2="12" y2="15"></line>
-  </svg>
-)
-
-const WebhookIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"></path>
-    <path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"></path>
-    <path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8"></path>
-  </svg>
-)
-
-const StoreIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-  </svg>
-)
-
-const RefreshIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="23 4 23 10 17 10"></polyline>
-    <polyline points="1 20 1 14 7 14"></polyline>
-    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-  </svg>
-)
-
-const CopyIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-  </svg>
-)
-
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20 6 9 17 4 12"></polyline>
-  </svg>
-)
-
-const XIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
-)
-
-const PlayIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-  </svg>
-)
-
-// ===== CSV 上傳元件 =====
-
-interface CsvUploadSectionProps {
-  vendors: Vendor[]
-  selectedVendor: string
-  setSelectedVendor: (id: string) => void
-  setMessage: (msg: { type: 'success' | 'error'; text: string } | null) => void
-}
-
 interface CsvPreviewProduct {
   handle: string
   title: string
@@ -125,6 +77,14 @@ interface CsvProgress {
   skipped: number
   failed: number
   currentProduct?: string
+}
+
+// ===== CSV 上傳元件 =====
+interface CsvUploadSectionProps {
+  vendors: Vendor[]
+  selectedVendor: string
+  setSelectedVendor: (id: string) => void
+  setMessage: (msg: { type: 'success' | 'error'; text: string } | null) => void
 }
 
 const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({
@@ -145,7 +105,6 @@ const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({
   const [downloadImages, setDownloadImages] = useState(true)
   const [imageQuality, setImageQuality] = useState<'thumbnail' | 'detail'>('detail')
 
-  // 拖放處理
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(true)
@@ -175,10 +134,8 @@ const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({
     }
   }, [])
 
-  // 預覽 CSV
   const handlePreview = async () => {
     if (!file) return
-
     const formData = new FormData()
     formData.append('file', file)
 
@@ -199,12 +156,11 @@ const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({
       } else {
         setMessage({ type: 'error', text: data.error || '預覽失敗' })
       }
-    } catch (err) {
+    } catch {
       setMessage({ type: 'error', text: '預覽過程發生錯誤' })
     }
   }
 
-  // 執行匯入
   const handleImport = async () => {
     if (!file || !selectedVendor) {
       setMessage({ type: 'error', text: '請選擇檔案和目標商家' })
@@ -251,7 +207,7 @@ const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({
       } else {
         setMessage({ type: 'error', text: data.error || '匯入失敗' })
       }
-    } catch (err) {
+    } catch {
       setMessage({ type: 'error', text: '匯入過程發生錯誤' })
     } finally {
       setImporting(false)
@@ -259,28 +215,33 @@ const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({
   }
 
   return (
-    <div className="upload-section">
+    <div className="tab-content">
       {/* 拖放上傳區域 */}
       <div
-        className={`dropzone ${isDragging ? 'dropzone-active' : ''} ${file ? 'dropzone-has-file' : ''}`}
+        className={`file-upload ${isDragging ? 'dragging' : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <UploadIcon />
+        <Upload className="upload-icon" />
         {file ? (
           <>
-            <p className="dropzone-title">📄 {file.name}</p>
-            <p className="dropzone-hint">{(file.size / 1024).toFixed(1)} KB</p>
-            <button className="btn btn-secondary btn-sm" onClick={() => { setFile(null); setPreviewData(null) }}>
+            <p><strong><FileSpreadsheet style={{ display: 'inline', verticalAlign: 'middle', marginRight: '0.5rem' }} />{file.name}</strong></p>
+            <p style={{ marginTop: '0.25rem' }}>{(file.size / 1024).toFixed(1)} KB</p>
+            <button
+              onClick={() => { setFile(null); setPreviewData(null) }}
+              className="btn btn-secondary"
+              style={{ marginTop: '1rem' }}
+            >
+              <X />
               移除檔案
             </button>
           </>
         ) : (
           <>
-            <p className="dropzone-title">拖放 CSV/Excel 檔案至此</p>
-            <p className="dropzone-hint">或點擊下方按鈕選擇檔案</p>
-            <label className="btn btn-secondary">
+            <p><strong>拖放 CSV/Excel 檔案至此</strong></p>
+            <p style={{ marginTop: '0.25rem' }}>或點擊下方按鈕選擇檔案</p>
+            <label className="btn btn-secondary" style={{ marginTop: '1rem', cursor: 'pointer' }}>
               選擇檔案
               <input type="file" accept=".csv,.xlsx" onChange={handleFileSelect} hidden />
             </label>
@@ -290,140 +251,212 @@ const CsvUploadSection: React.FC<CsvUploadSectionProps> = ({
 
       {/* 設定區塊 */}
       {file && (
-        <div className="settings-card">
-          <h3>匯入設定</h3>
-
-          <div className="form-group">
-            <label>目標商家</label>
-            <select
-              value={selectedVendor}
-              onChange={(e) => setSelectedVendor(e.target.value)}
-              disabled={importing}
-            >
-              {vendors.length === 0 && <option value="">載入中...</option>}
-              {vendors.map((vendor) => (
-                <option key={vendor.id} value={vendor.id}>
-                  {vendor.name}
-                </option>
-              ))}
-            </select>
+        <div className="card">
+          <div className="card-header">
+            <h3>匯入設定</h3>
           </div>
+          <div className="card-body">
+            <div className="form-group">
+              <label>目標商家</label>
+              <select
+                value={selectedVendor}
+                onChange={(e) => setSelectedVendor(e.target.value)}
+                disabled={importing}
+              >
+                {vendors.length === 0 && <option value="">載入中...</option>}
+                {vendors.map((vendor) => (
+                  <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
+                ))}
+              </select>
+            </div>
 
-          <div className="checkbox-group">
-            <label>
+            <label className="checkbox-group">
               <input
                 type="checkbox"
                 checked={downloadImages}
                 onChange={(e) => setDownloadImages(e.target.checked)}
                 disabled={importing}
               />
-              下載圖片並轉換為 WebP（建議勾選）
+              <span>下載圖片並轉換為 WebP（建議勾選）</span>
             </label>
-          </div>
 
-          {downloadImages && (
-            <div className="form-group">
-              <label>圖片品質</label>
-              <select
-                value={imageQuality}
-                onChange={(e) => setImageQuality(e.target.value as 'thumbnail' | 'detail')}
+            {downloadImages && (
+              <div className="form-group" style={{ marginTop: '1rem' }}>
+                <label>圖片品質</label>
+                <select
+                  value={imageQuality}
+                  onChange={(e) => setImageQuality(e.target.value as 'thumbnail' | 'detail')}
+                  disabled={importing}
+                >
+                  <option value="detail">高品質 (80%, ≈150KB)</option>
+                  <option value="thumbnail">壓縮 (65%, ≈50KB)</option>
+                </select>
+              </div>
+            )}
+
+            <div className="btn-group" style={{ borderTop: '1px solid var(--theme-border-color)', paddingTop: '1.5rem' }}>
+              <button
+                onClick={handlePreview}
                 disabled={importing}
+                className="btn btn-secondary"
               >
-                <option value="detail">高品質 (80%, ≈150KB)</option>
-                <option value="thumbnail">壓縮 (65%, ≈50KB)</option>
-              </select>
+                <AlertCircle />
+                預覽
+              </button>
+              <button
+                onClick={handleImport}
+                disabled={importing || !selectedVendor}
+                className="btn btn-success"
+              >
+                {importing ? <Loader2 className="animate-spin" /> : <Play />}
+                {importing ? '匯入中...' : '開始匯入'}
+              </button>
             </div>
-          )}
-
-          <div className="action-buttons">
-            <button className="btn btn-secondary" onClick={handlePreview} disabled={importing}>
-              🔍 預覽
-            </button>
-            <button className="btn btn-primary" onClick={handleImport} disabled={importing || !selectedVendor}>
-              <PlayIcon />
-              {importing ? '匯入中...' : '開始匯入'}
-            </button>
           </div>
         </div>
       )}
 
       {/* 預覽結果 */}
       {previewData && (
-        <div className="preview-result">
-          <h3>預覽結果</h3>
-          <div className="preview-stats">
-            <div className="stat">
-              <span className="stat-value">{previewData.rowCount}</span>
-              <span className="stat-label">CSV 行數</span>
-            </div>
-            <div className="stat">
-              <span className="stat-value">{previewData.productCount}</span>
-              <span className="stat-label">商品數量</span>
-            </div>
+        <div className="card">
+          <div className="card-header">
+            <h3>預覽結果</h3>
           </div>
+          <div className="card-body">
+            <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', marginBottom: '1.5rem' }}>
+              <div className="stat-item">
+                <p className="stat-value primary">{previewData.rowCount}</p>
+                <p className="stat-label">CSV 行數</p>
+              </div>
+              <div className="stat-item">
+                <p className="stat-value primary">{previewData.productCount}</p>
+                <p className="stat-label">商品數量</p>
+              </div>
+            </div>
 
-          {previewData.products.length > 0 && (
-            <table className="preview-table">
-              <thead>
-                <tr>
-                  <th>Handle</th>
-                  <th>標題</th>
-                  <th>變體數</th>
-                  <th>圖片數</th>
-                  <th>價格</th>
-                </tr>
-              </thead>
-              <tbody>
-                {previewData.products.map((p, i) => (
-                  <tr key={i}>
-                    <td><code>{p.handle}</code></td>
-                    <td>{p.title}</td>
-                    <td>{p.variantCount}</td>
-                    <td>{p.imageCount}</td>
-                    <td>NT${p.price}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+            {previewData.products.length > 0 && (
+              <div style={{ overflow: 'auto' }}>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Handle</th>
+                      <th>標題</th>
+                      <th>變體數</th>
+                      <th>圖片數</th>
+                      <th>價格</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewData.products.map((p, i) => (
+                      <tr key={i}>
+                        <td><code>{p.handle}</code></td>
+                        <td>{p.title}</td>
+                        <td>{p.variantCount}</td>
+                        <td>{p.imageCount}</td>
+                        <td>NT${p.price}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
       {/* 匯入進度 */}
       {progress && (
-        <div className="import-progress">
-          <h3>匯入進度</h3>
-          <div className="progress-bar">
-            {progress.phase === 'parsing' ? (
-              <div className="progress-fill progress-indeterminate" style={{ width: '30%' }} />
-            ) : (
-              <div
-                className="progress-fill"
-                style={{ width: `${progress.total > 0 ? (progress.processed / progress.total) * 100 : 0}%` }}
-              />
-            )}
-          </div>
-          <div className="progress-text">
-            {progress.processed} / {progress.total}
-          </div>
-          <div className="progress-stats">
-            <span className="stat-success">✅ 建立: {progress.created}</span>
-            <span className="stat-update">🔄 更新: {progress.updated}</span>
-            <span className="stat-skip">⏭️ 跳過: {progress.skipped}</span>
-            <span className="stat-error">❌ 失敗: {progress.failed}</span>
-          </div>
-        </div>
+        <ProgressCard
+          title="匯入進度"
+          progress={progress}
+          showVariants={false}
+        />
       )}
     </div>
   )
 }
 
+// ===== 進度卡片元件 =====
+interface ProgressCardProps {
+  title: string
+  progress: ImportProgress | CsvProgress
+  currentProduct?: string
+  showVariants?: boolean
+}
+
+const ProgressCard: React.FC<ProgressCardProps> = ({ title, progress, currentProduct, showVariants = true }) => {
+  const isImportProgress = 'totalVariants' in progress
+  const percentage = progress.total > 0 ? (progress.processed / progress.total) * 100 : 0
+
+  return (
+    <div className="card">
+      <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <span style={{ width: '0.5rem', height: '0.5rem', background: 'var(--color-success)', borderRadius: '50%', animation: 'pulse 2s infinite' }} />
+        <h3>{title}</h3>
+      </div>
+      <div className="card-body">
+        {/* 進度條 */}
+        <div className="progress-section">
+          <div className="progress-header">
+            <span className="progress-label">處理進度</span>
+            <span className="progress-value">{progress.processed} / {progress.total}</span>
+          </div>
+          <div className="progress-bar">
+            {progress.total === 0 ? (
+              <div className="progress-fill" style={{ width: '33%', animation: 'pulse 2s infinite' }} />
+            ) : (
+              <div className="progress-fill" style={{ width: `${percentage}%` }} />
+            )}
+          </div>
+
+          {/* 當前處理中 */}
+          {(currentProduct || (isImportProgress && (progress as ImportProgress).currentProduct)) && (
+            <div className="progress-status" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Loader2 className="animate-spin" style={{ width: '1rem', height: '1rem' }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {currentProduct || (progress as ImportProgress).currentProduct}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* 統計 */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '1rem' }}>
+          <span className="status-badge active">
+            <CheckCircle2 style={{ width: '0.875rem', height: '0.875rem' }} />
+            建立: {progress.created}
+          </span>
+          <span className="status-badge info">
+            <RotateCw style={{ width: '0.875rem', height: '0.875rem' }} />
+            更新: {progress.updated}
+          </span>
+          <span className="status-badge pending">
+            <SkipForward style={{ width: '0.875rem', height: '0.875rem' }} />
+            跳過: {progress.skipped}
+          </span>
+          <span className="status-badge error">
+            <XCircle style={{ width: '0.875rem', height: '0.875rem' }} />
+            失敗: {progress.failed}
+          </span>
+          {showVariants && isImportProgress && (progress as ImportProgress).totalVariants !== undefined && (progress as ImportProgress).totalVariants! > 0 && (
+            <span className="status-badge" style={{ background: 'rgba(147, 51, 234, 0.1)', color: '#9333ea' }}>
+              <Palette style={{ width: '0.875rem', height: '0.875rem' }} />
+              變體: {(progress as ImportProgress).totalVariants}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ===== 主元件 =====
 export const ProductImporter: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('easystore')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [copied, setCopied] = useState(false)
-  
+
   // EasyStore 相關狀態
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [selectedVendor, setSelectedVendor] = useState<string>('')
@@ -438,7 +471,6 @@ export const ProductImporter: React.FC = () => {
   const [importProgress, setImportProgress] = useState<ImportProgress | null>(null)
   const [importLogs, setImportLogs] = useState<ImportLog[]>([])
 
-  // Webhook URL
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
   const webhookUrl = `${baseUrl}/api/webhooks/product-sync`
 
@@ -461,14 +493,12 @@ export const ProductImporter: React.FC = () => {
     loadVendors()
   }, [])
 
-  // 複製 URL
   const handleCopy = useCallback((text: string) => {
     navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }, [])
 
-  // 檢查 Webhook 狀態
   const checkWebhookStatus = async () => {
     setLoading(true)
     try {
@@ -479,14 +509,13 @@ export const ProductImporter: React.FC = () => {
       } else {
         setMessage({ type: 'error', text: 'Webhook 服務異常' })
       }
-    } catch (err) {
+    } catch {
       setMessage({ type: 'error', text: '無法連接 Webhook 服務' })
     } finally {
       setLoading(false)
     }
   }
 
-  // 測試 EasyStore 連線
   const testEasyStoreConnection = async () => {
     setLoading(true)
     try {
@@ -497,14 +526,13 @@ export const ProductImporter: React.FC = () => {
       } else {
         setMessage({ type: 'error', text: data.error || 'EasyStore 連線失敗' })
       }
-    } catch (err) {
+    } catch {
       setMessage({ type: 'error', text: '無法連接 EasyStore API' })
     } finally {
       setLoading(false)
     }
   }
 
-  // 預覽 EasyStore 商品
   const previewEasyStore = async () => {
     setLoading(true)
     setPreviewData(null)
@@ -521,14 +549,13 @@ export const ProductImporter: React.FC = () => {
       } else {
         setMessage({ type: 'error', text: data.error || '預覽失敗' })
       }
-    } catch (err) {
+    } catch {
       setMessage({ type: 'error', text: '無法預覽商品' })
     } finally {
       setLoading(false)
     }
   }
 
-  // 執行 EasyStore 匯入 (使用 SSE 串流)
   const startEasyStoreImport = async () => {
     if (!selectedVendor) {
       setMessage({ type: 'error', text: '請選擇目標商家' })
@@ -537,7 +564,6 @@ export const ProductImporter: React.FC = () => {
 
     setImporting(true)
     setImportLogs([])
-    // 立即顯示進度條（初始狀態）
     setImportProgress({
       total: 0,
       processed: 0,
@@ -550,7 +576,6 @@ export const ProductImporter: React.FC = () => {
     })
 
     try {
-      // 使用 SSE 串流 API
       const response = await fetch('/api/import/easystore/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -580,9 +605,8 @@ export const ProductImporter: React.FC = () => {
 
         buffer += decoder.decode(value, { stream: true })
 
-        // 解析 SSE 事件
         const lines = buffer.split('\n')
-        buffer = lines.pop() || '' // 保留不完整的行
+        buffer = lines.pop() || ''
 
         let eventType = ''
         for (const line of lines) {
@@ -598,7 +622,6 @@ export const ProductImporter: React.FC = () => {
           }
         }
       }
-
     } catch (err) {
       setMessage({ type: 'error', text: err instanceof Error ? err.message : '匯入過程發生錯誤' })
     } finally {
@@ -606,7 +629,6 @@ export const ProductImporter: React.FC = () => {
     }
   }
 
-  // 處理 SSE 事件
   const handleSSEEvent = (event: string, data: any) => {
     switch (event) {
       case 'start':
@@ -638,7 +660,6 @@ export const ProductImporter: React.FC = () => {
           currentProduct: data.currentProduct,
           logs: [],
         })
-        // 添加日誌
         setImportLogs(prev => [
           ...prev,
           {
@@ -647,7 +668,7 @@ export const ProductImporter: React.FC = () => {
             message: data.message,
             productTitle: data.currentProduct,
           },
-        ].slice(-100)) // 只保留最近 100 條
+        ].slice(-100))
         break
 
       case 'complete':
@@ -673,7 +694,6 @@ export const ProductImporter: React.FC = () => {
     }
   }
 
-  // 清除訊息
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(null), 8000)
@@ -681,154 +701,146 @@ export const ProductImporter: React.FC = () => {
     }
   }, [message])
 
+  const tabs = [
+    { id: 'easystore' as Tab, label: 'EasyStore 匯入', icon: Store },
+    { id: 'webhook' as Tab, label: 'Webhook 整合', icon: Webhook },
+    { id: 'upload' as Tab, label: 'CSV 上傳', icon: Upload },
+    { id: 'status' as Tab, label: '同步狀態', icon: Activity },
+  ]
+
   return (
     <div className="product-importer">
       {/* Header */}
-      <div className="importer-header">
-        <div>
-          <h1>商品匯入</h1>
-          <p>從 EasyStore 或其他平台匯入商品</p>
-        </div>
+      <div className="page-header">
+        <h1>商品匯入</h1>
+        <p>從 EasyStore 或其他平台匯入商品</p>
       </div>
 
       {/* Tabs */}
-      <div className="tabs">
-        <button
-          className={`tab ${activeTab === 'easystore' ? 'active' : ''}`}
-          onClick={() => setActiveTab('easystore')}
-        >
-          🏪 EasyStore 匯入
-        </button>
-        <button
-          className={`tab ${activeTab === 'webhook' ? 'active' : ''}`}
-          onClick={() => setActiveTab('webhook')}
-        >
-          Webhook 整合
-        </button>
-        <button
-          className={`tab ${activeTab === 'upload' ? 'active' : ''}`}
-          onClick={() => setActiveTab('upload')}
-        >
-          CSV 上傳
-        </button>
-        <button
-          className={`tab ${activeTab === 'status' ? 'active' : ''}`}
-          onClick={() => setActiveTab('status')}
-        >
-          同步狀態
-        </button>
+      <div className="tabs-container">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+          >
+            <tab.icon />
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Toast Message */}
       {message && (
-        <div className={`toast toast-${message.type}`}>
-          {message.type === 'success' ? <CheckIcon /> : <XIcon />}
+        <div className={`toast-message ${message.type}`}>
+          {message.type === 'success' ? <CheckCircle2 /> : <XCircle />}
           {message.text}
         </div>
       )}
 
       {/* Tab: EasyStore */}
       {activeTab === 'easystore' && (
-        <div className="easystore-section">
+        <div className="tab-content">
+          {/* Info Card */}
           <div className="info-card">
-            <div className="info-card-icon">
-              <StoreIcon />
+            <div className="info-icon">
+              <Store />
             </div>
             <h2>EasyStore 商品匯入</h2>
             <p>從您的 EasyStore 商店批量匯入商品到 Payload CMS</p>
-            
-            <button 
-              className="btn btn-secondary"
+
+            <button
               onClick={testEasyStoreConnection}
               disabled={loading}
+              className="btn btn-secondary"
             >
-              <RefreshIcon />
+              <RefreshCw className={loading ? 'animate-spin' : ''} />
               {loading ? '測試中...' : '測試連線'}
             </button>
           </div>
 
           {/* 設定區塊 */}
-          <div className="settings-card">
-            <h3>匯入設定</h3>
-            
-            <div className="form-group">
-              <label>目標商家</label>
-              <select 
-                value={selectedVendor} 
-                onChange={(e) => setSelectedVendor(e.target.value)}
-                disabled={importing}
-              >
-                {vendors.length === 0 && (
-                  <option value="">載入中...</option>
-                )}
-                {vendors.map((vendor) => (
-                  <option key={vendor.id} value={vendor.id}>
-                    {vendor.name}
-                  </option>
-                ))}
-              </select>
+          <div className="card">
+            <div className="card-header">
+              <h3>匯入設定</h3>
             </div>
+            <div className="card-body">
+              <div className="form-group">
+                <label>目標商家</label>
+                <select
+                  value={selectedVendor}
+                  onChange={(e) => setSelectedVendor(e.target.value)}
+                  disabled={importing}
+                >
+                  {vendors.length === 0 && <option value="">載入中...</option>}
+                  {vendors.map((vendor) => (
+                    <option key={vendor.id} value={vendor.id}>{vendor.name}</option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="checkbox-group">
-              <label>
+              <label className="checkbox-group">
                 <input
                   type="checkbox"
                   checked={skipExisting}
                   onChange={(e) => setSkipExisting(e.target.checked)}
                   disabled={importing}
                 />
-                跳過已存在的商品（依據 EasyStore Product ID）
+                <span>跳過已存在的商品（依據 EasyStore Product ID）</span>
               </label>
-            </div>
 
-            <div className="checkbox-group">
-              <label>
+              <label className="checkbox-group">
                 <input
                   type="checkbox"
                   checked={downloadImages}
                   onChange={(e) => setDownloadImages(e.target.checked)}
                   disabled={importing}
                 />
-                下載圖片到 Payload Media（建議勾選）
+                <span>下載圖片到 Payload Media（建議勾選）</span>
               </label>
             </div>
           </div>
 
           {/* 操作按鈕 */}
-          <div className="action-buttons">
-            <button 
-              className="btn btn-secondary"
+          <div className="btn-group">
+            <button
               onClick={previewEasyStore}
               disabled={loading || importing}
+              className="btn btn-secondary"
             >
-              🔍 預覽商品
+              <AlertCircle />
+              預覽商品
             </button>
-            <button 
-              className="btn btn-primary"
+            <button
               onClick={startEasyStoreImport}
               disabled={loading || importing || !selectedVendor}
+              className="btn btn-success"
             >
-              <PlayIcon />
+              {importing ? <Loader2 className="animate-spin" /> : <Play />}
               {importing ? '匯入中...' : '開始匯入'}
             </button>
           </div>
 
           {/* 預覽結果 */}
           {previewData && (
-            <div className="preview-result">
-              <h3>預覽結果</h3>
-              <div className="preview-stats">
-                <div className="stat">
-                  <span className="stat-value">{previewData.productCount}</span>
-                  <span className="stat-label">EasyStore 商品總數</span>
-                </div>
-                <div className="stat">
-                  <span className="stat-value">{previewData.existingCount}</span>
-                  <span className="stat-label">已匯入過</span>
-                </div>
-                <div className="stat">
-                  <span className="stat-value">{previewData.newCount}</span>
-                  <span className="stat-label">待匯入</span>
+            <div className="card">
+              <div className="card-header">
+                <h3>預覽結果</h3>
+              </div>
+              <div className="card-body">
+                <div className="stats-grid">
+                  <div className="stat-item">
+                    <p className="stat-value primary">{previewData.productCount}</p>
+                    <p className="stat-label">EasyStore 商品總數</p>
+                  </div>
+                  <div className="stat-item">
+                    <p className="stat-value muted">{previewData.existingCount}</p>
+                    <p className="stat-label">已匯入過</p>
+                  </div>
+                  <div className="stat-item">
+                    <p className="stat-value success">{previewData.newCount}</p>
+                    <p className="stat-label">待匯入</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -836,67 +848,41 @@ export const ProductImporter: React.FC = () => {
 
           {/* 匯入進度 */}
           {importProgress && (
-            <div className="import-progress">
-              <h3>匯入進度</h3>
-              <div className="progress-bar">
-                {importProgress.total === 0 ? (
-                  // 連接中 - indeterminate 動畫
-                  <div 
-                    className="progress-fill progress-indeterminate"
-                    style={{ width: '30%' }}
-                  />
-                ) : (
-                  // 正常進度條
-                  <div 
-                    className="progress-fill"
-                    style={{ 
-                      width: `${(importProgress.processed / importProgress.total) * 100}%` 
-                    }}
-                  />
-                )}
-              </div>
-              <div className="current-product">
-                <div className="spinner" />
-                {importProgress.currentProduct || '正在處理中...'}
-              </div>
-              <div className="progress-text">
-                {importProgress.processed} / {importProgress.total} 
-              </div>
-              <div className="progress-stats">
-                <span className="stat-success">✅ 建立: {importProgress.created}</span>
-                <span className="stat-update">🔄 更新: {importProgress.updated}</span>
-                <span className="stat-skip">⏭️ 跳過: {importProgress.skipped}</span>
-                <span className="stat-error">❌ 失敗: {importProgress.failed}</span>
-                {(importProgress.totalVariants ?? 0) > 0 && (
-                  <span className="stat-variant">🎨 變體: {importProgress.totalVariants}</span>
-                )}
-              </div>
-            </div>
+            <ProgressCard
+              title="匯入進度"
+              progress={importProgress}
+              currentProduct={importProgress.currentProduct}
+              showVariants={true}
+            />
           )}
 
           {/* 匯入日誌 */}
           {importLogs.length > 0 && (
-            <div className="import-logs">
-              <h3>匯入日誌</h3>
-              <div className="logs-container">
-                {importLogs.slice(-50).map((log, index) => (
-                  <div key={index} className={`log-entry log-${log.type}`}>
-                    <span className="log-time">
-                      {new Date(log.timestamp).toLocaleTimeString()}
-                    </span>
-                    <span className="log-icon">
-                      {log.type === 'success' && '✅'}
-                      {log.type === 'skip' && '⏭️'}
-                      {log.type === 'error' && '❌'}
-                      {log.type === 'info' && 'ℹ️'}
-                    </span>
-                    <span className="log-message">
-                      {log.productTitle && <strong>{log.productTitle}</strong>}
-                      {log.productTitle && ' - '}
-                      {log.message}
-                    </span>
-                  </div>
-                ))}
+            <div className="card">
+              <div className="card-header">
+                <h3>匯入日誌</h3>
+              </div>
+              <div className="card-body">
+                <div className="logs-container">
+                  {importLogs.slice(-50).map((log, index) => (
+                    <div key={index} className="log-entry">
+                      <span className="log-time">
+                        {new Date(log.timestamp).toLocaleTimeString()}
+                      </span>
+                      <span className={`log-icon ${log.type}`}>
+                        {log.type === 'success' && <CheckCircle2 />}
+                        {log.type === 'skip' && <SkipForward />}
+                        {log.type === 'error' && <XCircle />}
+                        {log.type === 'info' && <AlertCircle />}
+                      </span>
+                      <span className="log-message">
+                        {log.productTitle && <strong>{log.productTitle}</strong>}
+                        {log.productTitle && ' - '}
+                        {log.message}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -905,39 +891,42 @@ export const ProductImporter: React.FC = () => {
 
       {/* Tab: Webhook */}
       {activeTab === 'webhook' && (
-        <div className="webhook-section">
+        <div className="tab-content">
+          {/* Info Card */}
           <div className="info-card">
-            <div className="info-card-icon">
-              <WebhookIcon />
+            <div className="info-icon">
+              <Webhook />
             </div>
             <h2>Webhook 端點</h2>
             <p>使用此端點讓 Python 爬蟲系統將商品資料同步至 Payload CMS</p>
-            
-            <div className="endpoint-box">
+
+            <div className="url-display" style={{ maxWidth: '600px', margin: '0 auto 1.5rem' }}>
               <code>{webhookUrl}</code>
-              <button 
-                className="btn btn-icon" 
+              <button
                 onClick={() => handleCopy(webhookUrl)}
-                title="複製"
+                className={`copy-btn ${copied ? 'copied' : ''}`}
               >
-                <CopyIcon />
-                {copied && <span className="copy-tooltip">已複製！</span>}
+                {copied ? <Check /> : <Copy />}
               </button>
             </div>
-            
-            <button 
-              className="btn btn-secondary"
+
+            <button
               onClick={checkWebhookStatus}
               disabled={loading}
+              className="btn btn-secondary"
             >
-              <RefreshIcon />
+              <RefreshCw className={loading ? 'animate-spin' : ''} />
               {loading ? '檢查中...' : '檢查服務狀態'}
             </button>
           </div>
 
-          <div className="code-section">
-            <h3>Python 整合範例</h3>
-            <pre className="code-block">
+          {/* Code Section */}
+          <div className="card">
+            <div className="card-header">
+              <h3>Python 整合範例</h3>
+            </div>
+            <div className="card-body">
+              <pre className="logs-container" style={{ background: '#1e293b', color: '#f1f5f9', overflow: 'auto' }}>
 {`import requests
 
 # Payload CMS Webhook URL
@@ -964,44 +953,50 @@ def sync_product(product_data):
     }
     response = requests.post(WEBHOOK_URL, json=payload, headers=headers)
     return response.json()`}
-            </pre>
+              </pre>
+            </div>
           </div>
 
-          <div className="api-docs">
-            <h3>API 文件</h3>
-            <table className="docs-table">
-              <thead>
-                <tr>
-                  <th>Action</th>
-                  <th>說明</th>
-                  <th>必要參數</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>sync</code></td>
-                  <td>同步單一商品（建立或更新）</td>
-                  <td><code>{'product: { title, externalId, externalSource, price }'}</code></td>
-                </tr>
-                <tr>
-                  <td><code>batch-sync</code></td>
-                  <td>批量同步多個商品</td>
-                  <td><code>{'products: ProductData[]'}</code></td>
-                </tr>
-                <tr>
-                  <td><code>update-discount</code></td>
-                  <td>更新商品折扣價</td>
-                  <td><code>{'discount: { externalId, externalSource, salePrice }'}</code></td>
-                </tr>
-              </tbody>
-            </table>
+          {/* API Docs */}
+          <div className="card">
+            <div className="card-header">
+              <h3>API 文件</h3>
+            </div>
+            <div className="card-body" style={{ padding: 0, overflow: 'auto' }}>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Action</th>
+                    <th>說明</th>
+                    <th>必要參數</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>sync</code></td>
+                    <td>同步單一商品（建立或更新）</td>
+                    <td><code>{'product: { title, externalId, externalSource, price }'}</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>batch-sync</code></td>
+                    <td>批量同步多個商品</td>
+                    <td><code>{'products: ProductData[]'}</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>update-discount</code></td>
+                    <td>更新商品折扣價</td>
+                    <td><code>{'discount: { externalId, externalSource, salePrice }'}</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
 
       {/* Tab: Upload */}
       {activeTab === 'upload' && (
-        <CsvUploadSection 
+        <CsvUploadSection
           vendors={vendors}
           selectedVendor={selectedVendor}
           setSelectedVendor={setSelectedVendor}
@@ -1011,16 +1006,27 @@ def sync_product(product_data):
 
       {/* Tab: Status */}
       {activeTab === 'status' && (
-        <div className="status-section">
-          <div className="status-header">
-            <h2>最近同步紀錄</h2>
-            <a href="/admin/collections/products?where[syncStatus][equals]=synced" className="btn btn-secondary">
-              查看全部已同步商品
-            </a>
+        <div className="tab-content">
+          <div className="card">
+            <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h3>最近同步紀錄</h3>
+              <a
+                href="/admin/collections/products?where[syncStatus][equals]=synced"
+                className="btn btn-secondary"
+                style={{ margin: 0 }}
+              >
+                查看全部已同步商品
+                <ExternalLink />
+              </a>
+            </div>
+            <div className="card-body">
+              <div className="empty-state">
+                <Activity />
+                <h3>同步紀錄</h3>
+                <p>可在商品列表中依「同步狀態」篩選查看同步結果</p>
+              </div>
+            </div>
           </div>
-          <p className="status-hint">
-            可在商品列表中依「同步狀態」篩選查看同步結果
-          </p>
         </div>
       )}
     </div>

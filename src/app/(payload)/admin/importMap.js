@@ -1,3 +1,8 @@
+import { UsersBulkActions as UsersBulkActions_e7bcc6672a95a74f733fa5d45022bf82 } from '@/components/Admin/BulkActions'
+import { VendorsBulkActions as VendorsBulkActions_e7bcc6672a95a74f733fa5d45022bf82 } from '@/components/Admin/BulkActions'
+import { WishlistBulkActions as WishlistBulkActions_e7bcc6672a95a74f733fa5d45022bf82 } from '@/components/Admin/BulkActions'
+import { RestockRequestsBulkActions as RestockRequestsBulkActions_e7bcc6672a95a74f733fa5d45022bf82 } from '@/components/Admin/BulkActions'
+import { PromotionsBulkActions as PromotionsBulkActions_e7bcc6672a95a74f733fa5d45022bf82 } from '@/components/Admin/BulkActions'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -18,10 +23,19 @@ import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c08
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
+import { CategoriesBulkActions as CategoriesBulkActions_e7bcc6672a95a74f733fa5d45022bf82 } from '@/components/Admin/BulkActions'
+import { MediaBulkActions as MediaBulkActions_e7bcc6672a95a74f733fa5d45022bf82 } from '@/components/Admin/BulkActions'
+import { BatchImportButton as BatchImportButton_9f1d5957765b8f66e4b5c3359e59d797 } from '@/components/Admin/Scraper/BatchImportButton'
 import { VariantOptionsSelector as VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb } from '@payloadcms/plugin-ecommerce/rsc'
 import { PriceCell as PriceCell_e27bf7b8cc50640dcdd584767b8eac3c } from '@payloadcms/plugin-ecommerce/client'
 import { PriceInput as PriceInput_b91672ccd6e8b071c11142ab941fedfb } from '@payloadcms/plugin-ecommerce/rsc'
+import { TextSizeClientFeature as TextSizeClientFeature_003d5c6d9acd473d37bf6b1f238eb8d6 } from 'payload-lexical-typography/client'
+import { HighlightColorFeatureClient as HighlightColorFeatureClient_833116c0d900360037e48d224bee245c } from '@nhayhoc/payloadcms-lexical-ext/client'
+import { TextColorFeatureClient as TextColorFeatureClient_833116c0d900360037e48d224bee245c } from '@nhayhoc/payloadcms-lexical-ext/client'
+import { BlockquoteFeatureClient as BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { ProductsBulkActions as ProductsBulkActions_2fbbf48ccd3537c491cafd4cbeb17016 } from '@/components/Admin/Products/ProductsBulkActions'
+import { OrdersBulkActions as OrdersBulkActions_e7bcc6672a95a74f733fa5d45022bf82 } from '@/components/Admin/BulkActions'
 import { NavItemRowLabel as NavItemRowLabel_d4655109717a6f5707cd0a6520a4fd9e } from '@/components/RowLabel'
 import { CustomNav as CustomNav_c7444955c2e5437a06591727650df7dc } from '@/components/Admin/CustomNav'
 import { BeforeDashboard as BeforeDashboard_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
@@ -31,9 +45,15 @@ import { ProductImporterView as ProductImporterView_9f8258059606bfb046e532dde68d
 import { AbandonedCartsViewWrapper as AbandonedCartsViewWrapper_e437614fff3cf4e6e502a4419e3c38b7 } from '@/components/Admin/AbandonedCartsView/View'
 import { OrderImporterView as OrderImporterView_2b4cc482b61b4c10162695f664a09fd3 } from '@/components/Admin/OrderImporter/View'
 import { CustomerAnalyticsView as CustomerAnalyticsView_936c68eb34c73372ce20f3fabf857df2 } from '@/components/Admin/CustomerAnalytics/View'
+import { ScraperDashboardView as ScraperDashboardView_6688c4506986cafa2759cb59fa969ece } from '@/components/Admin/Scraper/Dashboard/View'
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
+  "@/components/Admin/BulkActions#UsersBulkActions": UsersBulkActions_e7bcc6672a95a74f733fa5d45022bf82,
+  "@/components/Admin/BulkActions#VendorsBulkActions": VendorsBulkActions_e7bcc6672a95a74f733fa5d45022bf82,
+  "@/components/Admin/BulkActions#WishlistBulkActions": WishlistBulkActions_e7bcc6672a95a74f733fa5d45022bf82,
+  "@/components/Admin/BulkActions#RestockRequestsBulkActions": RestockRequestsBulkActions_e7bcc6672a95a74f733fa5d45022bf82,
+  "@/components/Admin/BulkActions#PromotionsBulkActions": PromotionsBulkActions_e7bcc6672a95a74f733fa5d45022bf82,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -54,10 +74,19 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
+  "@/components/Admin/BulkActions#CategoriesBulkActions": CategoriesBulkActions_e7bcc6672a95a74f733fa5d45022bf82,
+  "@/components/Admin/BulkActions#MediaBulkActions": MediaBulkActions_e7bcc6672a95a74f733fa5d45022bf82,
+  "@/components/Admin/Scraper/BatchImportButton#BatchImportButton": BatchImportButton_9f1d5957765b8f66e4b5c3359e59d797,
   "@payloadcms/plugin-ecommerce/rsc#VariantOptionsSelector": VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb,
   "@payloadcms/plugin-ecommerce/client#PriceCell": PriceCell_e27bf7b8cc50640dcdd584767b8eac3c,
   "@payloadcms/plugin-ecommerce/rsc#PriceInput": PriceInput_b91672ccd6e8b071c11142ab941fedfb,
+  "payload-lexical-typography/client#TextSizeClientFeature": TextSizeClientFeature_003d5c6d9acd473d37bf6b1f238eb8d6,
+  "@nhayhoc/payloadcms-lexical-ext/client#HighlightColorFeatureClient": HighlightColorFeatureClient_833116c0d900360037e48d224bee245c,
+  "@nhayhoc/payloadcms-lexical-ext/client#TextColorFeatureClient": TextColorFeatureClient_833116c0d900360037e48d224bee245c,
+  "@payloadcms/richtext-lexical/client#BlockquoteFeatureClient": BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "@/components/Admin/Products/ProductsBulkActions#ProductsBulkActions": ProductsBulkActions_2fbbf48ccd3537c491cafd4cbeb17016,
+  "@/components/Admin/BulkActions#OrdersBulkActions": OrdersBulkActions_e7bcc6672a95a74f733fa5d45022bf82,
   "@/components/RowLabel#NavItemRowLabel": NavItemRowLabel_d4655109717a6f5707cd0a6520a4fd9e,
   "@/components/Admin/CustomNav#CustomNav": CustomNav_c7444955c2e5437a06591727650df7dc,
   "@/components/BeforeDashboard#BeforeDashboard": BeforeDashboard_1a7510af427896d367a49dbf838d2de6,
@@ -67,5 +96,6 @@ export const importMap = {
   "@/components/Admin/AbandonedCartsView/View#AbandonedCartsViewWrapper": AbandonedCartsViewWrapper_e437614fff3cf4e6e502a4419e3c38b7,
   "@/components/Admin/OrderImporter/View#OrderImporterView": OrderImporterView_2b4cc482b61b4c10162695f664a09fd3,
   "@/components/Admin/CustomerAnalytics/View#CustomerAnalyticsView": CustomerAnalyticsView_936c68eb34c73372ce20f3fabf857df2,
+  "@/components/Admin/Scraper/Dashboard/View#ScraperDashboardView": ScraperDashboardView_6688c4506986cafa2759cb59fa969ece,
   "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }
